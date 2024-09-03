@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.common.exception;
+package com.hh.multiboarduserbackend.exception;
 
 public class CustomException extends RuntimeException{
 

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hh.multiboarduserbackend.domain.member.MemberRepository">
+
+<!--    user 테이블 전체 컬럼    -->
+    <sql id="memberColumns">
+          member_id
+        , login_id
+        , password
+        , nickname
+        , delete_yn
+        , created_date
+        , updated_date
+    </sql>
+
+<!--    회원가입    -->
+    <insert id="saveMember" parameterType="com.hh.multiboarduserbackend.domain.member.MemberVo" useGeneratedKeys="true" keyProperty="memberId">
+        INSERT INTO user (
+          <include refid="memberColumns"></include>
+        ) VALUES (
+          #{memberId}
+        , #{loginId}
+        , #{password}
+        , #{nickname}
+        , 0
+        , NOW()
+        , NOW()
+        )
+    </insert>
+
+<!--    아이디로 회원 찾기    -->
+    <select id="findById" parameterType="long" resultType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+        SELECT
+            <include refid="memberColumns"></include>
+        FROM
+            member
+        WHERE
+            member_id = #{memberId}
+    </select>
+
+<!--    로그인 아이디로 유저 카운팅    -->
+    <select id="countAllByLoginId" parameterType="java.lang.String" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            member
+        WHERE
+            login_id = #{loginId}
+    </select>
+</mapper>

@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.common.exception;
+package com.hh.multiboarduserbackend.exception;
 
 import org.springframework.http.HttpStatus;
 

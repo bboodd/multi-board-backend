@@ -1,11 +1,12 @@
-package com.hh.multiboarduserbackend.common.exception;
+package com.hh.multiboarduserbackend.exception;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 @RequiredArgsConstructor
-public enum FileErrorCode implements ErrorCode {
-    FILE_NOT_FOUND("파일을 찾을 수 없습니다.", HttpStatus.NOT_FOUND);
+public enum JwtErrorCode implements ErrorCode {
+
+    TOKEN_ERROR("잘못된 JWT 토큰 입니다.", HttpStatus.UNAUTHORIZED);
 
     private final String message;
     private final HttpStatus status;
