@@ -1,7 +1,7 @@
 package com.hh.multiboarduserbackend.aop;
 
-import com.hh.board.common.exception.CustomException;
-import com.hh.board.common.response.ErrorResponse;
+import com.hh.multiboarduserbackend.exception.CustomException;
+import com.hh.multiboarduserbackend.common.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;

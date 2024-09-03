@@ -4,22 +4,16 @@ import com.hh.multiboarduserbackend.common.paging.Pagination;
 import lombok.*;
 
 @Builder
-@Value
-//객체 외부 생성 제한
-@NoArgsConstructor(access = AccessLevel.PROTECTED, force = true)
-@AllArgsConstructor
-public class SearchVo {
-
-    private String startDate;
-    private String endDate;
-    private int categoryId;
-    private String keyword;
-
-    private int page;           //현재 페이지 번호
-    private int recordSize;     //페이지당 출력할 데이터 개수
-    private int pageSize;       //화면 하단 출력할 페이지 사이즈
-
-    private Pagination pagination;
+public record SearchVo (
+            String startDate
+          , String endDate
+          , Long categoryId
+          , String keyword
+          , int page                //현재 페이지 번호
+          , int recordSize          //페이지당 출력할 데이터 개수
+          , int pageSize            //화면 하단 출력할 페이지 사이즈
+          , Pagination pagination
+) {
 
     /**
      * dto를 vo로 변환
@@ -28,22 +22,24 @@ public class SearchVo {
      * @return searchVo - vo
      */
 
-    public static SearchVo toVo(SearchDto searchDto) {
+    public static SearchVo toVo(SearchDto searchDto, Pagination pagination) {
+        int page = searchDto.page();
+        if(pagination != null) {
+            if(searchDto.page() > pagination.getTotalPageCount()) {
+                page = pagination.getTotalPageCount();
+            }
+        }
         SearchVo searchVo = SearchVo.builder()
-                .startDate(searchDto.getStartDate())
-                .endDate(searchDto.getEndDate())
-                .categoryId(searchDto.getCategoryId())
-                .keyword(searchDto.getKeyword())
-                .page(searchDto.getPage())
-                .recordSize(searchDto.getRecordSize())
-                .pageSize(searchDto.getPageSize())
-                .pagination(searchDto.getPagination())
+                .startDate(searchDto.startDate())
+                .endDate(searchDto.endDate())
+                .categoryId(searchDto.categoryId())
+                .keyword(searchDto.keyword())
+                .page(page)
+                .recordSize(searchDto.recordSize())
+                .pageSize(searchDto.pageSize())
+                .pagination(pagination)
                 .build();
         return searchVo;
     }
 
-
-    public int getOffset() {        //시작
-        return (page - 1) * recordSize;
-    }
 }

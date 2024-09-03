@@ -1,18 +1,15 @@
 package com.hh.multiboarduserbackend.common.paging;
 
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-public class PagingResponse<T> {
+@Builder
+public record PagingResponse<T> (
+          List<T> list
+        , Pagination pagination
+) {
 
-    private List<T> list = new ArrayList<>();
-    private Pagination pagination;
-
-    public PagingResponse(List<T> list, Pagination pagination) {
-        this.list.addAll(list);
-        this.pagination = pagination;
-    }
 }

@@ -1,19 +1,19 @@
 package com.hh.multiboarduserbackend.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.hh.multiboarduserbackend.common.exception.CustomException;
-import com.hh.multiboarduserbackend.common.exception.ErrorCode;
+import com.hh.multiboarduserbackend.exception.CustomException;
+import com.hh.multiboarduserbackend.exception.ErrorCode;
 import lombok.Builder;
 
 import java.time.Instant;
 
 @Builder
 public record ErrorResponse<E> (
-        Instant timestamp,
-        Integer status,
-        String code,
-        @JsonInclude(JsonInclude.Include.NON_NULL) E cause,
-        String message
+          Instant timestamp
+        , Integer status
+        , String code
+        , @JsonInclude(JsonInclude.Include.NON_NULL) E cause
+        , String message
 ) {
     /**
      * custom exception 파싱
