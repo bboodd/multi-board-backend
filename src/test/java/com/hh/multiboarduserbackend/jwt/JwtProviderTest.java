@@ -1,6 +1,8 @@
 package com.hh.multiboarduserbackend.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hh.multiboarduserbackend.domain.member.MemberService;
+import com.hh.multiboarduserbackend.domain.member.MemberVo;
 import com.hh.multiboarduserbackend.exception.CustomException;
 import io.jsonwebtoken.Jwts;
 import org.junit.jupiter.api.Assertions;
@@ -28,6 +30,8 @@ class JwtProviderTest {
 
         jwtProvider = new JwtProvider(jwtProperties, Jwts.SIG.HS256);
     }
+
+    private MemberService memberService;
 
     @Test
     void 토큰생성테스트_성공() {

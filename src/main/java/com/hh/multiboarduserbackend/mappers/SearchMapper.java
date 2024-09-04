@@ -5,9 +5,10 @@ import com.hh.multiboarduserbackend.common.paging.PaginationDto;
 import com.hh.multiboarduserbackend.common.vo.SearchVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
-@Mapper
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SearchMapper {
 
     SearchMapper INSTANCE = Mappers.getMapper(SearchMapper.class);
