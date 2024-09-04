@@ -4,14 +4,14 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository("member")
+@Repository
 public interface MemberRepository {
 
     void saveMember(MemberVo memberVo);
 
-    Optional<MemberVo> findById(Long userId);
+    MemberVo findById(Long userId);
 
-    Optional<MemberVo> findByLoginId(String loginId);
+    MemberVo findByLoginId(String loginId);
 
     int countAllByLoginId(String loginId);
 }

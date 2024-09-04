@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Builder
 public record MemberVo(
-        Long memberId
+          Long memberId
         , String loginId
         , String password
         , String nickname
