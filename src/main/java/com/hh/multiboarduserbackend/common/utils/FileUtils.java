@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.common.file;
+package com.hh.multiboarduserbackend.common.utils;
 
 //import com.hh.multiboarduserbackend.domain.file.FileRequestDto;
 //import com.hh.multiboarduserbackend.domain.file.FileResponseDto;

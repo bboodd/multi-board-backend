@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.common.dto;
+package com.hh.multiboarduserbackend.common.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

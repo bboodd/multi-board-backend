@@ -4,7 +4,7 @@
 
 <mapper namespace="com.hh.multiboarduserbackend.domain.member.MemberRepository">
 
-<!--    user 테이블 전체 컬럼    -->
+<!--    member 테이블 전체 컬럼    -->
     <sql id="memberColumns">
           member_id
         , login_id
@@ -40,7 +40,17 @@
             member_id = #{memberId}
     </select>
 
-<!--    로그인 아이디로 유저 카운팅    -->
+<!--    로그인 아이디로 회원 찾기    -->
+    <select id="findByLoginId" parameterType="java.lang.String" resultType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+        SELECT
+            <include refid="memberColumns"></include>
+        FROM
+            member
+        WHERE
+            login_id = #{loginId}
+    </select>
+
+<!--    로그인 아이디로 유저 카운팅 (아이디 중복 확인)   -->
     <select id="countAllByLoginId" parameterType="java.lang.String" resultType="int">
         SELECT
             COUNT(*)

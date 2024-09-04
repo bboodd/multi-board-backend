@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hh.multiboarduserbackend.domain.free.post.FreePostRepository">
+    <sql id="freePostColumns">
+          free_post_id
+        , member_id
+        , free_category_id
+        , title
+        , content
+        , view_cnt
+        , created_date
+        , updated_date
+        , delete_yn
+    </sql>
+</mapper>
