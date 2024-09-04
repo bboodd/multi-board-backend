@@ -1,6 +1,7 @@
 package com.hh.multiboarduserbackend.common.vo;
 import com.hh.multiboarduserbackend.common.dto.SearchDto;
 import com.hh.multiboarduserbackend.common.paging.PaginationDto;
+import com.hh.multiboarduserbackend.mappers.SearchMapper;
 import lombok.*;
 
 @Builder
@@ -15,30 +16,11 @@ public record SearchVo (
           , int limitStart
 ) {
 
-    /**
-     * dto를 vo로 변환
-     * 화면에서 받아서 db로 넘길때
-     * @param searchDto - dto
-     * @return searchVo - vo
-     */
-
-    public static SearchVo toVo(SearchDto searchDto, PaginationDto paginationDto) {
-        int page = searchDto.page();
-        if(paginationDto != null) {
-            if(searchDto.page() > paginationDto.getTotalPageCount()) {
-                page = paginationDto.getTotalPageCount();
-            }
-        }
-        SearchVo searchVo = SearchVo.builder()
-                .startDate(searchDto.startDate())
-                .endDate(searchDto.endDate())
-                .categoryId(searchDto.categoryId())
-                .keyword(searchDto.keyword())
-                .page(page)
-                .recordSize(searchDto.recordSize())
-                .pageSize(searchDto.pageSize())
-                .build();
-        return searchVo;
+    public SearchVo toVo(SearchDto searchDto) {
+        return SearchMapper.INSTANCE.toVo(searchDto);
     }
 
+    public SearchVo toVo(SearchDto searchDto, PaginationDto paginationDto) {
+        return SearchMapper.INSTANCE.toVo(searchDto, paginationDto);
+    }
 }

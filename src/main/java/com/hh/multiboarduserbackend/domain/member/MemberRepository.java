@@ -11,5 +11,7 @@ public interface MemberRepository {
 
     Optional<MemberVo> findById(Long userId);
 
+    Optional<MemberVo> findByLoginId(String loginId);
+
     int countAllByLoginId(String loginId);
 }

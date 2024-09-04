@@ -1,4 +1,12 @@
 package com.hh.multiboarduserbackend.domain.member;
 
-public record SignUpDto () {
+import lombok.Builder;
+
+@Builder
+public record SignUpDto (
+          String loginId
+        , String password
+        , String checkPassword
+        , String nickname
+) {
 }
