@@ -1,6 +1,6 @@
 package com.hh.multiboarduserbackend.common.vo;
 import com.hh.multiboarduserbackend.common.dto.SearchDto;
-import com.hh.multiboarduserbackend.common.paging.Pagination;
+import com.hh.multiboarduserbackend.common.paging.PaginationDto;
 import lombok.*;
 
 @Builder
@@ -12,7 +12,7 @@ public record SearchVo (
           , int page                //현재 페이지 번호
           , int recordSize          //페이지당 출력할 데이터 개수
           , int pageSize            //화면 하단 출력할 페이지 사이즈
-          , Pagination pagination
+          , int limitStart
 ) {
 
     /**
@@ -22,11 +22,11 @@ public record SearchVo (
      * @return searchVo - vo
      */
 
-    public static SearchVo toVo(SearchDto searchDto, Pagination pagination) {
+    public static SearchVo toVo(SearchDto searchDto, PaginationDto paginationDto) {
         int page = searchDto.page();
-        if(pagination != null) {
-            if(searchDto.page() > pagination.getTotalPageCount()) {
-                page = pagination.getTotalPageCount();
+        if(paginationDto != null) {
+            if(searchDto.page() > paginationDto.getTotalPageCount()) {
+                page = paginationDto.getTotalPageCount();
             }
         }
         SearchVo searchVo = SearchVo.builder()
@@ -37,7 +37,6 @@ public record SearchVo (
                 .page(page)
                 .recordSize(searchDto.recordSize())
                 .pageSize(searchDto.pageSize())
-                .pagination(pagination)
                 .build();
         return searchVo;
     }

@@ -1,10 +1,6 @@
 package com.hh.multiboarduserbackend.common.dto;
 
-import com.hh.multiboarduserbackend.common.paging.Pagination;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Builder
 public record SearchDto (
