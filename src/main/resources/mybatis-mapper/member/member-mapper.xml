@@ -16,8 +16,8 @@
     </sql>
 
 <!--    회원가입    -->
-    <insert id="saveMember" parameterType="com.hh.multiboarduserbackend.domain.member.MemberVo" useGeneratedKeys="true" keyProperty="memberId">
-        INSERT INTO user (
+    <insert id="saveMember" parameterType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+        INSERT INTO member (
           <include refid="memberColumns"></include>
         ) VALUES (
           #{memberId}

@@ -31,12 +31,10 @@ public class MemberService {
      * @param memberVo - 회원가입 정보
      * @return - 회원 ID
      */
-    public Long signUp(MemberVo memberVo) {
+    public void signUp(MemberVo memberVo) {
         duplicateCheck(memberVo.loginId());
 
         memberRepository.saveMember(memberVo);
-
-        return memberVo.memberId();
     }
 
     /**
@@ -44,12 +42,12 @@ public class MemberService {
      * @param memberVo - 로그인 정보
      * @return - jwt token
      */
-    public JwtToken signIn(MemberVo memberVo) {
+    public JwtToken logIn(MemberVo memberVo) {
         // 아이디에 해당하는 회원이 없을 시 에러
         MemberVo findMember = findByLoginId(memberVo.loginId())
                 .orElseThrow(() -> MemberErrorCode.LOGIN_UNAUTHORIZED.defaultException());
 
-        // 비밀번호가 일치하지 않을 시 에러
+        // 저장된 비밀번호가 일치하지 않을 시 에러
         if(!findMember.password().equals(memberVo.password())) {
             throw MemberErrorCode.LOGIN_UNAUTHORIZED.defaultException();
         }

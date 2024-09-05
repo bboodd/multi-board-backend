@@ -10,7 +10,7 @@ public record CategoryResponseDto(
         , String categoryName
 ) {
 
-    public CategoryResponseDto toDto(CategoryVo categoryVo) {
+    public static CategoryResponseDto toDto(CategoryVo categoryVo) {
         return CategoryMapper.INSTANCE.toDto(categoryVo);
     }
 }

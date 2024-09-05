@@ -75,10 +75,10 @@ class MemberServiceTest {
         given(jwtProvider.generateToken(1L)).willReturn(token);
 
         //when
-        JwtToken signInToken = memberService.signIn(memberVo);
+        JwtToken logInToken = memberService.logIn(memberVo);
 
         //then
-        assertThat(signInToken.accessToken()).isEqualTo(token.accessToken());
+        assertThat(logInToken.accessToken()).isEqualTo(token.accessToken());
     }
 
     @Test
@@ -93,7 +93,7 @@ class MemberServiceTest {
 
         //then
         assertThrows(CustomException.class, () -> {
-            memberService.signIn(memberVo);
+            memberService.logIn(memberVo);
         });
     }
 
@@ -109,7 +109,7 @@ class MemberServiceTest {
 
         //then
         assertThrows(CustomException.class, () -> {
-            memberService.signIn(memberVo);
+            memberService.logIn(memberVo);
         });
     }
 

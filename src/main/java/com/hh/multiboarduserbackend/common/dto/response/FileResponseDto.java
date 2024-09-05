@@ -15,7 +15,7 @@ public record FileResponseDto (
         , int deleteYn
 ) {
 
-    public FileResponseDto toDto(FileVo fileVo) {
+    public static FileResponseDto toDto(FileVo fileVo) {
         return FileMapper.INSTANCE.toDto(fileVo);
     }
 }

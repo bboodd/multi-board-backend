@@ -16,7 +16,7 @@ public record CommentResponseDto (
         , int deleteYn
 ) {
 
-    public CommentResponseDto toDto(CommentVo commentVo) {
+    public static CommentResponseDto toDto(CommentVo commentVo) {
         return CommentMapper.INSTANCE.toDto(commentVo);
     }
 }

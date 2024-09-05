@@ -16,11 +16,11 @@ public record SearchVo (
           , int limitStart
 ) {
 
-    public SearchVo toVo(SearchDto searchDto) {
+    public static SearchVo toVo(SearchDto searchDto) {
         return SearchMapper.INSTANCE.toVo(searchDto);
     }
 
-    public SearchVo toVo(SearchDto searchDto, PaginationDto paginationDto) {
+    public static SearchVo toVo(SearchDto searchDto, PaginationDto paginationDto) {
         return SearchMapper.INSTANCE.toVo(searchDto, paginationDto);
     }
 }
