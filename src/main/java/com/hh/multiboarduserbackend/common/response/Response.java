@@ -7,7 +7,19 @@ import lombok.Getter;
 @Builder
 public record Response<T> (
           String message
-        , @JsonInclude(JsonInclude.Include.NON_NULL) T data
+        , @JsonInclude(JsonInclude.Include.NON_NULL)
+          T data
 ) {
 
+    public static Response message(String message) {
+        return Response.builder()
+                .message(message)
+                .build();
+    }
+
+    public static<T> Response data(T data) {
+        return Response.builder()
+                .data(data)
+                .build();
+    }
 }

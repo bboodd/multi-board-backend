@@ -1,7 +1,7 @@
 package com.hh.multiboarduserbackend.mappers;
 
+import com.hh.multiboarduserbackend.domain.member.LogInDto;
 import com.hh.multiboarduserbackend.domain.member.MemberVo;
-import com.hh.multiboarduserbackend.domain.member.SignInDto;
 import com.hh.multiboarduserbackend.domain.member.SignUpDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -14,5 +14,5 @@ public interface MemberMapper {
 
     MemberVo toMemberVo(SignUpDto signUpDto);
 
-    MemberVo toMemberVo(SignInDto signInDto);
+    MemberVo toMemberVo(LogInDto loginDto);
 }

@@ -16,7 +16,7 @@ public record CommentVo(
         , int deleteYn
 ) {
 
-    public CommentVo toVo(CommentRequestDto commentRequestDto) {
+    public static CommentVo toVo(CommentRequestDto commentRequestDto) {
         return CommentMapper.INSTANCE.toVo(commentRequestDto);
     }
 }
