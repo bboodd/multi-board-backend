@@ -12,7 +12,7 @@ public interface CommentMapper {
 
     CommentMapper INSTANCE = Mappers.getMapper(CommentMapper.class);
 
-    CommentVo toVo(CommentRequestDto commentRequestDto);
+    CommentVo toVo(CommentRequestDto commentRequestDto, Long memberId);
 
     CommentResponseDto toDto(CommentVo commentVo);
 }

@@ -1,19 +1,21 @@
 package com.hh.multiboarduserbackend.domain.gallery.post;
 
 import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 
 @Builder
-public record GalleryPostVo(
-          Long galleryPostId
-        , Long memberId
-        , Long galleryCategoryId
-        , String title
-        , String content
-        , int viewCnt
-        , LocalDateTime createdDate
-        , LocalDateTime updatedDate
-        , int deleteYn
-) {
+@Data
+public class GalleryPostVo {
+
+    private Long galleryPostId;
+    private Long memberId;
+    private Long galleryCategoryId;
+    private String title;
+    private String content;
+    private int viewCnt;
+    private LocalDateTime createdDate;
+    private LocalDateTime updatedDate;
+    private int deleteYn;
 }

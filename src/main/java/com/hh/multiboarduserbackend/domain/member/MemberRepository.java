@@ -8,11 +8,9 @@ import java.util.Optional;
 @Mapper
 public interface MemberRepository {
 
-    void saveMember(MemberVo memberVo);
+    void save(MemberVo memberVo);
 
     MemberVo findById(Long userId);
 
     MemberVo findByLoginId(String loginId);
-
-    int countAllByLoginId(String loginId);
 }

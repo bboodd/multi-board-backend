@@ -16,7 +16,7 @@
     </sql>
 
 <!--    회원가입    -->
-    <insert id="saveMember" parameterType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+    <insert id="save" parameterType="com.hh.multiboarduserbackend.domain.member.MemberVo">
         INSERT INTO member (
           <include refid="memberColumns"></include>
         ) VALUES (
@@ -44,16 +44,6 @@
     <select id="findByLoginId" parameterType="java.lang.String" resultType="com.hh.multiboarduserbackend.domain.member.MemberVo">
         SELECT
             <include refid="memberColumns"></include>
-        FROM
-            member
-        WHERE
-            login_id = #{loginId}
-    </select>
-
-<!--    로그인 아이디로 유저 카운팅 (아이디 중복 확인)   -->
-    <select id="countAllByLoginId" parameterType="java.lang.String" resultType="int">
-        SELECT
-            COUNT(*)
         FROM
             member
         WHERE

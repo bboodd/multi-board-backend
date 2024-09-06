@@ -3,6 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.hh.multiboarduserbackend.domain.free.post.FreePostRepository">
+<!--    free_post 테이블 전체 컬럼    -->
     <sql id="freePostColumns">
           free_post_id
         , member_id
@@ -14,4 +15,109 @@
         , updated_date
         , delete_yn
     </sql>
+
+<!--    검색조건    -->
+    <sql id="search">
+        <where>
+            <if test="startDate != null and startDate != ''">
+                AND created_date >= #{startDate}
+            </if>
+            <if test="endDate != null and endDate != ''">
+                AND #{endDate} >= created_date
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                AND free_category_id = #{freeCategoryId}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND CONCAT(title, writer, content) LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            AND delete_yn = 0
+        </where>
+    </sql>
+
+<!--    게시글 등록    -->
+    <insert id="save" useGeneratedKeys="true" keyProperty="freePostId">
+        INSERT INTO free_post (
+            <include refid="freePostColumns"></include>
+        ) VALUES (
+              #{freePostId}
+            , #{memberId}
+            , #{freeCategoryId}
+            , #{title}
+            , #{content}
+            , 0
+            , NOW()
+            , NOW()
+            , 0
+        )
+    </insert>
+
+<!--    게시글 수정    -->
+    <update id="update" parameterType="com.hh.multiboarduserbackend.domain.free.post.FreePostVo">
+        UPDATE
+            free_post
+        SET
+              free_categry_id = #{freeCategoryId}
+            , title = #{title}
+            , content = #{content}
+            , updated_date = NOW()
+        WHERE
+            free_post_id = #{freePostId}
+            AND member_id = #{memberId}
+    </update>
+
+<!--    게시글 단건 조회    -->
+    <select id="findById" parameterType="long" resultType="com.hh.multiboarduserbackend.domain.free.post.FreePostVo">
+        SELECT
+            <include refid="freePostColumns"></include>
+            , (SELECT category_name FROM free_category WHERE free_category.free_category_id = free_post.free_category_id) AS freeCategoryName
+        FROM
+            free_post
+        WHERE
+            free_post_id = #{freePostId}
+            AND delete_yn = 0
+    </select>
+
+<!--    게시글 리스트 조회    -->
+    <select id="findAllBySearch" parameterType="com.hh.multiboarduserbackend.common.vo.SearchVo" resultType="com.hh.multiboarduserbackend.domain.free.post.FreePostVo">
+        SELECT
+              <include refid="freePostColumns"></include>
+            , (SELECT category_name FROM free_category WHERE free_category.free_category_id = free_post.free_category_id) AS freeCategoryName
+            , NULLIF((SELECT COUNT(*) FROM free_file WHERE free_file.free_post_id = free_post.free_post_id), 0) AS fileCount
+        FROM
+            free_post
+        <include refid="search"></include>
+        ORDER BY
+            free_post_id DESC
+        LIMIT #{limitStart}, #{recordSize}
+    </select>
+
+<!--    게시글 수 카운팅    -->
+    <select id="countAllBySearch" parameterType="com.hh.multiboarduserbackend.common.vo.SearchVo" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            free_post
+        <include refid="search"></include>
+    </select>
+
+<!--    게시글 조회수 증가    -->
+    <update id="increaseViewCntById" parameterType="long">
+        UPDATE
+            free_post
+        SET
+            view_cnt = view_cnt + 1
+        WHERE
+            free_post_id = #{freePostId}
+    </update>
+
+<!--    게시글 삭제    -->
+    <update id="deleteById" parameterType="long">
+        UPDATE
+            free_post
+        SET
+            delete_yn = 1
+        WHERE
+            free_post_id = #{freePostId}
+    </update>
 </mapper>

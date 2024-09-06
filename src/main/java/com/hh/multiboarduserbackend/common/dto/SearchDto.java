@@ -2,6 +2,8 @@ package com.hh.multiboarduserbackend.common.dto;
 
 import lombok.Builder;
 
+import java.util.Objects;
+
 @Builder
 public record SearchDto (
         // TODO: 검색조건 유효성검사
@@ -14,12 +16,26 @@ public record SearchDto (
          , int pageSize     //화면 하단 출력할 페이지 사이즈
 ) {
     public SearchDto {
-        startDate = "";
-        endDate = "";
-        categoryId = 0L;
-        keyword = "";
-        page = 1;
-        recordSize = 10;
-        pageSize = 10;
+        if(Objects.isNull(startDate)) {
+            startDate = "";
+        }
+        if(Objects.isNull(endDate)) {
+            endDate = "";
+        }
+        if(Objects.isNull(categoryId)) {
+            categoryId = 0L;
+        }
+        if(Objects.isNull(keyword)) {
+            keyword = "";
+        }
+        if(page == 0) {
+            page = 1;
+        }
+        if(recordSize == 0) {
+            recordSize = 10;
+        }
+        if(pageSize == 0) {
+            pageSize = 10;
+        }
     }
 }
