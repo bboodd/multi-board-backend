@@ -32,8 +32,8 @@ class MemberRepositoryTest {
         //when
 
         //then
-        assertThat(member.nickname()).isEqualTo("qwer");
-        assertThat(member.loginId()).isEqualTo("qwer");
+        assertThat(member.getNickname()).isEqualTo("qwer");
+        assertThat(member.getLoginId()).isEqualTo("qwer");
     }
 
     @Test
@@ -53,10 +53,10 @@ class MemberRepositoryTest {
         MemberVo member = MemberVo.builder().loginId("아이디").password("비밀번호").nickname("닉네임").build();
 
         //when
-        memberRepository.saveMember(member);
+        memberRepository.save(member);
         Optional<MemberVo> findMember = Optional.ofNullable(memberRepository.findByLoginId("아이디"));
 
         //then
-        assertThat(findMember.get().nickname()).isEqualTo(member.nickname());
+        assertThat(findMember.get().getNickname()).isEqualTo(member.getNickname());
     }
 }

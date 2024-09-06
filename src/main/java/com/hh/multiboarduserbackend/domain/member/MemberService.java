@@ -18,11 +18,11 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final JwtProvider jwtProvider;
 
-    public Optional<MemberVo> findByLoginId(String loginId) {
+    private Optional<MemberVo> findByLoginId(String loginId) {
         return Optional.ofNullable(memberRepository.findByLoginId(loginId));
     }
 
-    public Optional<MemberVo> findById(Long memberId) {
+    private Optional<MemberVo> findById(Long memberId) {
         return Optional.ofNullable(memberRepository.findById(memberId));
     }
 
@@ -31,10 +31,10 @@ public class MemberService {
      * @param memberVo - 회원가입 정보
      * @return - 회원 ID
      */
-    public void signUp(MemberVo memberVo) {
-        duplicateCheck(memberVo.loginId());
-
-        memberRepository.saveMember(memberVo);
+    public Long signUp(MemberVo memberVo) {
+        duplicateCheck(memberVo.getLoginId());
+        memberRepository.save(memberVo);
+        return memberVo.getMemberId();
     }
 
     /**
@@ -44,16 +44,15 @@ public class MemberService {
      */
     public JwtToken logIn(MemberVo memberVo) {
         // 아이디에 해당하는 회원이 없을 시 에러
-        MemberVo findMember = findByLoginId(memberVo.loginId())
+        MemberVo findMember = findByLoginId(memberVo.getLoginId())
                 .orElseThrow(() -> MemberErrorCode.LOGIN_UNAUTHORIZED.defaultException());
 
         // 저장된 비밀번호가 일치하지 않을 시 에러
-        if(!findMember.password().equals(memberVo.password())) {
+        if(!findMember.getPassword().equals(memberVo.getPassword())) {
             throw MemberErrorCode.LOGIN_UNAUTHORIZED.defaultException();
         }
 
-        JwtToken jwtToken = jwtProvider.generateToken(findMember.memberId());
-
+        JwtToken jwtToken = jwtProvider.generateToken(findMember.getMemberId());
         return jwtToken;
     }
 

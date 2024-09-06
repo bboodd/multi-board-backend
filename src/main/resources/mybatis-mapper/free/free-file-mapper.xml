@@ -12,4 +12,75 @@
           , saved_size
           , delete_yn
     </sql>
+
+<!--    파일 리스트 저장    -->
+    <insert id="saveAll" parameterType="list">
+        INSERT INTO free_file (
+            <include refid="freeFileColumns"></include>
+        ) VALUES
+            <foreach collection="list" item="file" separator=",">
+                (
+                    #{file.freeFileId}
+                  , #{file.freePostId}
+                  , #{file.originalName}
+                  , #{file.savedName}
+                  , #{file.savedPath}
+                  , #{file.savedSize}
+                  , 0
+                )
+            </foreach>
+    </insert>
+
+<!--    파일 단건 조회    -->
+    <select id="findById" parameterType="long" resultType="com.hh.multiboarduserbackend.common.vo.FileVo">
+        SELECT
+            <include refid="freeFileColumns"></include>
+        FROM
+            free_file
+        WHERE
+            free_file_id = #{freeFileId}
+            AND delete_yn = 0
+    </select>
+
+<!--    게시글 아이디로 파일 리스트 조회    -->
+    <select id="findAllByPostId" parameterType="long" resultType="com.hh.multiboarduserbackend.common.vo.FileVo">
+        SELECT
+            <include refid="freeFileColumns"></include>
+        FROM
+            free_file
+        WHERE
+            free_post_id = #{freePostId}
+            AND delete_yn = 0
+        ORDER BY
+            free_file_id ASC
+    </select>
+
+<!--    파일 아이디 리스트로 파일 리스트 조회    -->
+    <select id="findAllByIds" parameterType="list" resultType="com.hh.multiboarduserbackend.common.vo.FileVo">
+        SELECT
+            <include refid="freeFileColumns"></include>
+        FROM
+            free_file
+        WHERE
+            delete_yn = 0
+            AND free_file_id IN
+            <foreach collection="list" item="fileId" open="(" separator="," close=")">
+                #{fileId}
+            </foreach>
+        ORDER BY
+            free_file_id ASC
+    </select>
+
+<!--    파일 아이디 리스트로 파일 삭제    -->
+    <update id="deleteAllByIds" parameterType="list">
+        UPDATE
+            free_file
+        SET
+            delete_yn = 1
+        WHERE
+            free_file_id IN
+            <foreach collection="list" item="fileId" open="(" separator="," close=")">
+                #{fileId}
+            </foreach>
+    </update>
 </mapper>

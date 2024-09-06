@@ -47,7 +47,7 @@ class MemberServiceTest {
         memberService.signUp(memberVo);
 
         //then
-        then(memberRepository).should().saveMember(any());
+        then(memberRepository).should().save(any());
     }
 
     @Test
