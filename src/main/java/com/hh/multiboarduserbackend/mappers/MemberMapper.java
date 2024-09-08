@@ -1,8 +1,10 @@
 package com.hh.multiboarduserbackend.mappers;
 
-import com.hh.multiboarduserbackend.domain.member.LogInDto;
+import com.hh.multiboarduserbackend.domain.member.LogInRequestDto;
+import com.hh.multiboarduserbackend.domain.member.LogInResponseDto;
 import com.hh.multiboarduserbackend.domain.member.MemberVo;
 import com.hh.multiboarduserbackend.domain.member.SignUpDto;
+import com.hh.multiboarduserbackend.jwt.JwtToken;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
@@ -12,7 +14,9 @@ public interface MemberMapper {
 
     MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
 
-    MemberVo toMemberVo(SignUpDto signUpDto);
+    MemberVo toVo(SignUpDto signUpDto);
 
-    MemberVo toMemberVo(LogInDto loginDto);
+    MemberVo toVo(LogInRequestDto loginRequestDto);
+
+    LogInResponseDto toDto(JwtToken token, String nickname);
 }

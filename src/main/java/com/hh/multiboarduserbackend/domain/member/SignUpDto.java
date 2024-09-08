@@ -22,7 +22,7 @@ public record SignUpDto (
 
     public SignUpDto {
         if(!password.equals(checkPassword)) {
-            throw MemberErrorCode.PASSWORD_CHECK_ERROR.defaultException();
+            throw MemberErrorCode.SIGN_UP_PASSWORD_CHECK_ERROR.defaultException();
         }
         if(loginId.equals(password)) {
             throw MemberErrorCode.ID_PASSWORD_EQUALS_ERROR.defaultException();

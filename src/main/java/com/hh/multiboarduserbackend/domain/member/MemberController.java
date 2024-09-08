@@ -32,18 +32,18 @@ public class MemberController {
     }
 
     // 로그인
-    @PostMapping("/log-in")
-    public ResponseEntity<Response> logIn(@RequestBody @Valid LogInDto logInDto) {
+    @PostMapping("/login")
+    public ResponseEntity<Response> logIn(@RequestBody @Valid LogInRequestDto logInRequestDto) {
 
-        JwtToken logInToken = memberService.logIn(toVo(logInDto));
+        LogInResponseDto tokenAndNickname = memberService.logIn(toVo(logInRequestDto));
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(Response.data(logInToken));
+                .body(Response.data(tokenAndNickname));
     }
 
     // 회원가입
-    @PostMapping("/sign-up")
+    @PostMapping("/signup")
     public ResponseEntity<Response> signUp(@RequestBody @Valid SignUpDto signUpDto) {
 
         memberService.signUp(toVo(signUpDto));

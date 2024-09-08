@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+import static com.hh.multiboarduserbackend.domain.member.LogInResponseDto.toDto;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -40,20 +42,21 @@ public class MemberService {
     /**
      * 로그인 로직
      * @param memberVo - 로그인 정보
-     * @return - jwt token
+     * @return - jwt token + nickname
      */
-    public JwtToken logIn(MemberVo memberVo) {
+    public LogInResponseDto logIn(MemberVo memberVo) {
         // 아이디에 해당하는 회원이 없을 시 에러
         MemberVo findMember = findByLoginId(memberVo.getLoginId())
-                .orElseThrow(() -> MemberErrorCode.LOGIN_UNAUTHORIZED.defaultException());
+                .orElseThrow(() -> MemberErrorCode.LOGIN_ERROR.defaultException());
 
         // 저장된 비밀번호가 일치하지 않을 시 에러
         if(!findMember.getPassword().equals(memberVo.getPassword())) {
-            throw MemberErrorCode.LOGIN_UNAUTHORIZED.defaultException();
+            throw MemberErrorCode.LOGIN_ERROR.defaultException();
         }
 
         JwtToken jwtToken = jwtProvider.generateToken(findMember.getMemberId());
-        return jwtToken;
+        LogInResponseDto tokenAndNickname = toDto(jwtToken, findMember.getNickname());
+        return tokenAndNickname;
     }
 
     /**

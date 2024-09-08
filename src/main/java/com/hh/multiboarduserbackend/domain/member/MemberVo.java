@@ -19,10 +19,10 @@ public class MemberVo {
     private LocalDateTime updatedDate;  // 수정일시
 
     public static MemberVo toVo(SignUpDto signUpDto) {
-        return MemberMapper.INSTANCE.toMemberVo(signUpDto);
+        return MemberMapper.INSTANCE.toVo(signUpDto);
     }
 
-    public static MemberVo toVo(LogInDto logInDto) {
-        return MemberMapper.INSTANCE.toMemberVo(logInDto);
+    public static MemberVo toVo(LogInRequestDto logInRequestDto) {
+        return MemberMapper.INSTANCE.toVo(logInRequestDto);
     }
 }
