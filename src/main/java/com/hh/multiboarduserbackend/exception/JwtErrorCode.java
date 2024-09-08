@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 @RequiredArgsConstructor
 public enum JwtErrorCode implements ErrorCode {
 
-    TOKEN_ERROR("잘못된 JWT 토큰 입니다.", HttpStatus.UNAUTHORIZED);
+    REQUIRED_ACCESS_TOKEN("엑세스 토큰이 필요한 요청입니다.", HttpStatus.UNAUTHORIZED);
 
     private final String message;
     private final HttpStatus status;

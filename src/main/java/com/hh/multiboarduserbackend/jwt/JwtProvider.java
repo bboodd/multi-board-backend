@@ -64,7 +64,7 @@ public class JwtProvider {
         Claims claims = parseClaims(accessToken);
 
         if(claims.get("auth") == null) {
-            throw JwtErrorCode.TOKEN_ERROR.defaultException();
+            throw JwtErrorCode.REQUIRED_ACCESS_TOKEN.defaultException();
         }
 
         return Long.parseLong(claims.get("auth").toString());
@@ -82,7 +82,7 @@ public class JwtProvider {
                     .parseSignedClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            throw JwtErrorCode.TOKEN_ERROR.defaultException(e);
+            throw JwtErrorCode.REQUIRED_ACCESS_TOKEN.defaultException(e);
         }
     }
 
@@ -97,7 +97,7 @@ public class JwtProvider {
                     .verifyWith(key).build()
                     .parseSignedClaims(accessToken).getPayload();
         } catch (JwtException | IllegalArgumentException e) {
-            throw JwtErrorCode.TOKEN_ERROR.defaultException(e);
+            throw JwtErrorCode.REQUIRED_ACCESS_TOKEN.defaultException(e);
         }
 
     }
