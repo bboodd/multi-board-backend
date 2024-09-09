@@ -1,6 +1,7 @@
 package com.hh.multiboarduserbackend.domain.member;
 
 import com.hh.multiboarduserbackend.common.response.Response;
+import com.hh.multiboarduserbackend.exception.CustomException;
 import com.hh.multiboarduserbackend.jwt.JwtToken;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +25,17 @@ public class MemberController {
     @PostMapping("/check-duplicate")
     public ResponseEntity<Response> checkDuplicate(@RequestBody @Valid DuplicateCheckRequestDto duplicateCheckRequestDto) {
 
-        memberService.duplicateCheck(duplicateCheckRequestDto.loginId());
+        try {
+            memberService.duplicateCheck(duplicateCheckRequestDto.loginId());
+        } catch (CustomException e) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(Response.message("Duplicate!!"));
+        }
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(Response.message("중복된 아이디가 아닙니다."));
+                .body(Response.message("Not Duplicate"));
     }
 
     // 로그인
