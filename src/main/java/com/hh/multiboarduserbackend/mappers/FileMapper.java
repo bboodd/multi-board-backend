@@ -9,6 +9,8 @@ import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
@@ -18,9 +20,13 @@ public interface FileMapper {
 
     FileResponseDto toDto(FileVo fileVo);
 
-    @Named("toVo")
     FileVo toVo(FileRequestDto fileRequestDto, Long postId);
 
-    @IterableMapping(qualifiedByName = "toVo")
-    List<FileVo> toVoList(List<FileRequestDto> fileList, Long postId);
+    default List<FileVo> toVoList(List<FileRequestDto> fileList, Long postId) {
+        List<FileVo> result = new ArrayList<>();
+        fileList.forEach(fileRequestDto -> {
+            result.add(this.toVo(fileRequestDto, postId));
+        });
+        return result;
+    }
 }
