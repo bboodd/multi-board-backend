@@ -62,6 +62,28 @@ class MemberControllerTest {
     }
 
     @Test
+    void 회원가입검증_성공() throws Exception {
+        //given
+        SignUpDto signUpDto = SignUpDto.builder()
+                .loginId("qw12")
+                .password("qw12!")
+                .checkPassword("qw12!")
+                .nickname("닉네임")
+                .build();
+        String json = objectMapper.writeValueAsString(signUpDto);
+
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api-board/members/signup")
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON));
+
+        //then
+        resultActions
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.message").value("회원가입 완료"));
+    }
+
+    @Test
     void 회원가입검증_연속된비밀번호_실패() throws Exception {
         //given
         SignUpDto signUpDto = SignUpDto.builder()
