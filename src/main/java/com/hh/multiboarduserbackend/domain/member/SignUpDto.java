@@ -13,9 +13,9 @@ public record SignUpDto (
           String loginId
         ,
           @Pattern(regexp = "^(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$ %^&*-]).{4,16}$", message = "비밀번호는 4글자 이상, 16글자 미만인 영문/숫자/특수문자를 포함한 문자여야 합니다.")
-          @Pattern(regexp = "^(?!.*(.)\1{2})", message = "비밀번호에 동일만 문자 혹은 숫자는 3회 이상 반복할 수 없습니다.")
           String password
-        , String checkPassword
+        , @Pattern(regexp = "^(?!.*(.)\1{2}).{4,16}$", message = "비밀번호에 동일만 문자 혹은 숫자는 3회 이상 반복할 수 없습니다.")
+          String checkPassword
         , @Pattern(regexp = "^[가-힣a-zA-Z0-9]{2,10}$", message = "이름은 2글자 ~ 10글자의 영문/숫자/한글 이어야 합니다.")
           String nickname
 ) {
