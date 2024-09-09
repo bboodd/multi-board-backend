@@ -73,7 +73,7 @@ class MemberControllerTest {
         String json = objectMapper.writeValueAsString(signUpDto);
 
         //when
-        ResultActions resultActions = mockMvc.perform(post("/api-board/members/sign-up")
+        ResultActions resultActions = mockMvc.perform(post("/api-board/members/signup")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON));
 

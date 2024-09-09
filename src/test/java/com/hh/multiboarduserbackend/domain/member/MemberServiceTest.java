@@ -75,7 +75,7 @@ class MemberServiceTest {
         given(jwtProvider.generateToken(1L)).willReturn(token);
 
         //when
-        JwtToken logInToken = memberService.logIn(memberVo);
+        JwtToken logInToken = memberService.logIn(memberVo).token();
 
         //then
         assertThat(logInToken.accessToken()).isEqualTo(token.accessToken());
