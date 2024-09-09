@@ -9,6 +9,7 @@ public record Response<T> (
           String message
         , @JsonInclude(JsonInclude.Include.NON_NULL)
           T data
+        , boolean valid
 ) {
 
     public static Response message(String message) {
@@ -20,6 +21,12 @@ public record Response<T> (
     public static<T> Response data(T data) {
         return Response.builder()
                 .data(data)
+                .build();
+    }
+
+    public static Response valid(boolean valid) {
+        return Response.builder()
+                .valid(valid)
                 .build();
     }
 }

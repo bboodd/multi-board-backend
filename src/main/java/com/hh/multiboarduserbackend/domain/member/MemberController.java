@@ -27,15 +27,15 @@ public class MemberController {
 
         try {
             memberService.duplicateCheck(duplicateCheckRequestDto.loginId());
-        } catch (CustomException e) {
+        } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.OK)
-                    .body(Response.message("Duplicate!!"));
+                    .body(Response.valid(false));
         }
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(Response.message("Not Duplicate"));
+                .body(Response.valid(true));
     }
 
     // 로그인
