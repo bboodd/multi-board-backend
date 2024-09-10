@@ -26,10 +26,10 @@
                 AND #{endDate} >= created_date
             </if>
             <if test="categoryId != null and categoryId != ''">
-                AND free_category_id = #{freeCategoryId}
+                AND free_category_id = #{categoryId}
             </if>
             <if test="keyword != null and keyword != ''">
-                AND CONCAT(title, writer, content) LIKE CONCAT('%', #{keyword}, '%')
+                AND CONCAT(title, (SELECT nickname FROM member WHERE member.member_id = free_post.member_id), content) LIKE CONCAT('%', #{keyword}, '%')
             </if>
             AND delete_yn = 0
         </where>
@@ -69,8 +69,9 @@
 <!--    게시글 단건 조회    -->
     <select id="findById" parameterType="long" resultType="com.hh.multiboarduserbackend.domain.free.post.FreePostVo">
         SELECT
-            <include refid="freePostColumns"></include>
+              <include refid="freePostColumns"></include>
             , (SELECT category_name FROM free_category WHERE free_category.free_category_id = free_post.free_category_id) AS freeCategoryName
+            , (SELECT nickname FROM member WHERE member.member_id = free_post.member_id) AS nickname
         FROM
             free_post
         WHERE
@@ -83,7 +84,8 @@
         SELECT
               <include refid="freePostColumns"></include>
             , (SELECT category_name FROM free_category WHERE free_category.free_category_id = free_post.free_category_id) AS freeCategoryName
-            , NULLIF((SELECT COUNT(*) FROM free_file WHERE free_file.free_post_id = free_post.free_post_id), 0) AS fileCount
+            , (SELECT COUNT(*) FROM free_file WHERE free_file.free_post_id = free_post.free_post_id) AS fileCount
+            , (SELECT nickname FROM member WHERE member.member_id = free_post.member_id) AS nickname
         FROM
             free_post
         <include refid="search"></include>

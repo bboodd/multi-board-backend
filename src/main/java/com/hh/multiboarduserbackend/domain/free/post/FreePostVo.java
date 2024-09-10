@@ -21,6 +21,7 @@ public class FreePostVo {
     private int deleteYn;               // 삭제 1 미삭제 0
     private String freeCategoryName;    // 서브쿼리문
     private int fileCount;              // 서브쿼리문
+    private String nickname;            // 서브쿼리문
 
     public static FreePostVo toVo(FreePostRequestDto freePostRequestDto, Long memberId) {
         return PostMapper.INSTANCE.toVo(freePostRequestDto, memberId);

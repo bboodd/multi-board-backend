@@ -18,6 +18,7 @@ public record FreePostResponseDto(
         , int deleteYn
         , String freeCategoryName   // 서브쿼리문
         , int fileCount             // 서브쿼리문
+        , String nickname           // 서브쿼리문
 ) {
 
     public static FreePostResponseDto toDto(FreePostVo freePostVo) {
