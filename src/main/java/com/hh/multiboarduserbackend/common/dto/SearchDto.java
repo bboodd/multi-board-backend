@@ -1,6 +1,8 @@
 package com.hh.multiboarduserbackend.common.dto;
 
 import lombok.Builder;
+import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.util.Objects;
 
@@ -11,30 +13,30 @@ public record SearchDto (
          , String endDate
          , Long categoryId
          , String keyword
-         , int page          //현재 페이지 번호
-         , int recordSize     //페이지당 출력할 데이터 개수
-         , int pageSize     //화면 하단 출력할 페이지 사이즈
+         , Integer page          //현재 페이지 번호
+         , Integer recordSize     //페이지당 출력할 데이터 개수
+         , Integer pageSize     //화면 하단 출력할 페이지 사이즈
 ) {
     public SearchDto {
-        if(Objects.isNull(startDate)) {
+        if(!StringUtils.hasText(startDate)) {
             startDate = "";
         }
-        if(Objects.isNull(endDate)) {
+        if(!StringUtils.hasText(endDate)) {
             endDate = "";
         }
-        if(Objects.isNull(categoryId)) {
+        if(categoryId == null) {
             categoryId = 0L;
         }
-        if(Objects.isNull(keyword)) {
+        if(!StringUtils.hasText(keyword)) {
             keyword = "";
         }
-        if(page == 0) {
+        if(page == null) {
             page = 1;
         }
-        if(recordSize == 0) {
+        if(recordSize == null) {
             recordSize = 10;
         }
-        if(pageSize == 0) {
+        if(pageSize == null) {
             pageSize = 10;
         }
     }
