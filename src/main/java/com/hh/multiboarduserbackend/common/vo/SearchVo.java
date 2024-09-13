@@ -1,15 +1,19 @@
 package com.hh.multiboarduserbackend.common.vo;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hh.multiboarduserbackend.common.dto.SearchDto;
 import com.hh.multiboarduserbackend.common.paging.PaginationDto;
 import com.hh.multiboarduserbackend.mappers.SearchMapper;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.time.LocalDateTime;
 
 @Builder
 @Data
 public class SearchVo {
 
-    private String startDate;       // 검색 시작날짜
-    private String endDate;         // 검색 종료날짜
+    private LocalDateTime startDate;       // 검색 시작날짜
+    private LocalDateTime endDate;         // 검색 종료날짜
     private Long categoryId;        // 검색 카테고리 아이디
     private String keyword;         // 검색 키워드
     private int page;               // 현재 페이지 번호
