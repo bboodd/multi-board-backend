@@ -27,6 +27,7 @@ public class FreeCategoryController {
     public ResponseEntity<Response> getCategories() {
 
         List<CategoryResponseDto> categoryList = categoryService.findAll();
+        categoryList.add(0, new CategoryResponseDto(0L, "전체 분류"));
 
         return ResponseEntity
                 .status(HttpStatus.OK)

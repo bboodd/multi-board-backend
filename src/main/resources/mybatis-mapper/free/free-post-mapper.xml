@@ -19,10 +19,10 @@
 <!--    검색조건    -->
     <sql id="search">
         <where>
-            <if test="startDate != null and startDate != ''">
+            <if test="startDate != null">
                 AND created_date >= #{startDate}
             </if>
-            <if test="endDate != null and endDate != ''">
+            <if test="endDate != null">
                 AND #{endDate} >= created_date
             </if>
             <if test="categoryId != null and categoryId != ''">
