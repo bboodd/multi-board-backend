@@ -46,16 +46,13 @@ public class FreePostController {
     @GetMapping("/posts")
     public ResponseEntity<Response> getPosts(SearchDto searchDto) {
 
-        log.info("searchDto: " + searchDto);
-
         PagingAndListResponse<FreePostResponseDto> data;
 
-        log.info("searchVo = "+ toVo(searchDto));
         int count = freePostService.countAllBySearch(toVo(searchDto));
 
         if(count >= 1) {
             PaginationDto paginationDto = paginationUtils.createPagination(count ,searchDto);
-            List<FreePostResponseDto> listDto = freePostService.findAllBySearch(toVo(searchDto));
+            List<FreePostResponseDto> listDto = freePostService.findAllBySearch(toVo(searchDto, paginationDto));
 
             data = new PagingAndListResponse(listDto, paginationDto);
         } else {
