@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.domain.free.post;
+package com.hh.multiboarduserbackend.common.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.Objects;
 
 @Builder
-public record FreePostRequestDto(
-          Long freePostId
+public record PostRequestDto(
+          Long postId
         , @NotBlank(message = "분류를 선택해 주세요.")
-          Long freeCategoryId
+          Long categoryId
         , @NotBlank(message = "제목을 입력해 주세요.")
           @Size(max = 100, message = "제목은 100자 이하여야합니다.")
           String title
@@ -25,7 +25,7 @@ public record FreePostRequestDto(
         , List<Long> removeFileIds
 ) {
 
-    public FreePostRequestDto {
+    public PostRequestDto {
         if(Objects.isNull(files)) {
             files = new ArrayList<>();
         }

@@ -1,5 +1,6 @@
 package com.hh.multiboarduserbackend.domain.free.post;
 
+import com.hh.multiboarduserbackend.common.vo.PostVo;
 import com.hh.multiboarduserbackend.common.vo.SearchVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -10,15 +11,15 @@ import java.util.List;
 @Mapper
 public interface FreePostRepository {
 
-    void save(FreePostVo freePostVo);
+    void save(PostVo postVo);
 
-    FreePostVo findById(Long freePostId);
+    PostVo findById(Long freePostId);
 
-    void update(FreePostVo freePostVo);
+    void update(PostVo postVo);
 
     void deleteById(Long freePostId);
 
-    List<FreePostVo> findAllBySearch(SearchVo searchVo);
+    List<PostVo> findAllBySearch(SearchVo searchVo);
 
     int countAllBySearch(SearchVo searchVo);
 

@@ -1,6 +1,8 @@
 package com.hh.multiboarduserbackend.domain.free.post;
 
+import com.hh.multiboarduserbackend.common.dto.response.PostResponseDto;
 import com.hh.multiboarduserbackend.common.paging.PagingAndListResponse;
+import com.hh.multiboarduserbackend.common.vo.PostVo;
 import com.hh.multiboarduserbackend.common.vo.SearchVo;
 import com.hh.multiboarduserbackend.exception.PostErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.hh.multiboarduserbackend.domain.free.post.FreePostResponseDto.toDto;
+import static com.hh.multiboarduserbackend.common.dto.response.PostResponseDto.toDto;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
@@ -23,12 +25,12 @@ public class FreePostService {
 
     /**
      * 게시글 저장후 생성된 키 반환
-     * @param freePostVo - 게시글 정보
+     * @param postVo - 게시글 정보
      * @return - free_post_id(PK)
      */
-    public Long savePost(FreePostVo freePostVo) {
-        freePostRepository.save(freePostVo);
-        return freePostVo.getFreePostId();
+    public Long savePost(PostVo postVo) {
+        freePostRepository.save(postVo);
+        return postVo.getPostId();
     }
 
     /**
@@ -36,19 +38,19 @@ public class FreePostService {
      * @param freePostId - 게시글 아이디
      * @return - dto
      */
-    public FreePostResponseDto findById(Long freePostId) {
-        Optional<FreePostVo> post = Optional.ofNullable(freePostRepository.findById(freePostId));
+    public PostResponseDto findById(Long freePostId) {
+        Optional<PostVo> post = Optional.ofNullable(freePostRepository.findById(freePostId));
         return toDto(post.orElseThrow(() -> PostErrorCode.POST_NOT_FOUND.defaultException()));
     }
 
     /**
      * 게시글 업데이트
-     * @param freePostVo - 업데이트 정보
+     * @param postVo - 업데이트 정보
      * @return - pk
      */
-    public Long updatePost(FreePostVo freePostVo){
-        freePostRepository.update(freePostVo);
-        return freePostVo.getFreePostId();
+    public Long updatePost(PostVo postVo){
+        freePostRepository.update(postVo);
+        return postVo.getPostId();
     }
 
     /**
@@ -75,11 +77,11 @@ public class FreePostService {
      * @param searchVo - 검색 정보
      * @return - 게시글 리스트
      */
-    public List<FreePostResponseDto> findAllBySearch(SearchVo searchVo) {
-        List<FreePostVo> postList = freePostRepository.findAllBySearch(searchVo);
+    public List<PostResponseDto> findAllBySearch(SearchVo searchVo) {
+        List<PostVo> postList = freePostRepository.findAllBySearch(searchVo);
 
-        List<FreePostResponseDto> dtoList = postList.stream()
-                .map(FreePostResponseDto::toDto).collect(toList());
+        List<PostResponseDto> dtoList = postList.stream()
+                .map(PostResponseDto::toDto).collect(toList());
         return dtoList;
     }
 

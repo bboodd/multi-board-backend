@@ -1,5 +1,6 @@
 package com.hh.multiboarduserbackend.domain.free.post;
 
+import com.hh.multiboarduserbackend.common.vo.PostVo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,9 +25,9 @@ class FreePostRepositoryTest {
     @Test
     void 게시글_저장_성공() {
         //given
-        FreePostVo post = FreePostVo.builder()
+        PostVo post = PostVo.builder()
                 .memberId(1L)
-                .freeCategoryId(1L)
+                .categoryId(1L)
                 .title("제목")
                 .content("내용")
                 .build();
@@ -35,7 +36,7 @@ class FreePostRepositoryTest {
         freePostRepository.save(post);
 
         //then
-        assertTrue(Optional.ofNullable(post.getFreePostId()).isPresent());
+        assertTrue(Optional.ofNullable(post.getPostId()).isPresent());
     }
 
 }
