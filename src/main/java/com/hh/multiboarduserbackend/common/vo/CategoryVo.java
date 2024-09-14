@@ -1,10 +1,14 @@
 package com.hh.multiboarduserbackend.common.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Builder
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategoryVo {
 
     private Long categoryId;        // pk

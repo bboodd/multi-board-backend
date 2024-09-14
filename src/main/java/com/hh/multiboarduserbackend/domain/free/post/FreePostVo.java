@@ -1,13 +1,14 @@
 package com.hh.multiboarduserbackend.domain.free.post;
 
 import com.hh.multiboarduserbackend.mappers.PostMapper;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
-@Builder
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FreePostVo {
 
     private Long freePostId;            // pk
@@ -20,8 +21,8 @@ public class FreePostVo {
     private LocalDateTime updatedDate;  // 수정일시
     private int deleteYn;               // 삭제 1 미삭제 0
     private String freeCategoryName;    // 서브쿼리문
-    private int fileCount;              // 서브쿼리문
     private String nickname;            // 서브쿼리문
+    private int fileCount;              // 서브쿼리문
 
     public static FreePostVo toVo(FreePostRequestDto freePostRequestDto, Long memberId) {
         return PostMapper.INSTANCE.toVo(freePostRequestDto, memberId);

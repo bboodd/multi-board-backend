@@ -2,13 +2,17 @@ package com.hh.multiboarduserbackend.common.vo;
 
 import com.hh.multiboarduserbackend.common.dto.request.CommentRequestDto;
 import com.hh.multiboarduserbackend.mappers.CommentMapper;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
-@Builder
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CommentVo {
 
     private Long commentId;             // pk

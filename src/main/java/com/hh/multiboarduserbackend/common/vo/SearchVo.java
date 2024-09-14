@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SearchVo {
 
     private LocalDateTime startDate;       // 검색 시작날짜
@@ -20,6 +22,8 @@ public class SearchVo {
     private int recordSize;         // 페이지당 출력할 데이터 개수
     private int pageSize;           // 화면 하단 출력할 페이지 사이즈
     private int limitStart;         // 쿼리 limit 변수
+    private String orderBy;     // 정렬 조건
+    private String sortBy;         // 정렬 방법
 
     public static SearchVo toVo(SearchDto searchDto) {
         return SearchMapper.INSTANCE.toVo(searchDto);

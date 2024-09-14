@@ -2,13 +2,17 @@ package com.hh.multiboarduserbackend.common.vo;
 
 import com.hh.multiboarduserbackend.common.dto.request.FileRequestDto;
 import com.hh.multiboarduserbackend.mappers.FileMapper;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Builder
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class FileVo {
 
     private Long fileId;            // pk
