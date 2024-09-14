@@ -46,6 +46,8 @@ public class FreePostController {
     @GetMapping("/posts")
     public ResponseEntity<Response> getPosts(SearchDto searchDto) {
 
+        log.info("searchDto: " + searchDto);
+
         PagingAndListResponse<FreePostResponseDto> data;
 
         int count = freePostService.countAllBySearch(toVo(searchDto));

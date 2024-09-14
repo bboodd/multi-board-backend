@@ -18,9 +18,11 @@ public record SearchDto (
            LocalDateTime endDate
          , Long categoryId
          , String keyword
-         , Integer page          //현재 페이지 번호
-         , Integer recordSize     //페이지당 출력할 데이터 개수
-         , Integer pageSize     //화면 하단 출력할 페이지 사이즈
+         , Integer page           // 현재 페이지 번호
+         , Integer recordSize     // 페이지당 출력할 데이터 개수
+         , Integer pageSize       // 화면 하단 출력할 페이지 사이즈
+         , String orderBy        // 정렬 조건
+         , String sortBy           // 정렬 방법
 ) {
 //    pattern = "yyyy-MM-dd`T`HH:mm:ss"
     public SearchDto {
@@ -44,6 +46,12 @@ public record SearchDto (
         }
         if(pageSize == null) {
             pageSize = 10;
+        }
+        if(orderBy == null) {
+            orderBy = "createdDate";
+        }
+        if(sortBy == null) {
+            sortBy = "desc";
         }
     }
 }

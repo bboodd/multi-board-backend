@@ -35,6 +35,21 @@
         </where>
     </sql>
 
+<!--    정렬 조건    -->
+    <sql id="sort">
+        ORDER BY
+        <choose>
+            <when test="orderBy == 'categoryId'">free_category_id</when>
+            <when test="orderBy == 'title'">title</when>
+            <when test="orderBy == 'viewCnt'">view_cnt</when>
+            <otherwise>created_date</otherwise>
+        </choose>
+        <choose>
+            <when test="sortBy == 'asc'"> ASC</when>
+            <otherwise> DESC</otherwise>
+        </choose>
+    </sql>
+
 <!--    게시글 등록    -->
     <insert id="save" useGeneratedKeys="true" keyProperty="freePostId">
         INSERT INTO free_post (
@@ -84,13 +99,12 @@
         SELECT
               <include refid="freePostColumns"></include>
             , (SELECT category_name FROM free_category WHERE free_category.free_category_id = free_post.free_category_id) AS freeCategoryName
-            , (SELECT COUNT(*) FROM free_file WHERE free_file.free_post_id = free_post.free_post_id) AS fileCount
             , (SELECT nickname FROM member WHERE member.member_id = free_post.member_id) AS nickname
+            , (SELECT COUNT(*) FROM free_file WHERE free_file.free_post_id = free_post.free_post_id) AS fileCount
         FROM
             free_post
         <include refid="search"></include>
-        ORDER BY
-            free_post_id DESC
+        <include refid="sort"></include>
         LIMIT #{limitStart}, #{recordSize}
     </select>
 

@@ -31,6 +31,8 @@ public interface SearchMapper {
                 .recordSize(searchDto.recordSize())
                 .pageSize(searchDto.pageSize())
                 .limitStart(paginationDto.limitStart())
+                .orderBy(searchDto.orderBy())
+                .sortBy(searchDto.sortBy())
                 .build();
     }
 }
