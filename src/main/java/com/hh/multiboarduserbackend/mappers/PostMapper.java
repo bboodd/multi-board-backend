@@ -1,10 +1,9 @@
 package com.hh.multiboarduserbackend.mappers;
 
-import com.hh.multiboarduserbackend.domain.free.post.FreePostRequestDto;
-import com.hh.multiboarduserbackend.domain.free.post.FreePostResponseDto;
-import com.hh.multiboarduserbackend.domain.free.post.FreePostVo;
+import com.hh.multiboarduserbackend.common.dto.request.PostRequestDto;
+import com.hh.multiboarduserbackend.common.dto.response.PostResponseDto;
+import com.hh.multiboarduserbackend.common.vo.PostVo;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
@@ -14,8 +13,8 @@ public interface PostMapper {
 
     PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
 
-    FreePostResponseDto toDto(FreePostVo freePostVo);
+    PostResponseDto toDto(PostVo postVo);
 
-    FreePostVo toVo(FreePostRequestDto freePostRequestDto, Long memberId);
+    PostVo toVo(PostRequestDto postRequestDto, Long memberId);
 
 }

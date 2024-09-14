@@ -17,8 +17,8 @@
         INSERT INTO free_comment (
             <include refid="freeCommentColumns"></include>
         ) VALUES (
-              #{freeCommentId}
-            , #{freePostId}
+              #{commentId}
+            , #{postId}
             , #{memberId}
             , #{content}
             , NOW()

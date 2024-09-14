@@ -3,13 +3,16 @@ package com.hh.multiboarduserbackend.domain.free.post;
 import com.hh.multiboarduserbackend.aop.AuthenticationContextHolder;
 import com.hh.multiboarduserbackend.common.dto.SearchDto;
 import com.hh.multiboarduserbackend.common.dto.request.FileRequestDto;
+import com.hh.multiboarduserbackend.common.dto.request.PostRequestDto;
 import com.hh.multiboarduserbackend.common.dto.response.FileResponseDto;
+import com.hh.multiboarduserbackend.common.dto.response.PostResponseDto;
 import com.hh.multiboarduserbackend.common.paging.PaginationDto;
 import com.hh.multiboarduserbackend.common.paging.PagingAndListResponse;
 import com.hh.multiboarduserbackend.common.response.Response;
 import com.hh.multiboarduserbackend.common.utils.FileUtils;
 import com.hh.multiboarduserbackend.common.utils.PaginationUtils;
 import com.hh.multiboarduserbackend.common.vo.FileVo;
+import com.hh.multiboarduserbackend.common.vo.PostVo;
 import com.hh.multiboarduserbackend.common.vo.SearchVo;
 import com.hh.multiboarduserbackend.domain.free.file.FreeFileService;
 import com.hh.multiboarduserbackend.domain.member.LoginMember;
@@ -27,8 +30,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.hh.multiboarduserbackend.common.vo.FileVo.toVoList;
+import static com.hh.multiboarduserbackend.common.vo.PostVo.toVo;
 import static com.hh.multiboarduserbackend.common.vo.SearchVo.toVo;
-import static com.hh.multiboarduserbackend.domain.free.post.FreePostVo.toVo;
 
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
@@ -48,13 +51,13 @@ public class FreePostController {
 
         log.info("searchDto: " + searchDto);
 
-        PagingAndListResponse<FreePostResponseDto> data;
+        PagingAndListResponse<PostResponseDto> data;
 
         int count = freePostService.countAllBySearch(toVo(searchDto));
 
         if(count >= 1) {
             PaginationDto paginationDto = paginationUtils.createPagination(count ,searchDto);
-            List<FreePostResponseDto> listDto = freePostService.findAllBySearch(toVo(searchDto, paginationDto));
+            List<PostResponseDto> listDto = freePostService.findAllBySearch(toVo(searchDto, paginationDto));
 
             data = new PagingAndListResponse(listDto, paginationDto);
         } else {
@@ -72,23 +75,23 @@ public class FreePostController {
 
         freePostService.increaseViewCntById(freePostId);
 
-        FreePostResponseDto freePostResponseDto = freePostService.findById(freePostId);
+        PostResponseDto postResponseDto = freePostService.findById(freePostId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(Response.data(freePostResponseDto));
+                .body(Response.data(postResponseDto));
     }
 
     // 게시글 저장
     @LoginMember
     @PostMapping("/posts")
-    public ResponseEntity<Response> savePost(@Valid FreePostRequestDto freePostRequestDto) {
+    public ResponseEntity<Response> savePost(@Valid PostRequestDto postRequestDto) {
 
         final Long memberId = AuthenticationContextHolder.getContext();
-        final Long freePostId = freePostService.savePost(toVo(freePostRequestDto, memberId));
+        final Long freePostId = freePostService.savePost(toVo(postRequestDto, memberId));
 
         // 파일 업로드 및 저장
-        List<MultipartFile> fileList = freePostRequestDto.files();
+        List<MultipartFile> fileList = postRequestDto.files();
         fileUploadAndSave(fileList, freePostId);
 
         return ResponseEntity
@@ -99,19 +102,19 @@ public class FreePostController {
     // 게시글 수정
     @LoginMember
     @PutMapping("/posts/{freePostId}")
-    public ResponseEntity<Response> updatePost(@PathVariable Long freePostId, @Valid FreePostRequestDto freePostRequestDto) {
+    public ResponseEntity<Response> updatePost(@PathVariable Long freePostId, @Valid PostRequestDto postRequestDto) {
 
         final Long memberId = AuthenticationContextHolder.getContext();
 
         // 수정
-        freePostService.updatePost(FreePostVo.toVo(freePostRequestDto, memberId));
+        freePostService.updatePost(toVo(postRequestDto, memberId));
 
         // 파일 업로드 및 저장
-        List<MultipartFile> fileList = freePostRequestDto.files();
+        List<MultipartFile> fileList = postRequestDto.files();
         fileUploadAndSave(fileList, freePostId);
 
         // 파일 삭제 from disk and db
-        List<Long> removeFileIdList = freePostRequestDto.removeFileIds();
+        List<Long> removeFileIdList = postRequestDto.removeFileIds();
         fileDeleteDiskAndDb(removeFileIdList);
 
         return ResponseEntity

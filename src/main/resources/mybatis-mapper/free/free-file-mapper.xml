@@ -20,8 +20,8 @@
         ) VALUES
             <foreach collection="list" item="file" separator=",">
                 (
-                    #{file.freeFileId}
-                  , #{file.freePostId}
+                    #{file.fileId}
+                  , #{file.postId}
                   , #{file.originalName}
                   , #{file.savedName}
                   , #{file.savedPath}
