@@ -4,6 +4,17 @@
 
 <mapper namespace="com.hh.multiboarduserbackend.domain.free.file.FreeFileRepository">
     <sql id="freeFileColumns">
+            free_file_id AS fileId
+          , free_post_id AS postId
+          , original_name
+          , saved_name
+          , saved_path
+          , saved_size
+          , delete_yn
+    </sql>
+
+<!--    insert 컬럼    -->
+    <sql id="insertFreeFile">
             free_file_id
           , free_post_id
           , original_name
@@ -16,7 +27,7 @@
 <!--    파일 리스트 저장    -->
     <insert id="saveAll" parameterType="list">
         INSERT INTO free_file (
-            <include refid="freeFileColumns"></include>
+            <include refid="insertFreeFile"></include>
         ) VALUES
             <foreach collection="list" item="file" separator=",">
                 (

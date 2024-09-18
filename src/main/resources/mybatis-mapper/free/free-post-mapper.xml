@@ -16,6 +16,19 @@
         , delete_yn
     </sql>
 
+<!--    insert 컬럼    -->
+    <sql id="insertFreePost">
+          free_post_id
+        , member_id
+        , free_category_id
+        , title
+        , content
+        , view_cnt
+        , created_date
+        , updated_date
+        , delete_yn
+    </sql>
+
 <!--    검색조건    -->
     <sql id="search">
         <where>
@@ -53,7 +66,7 @@
 <!--    게시글 등록    -->
     <insert id="save" useGeneratedKeys="true" keyProperty="postId">
         INSERT INTO free_post (
-            <include refid="freePostColumns"></include>
+            <include refid="insertFreePost"></include>
         ) VALUES (
               #{postId}
             , #{memberId}

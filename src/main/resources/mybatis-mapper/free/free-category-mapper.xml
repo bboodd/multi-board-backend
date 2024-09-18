@@ -4,7 +4,7 @@
 
 <mapper namespace="com.hh.multiboarduserbackend.domain.free.category.FreeCategoryRepository">
     <sql id="freeCategoryColumns">
-          free_category_id
+          free_category_id AS categoryId
         , category_name
     </sql>
 
