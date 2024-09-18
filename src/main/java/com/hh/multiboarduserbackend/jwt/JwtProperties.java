@@ -1,5 +1,6 @@
 package com.hh.multiboarduserbackend.jwt;
 
+import jakarta.annotation.PostConstruct;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 
@@ -8,6 +9,5 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesBindin
 public record JwtProperties(
           String secret
         , String issuer
-        , long expiration
 ) {
 }

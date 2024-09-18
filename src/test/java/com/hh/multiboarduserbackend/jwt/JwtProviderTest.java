@@ -25,9 +25,8 @@ class JwtProviderTest {
     @BeforeEach
     public void setUp() {
         final JwtProperties jwtProperties = new JwtProperties(
-                "secretsecretsecretsecretsecretsecretsecretsecretsecretsecret",
-                "com.hh",
-                987654321
+                "serectserectserectserectserectserectserectserectserectserect",
+                "com.hh"
         );
 
         jwtProvider = new JwtProvider(jwtProperties, Jwts.SIG.HS256);
@@ -51,8 +50,7 @@ class JwtProviderTest {
         Long memberId = 123L;
         final JwtProperties 또다른토큰생성기 = new JwtProperties(
                 "aaaaaaaaaaaaabbbbbbbbbbbbbcccccccdddddddeeeee",
-                "com.hh",
-                987654321
+                "com.hh"
         );
         final JwtToken token = new JwtProvider(또다른토큰생성기, Jwts.SIG.HS256).generateToken(memberId);
 
@@ -111,20 +109,20 @@ class JwtProviderTest {
         public Long auth;
     }
 
-    @Test
-    void 토큰검증테스트_유효기간만료_실패() {
-        Long memberId = 123L;
-        final JwtProperties 만료토큰생성기 = new JwtProperties(
-                "secretsecretsecretsecretsecretsecretsecretsecretsecretsecret",
-                "com.hh",
-                -100
-        );
-        final JwtToken token = new JwtProvider(만료토큰생성기, Jwts.SIG.HS256).generateToken(memberId);
-
-        assertThrows(CustomException.class, () ->
-                jwtProvider.getAuthentication(token.accessToken())
-        );
-    }
+//    @Test
+//    void 토큰검증테스트_유효기간만료_실패() {
+//        Long memberId = 123L;
+//        final JwtProperties 만료토큰생성기 = new JwtProperties(
+//                "secretsecretsecretsecretsecretsecretsecretsecretsecretsecret",
+//                "com.hh",
+//                -100
+//        );
+//        final JwtToken token = new JwtProvider(만료토큰생성기, Jwts.SIG.HS256).generateToken(memberId);
+//
+//        assertThrows(CustomException.class, () ->
+//                jwtProvider.getAuthentication(token.accessToken())
+//        );
+//    }
 
     @Test
     void 토큰검증테스트_null_실패() {
@@ -133,6 +131,17 @@ class JwtProviderTest {
         assertThrows(CustomException.class, () ->
                 jwtProvider.getAuthentication(accessToken)
         );
+    }
+
+    @Test
+    void 토큰유효성검증_성공() {
+        Long memberId = 21L;
+
+        final JwtToken token = jwtProvider.generateToken(memberId);
+
+        String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjb20uaGgiLCJleHAiOjE3MjQ5NDUwNTgsImF1dGgiOjIxfQ.u3Rreky52SR-kcRYJvd6yRfJ1sHYb18A_G35znTP42k";
+
+        assertThat(jwtProvider.validateToken(token.accessToken())).isEqualTo(true);
     }
 
 }

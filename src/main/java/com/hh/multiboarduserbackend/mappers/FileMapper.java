@@ -25,8 +25,16 @@ public interface FileMapper {
     default List<FileVo> toVoList(List<FileRequestDto> fileList, Long postId) {
         List<FileVo> result = new ArrayList<>();
         fileList.forEach(fileRequestDto -> {
-            result.add(this.toVo(fileRequestDto, postId));
+            FileVo fileVo = FileVo.builder()
+                    .postId(postId)
+                    .originalName(fileRequestDto.originalName())
+                    .savedName(fileRequestDto.savedName())
+                    .savedPath(fileRequestDto.savedPath())
+                    .savedSize(fileRequestDto.savedSize())
+                    .build();
+            result.add(fileVo);
         });
+
         return result;
     }
 }

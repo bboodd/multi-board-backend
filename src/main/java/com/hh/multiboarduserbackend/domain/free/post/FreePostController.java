@@ -87,10 +87,13 @@ public class FreePostController {
     @PostMapping("/posts")
     public ResponseEntity<Response> savePost(@Valid PostRequestDto postRequestDto) {
 
+        log.info("postRequestDto: " + postRequestDto);
+
         final Long memberId = AuthenticationContextHolder.getContext();
         final Long freePostId = freePostService.savePost(toVo(postRequestDto, memberId));
 
         // 파일 업로드 및 저장
+        log.info("files = " + postRequestDto.files());
         List<MultipartFile> fileList = postRequestDto.files();
         fileUploadAndSave(fileList, freePostId);
 

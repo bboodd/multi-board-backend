@@ -4,8 +4,8 @@
 
 <mapper namespace="com.hh.multiboarduserbackend.domain.free.comment.FreeCommentRepository">
     <sql id="freeCommentColumns">
-          free_comment_id
-        , free_post_id
+          free_comment_id AS commentId
+        , free_post_id AS postId
         , member_id
         , content
         , created_date
