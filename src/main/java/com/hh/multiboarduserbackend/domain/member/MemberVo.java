@@ -10,19 +10,11 @@ import java.time.LocalDateTime;
 @Data
 public class MemberVo {
 
-    private Long memberId;              // pk
-    private String loginId;             // 로그인 아이디
-    private String password;            // 비밀번호
-    private String nickname;            // 이름
-    private int deleteYn;               // 삭제 1 미삭제 0
-    private LocalDateTime createdDate;  // 생성일시
-    private LocalDateTime updatedDate;  // 수정일시
-
-    public static MemberVo toVo(SignUpDto signUpDto) {
-        return MemberMapper.INSTANCE.toVo(signUpDto);
-    }
-
-    public static MemberVo toVo(LogInRequestDto logInRequestDto) {
-        return MemberMapper.INSTANCE.toVo(logInRequestDto);
-    }
+    private Long memberId;                  // pk
+    private String loginId;                 // 로그인 아이디
+    private String password;                // 비밀번호
+    private String nickname;                // 이름
+    private int deleteYn;                   // 삭제 1 미삭제 0
+    private LocalDateTime createdDate;      // 생성일시
+    private LocalDateTime updatedDate;      // 수정일시
 }

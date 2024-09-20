@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-import static com.hh.multiboarduserbackend.domain.member.LogInResponseDto.toDto;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -55,7 +54,11 @@ public class MemberService {
         }
 
         JwtToken jwtToken = jwtProvider.generateToken(findMember.getMemberId());
-        LogInResponseDto tokenAndNickname = toDto(jwtToken, findMember.getNickname());
+
+        LogInResponseDto tokenAndNickname = LogInResponseDto.builder()
+                .token(jwtToken)
+                .nickname(findMember.getNickname())
+                .build();
         return tokenAndNickname;
     }
 

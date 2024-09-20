@@ -22,8 +22,7 @@ public class FreeCategoryService {
      * 카테고리 리스트 조회
      * @return - 리스트
      */
-    public List<CategoryResponseDto> findAll() {
-        List<CategoryVo> categoryList = freeCategoryRepository.findAll();
-        return categoryList.stream().map(CategoryResponseDto::toDto).collect(toList());
+    public List<CategoryVo> findAll() {
+        return freeCategoryRepository.findAll();
     }
 }

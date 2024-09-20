@@ -11,9 +11,6 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface MemberMapper {
-
-    MemberMapper INSTANCE = Mappers.getMapper(MemberMapper.class);
-
     MemberVo toVo(SignUpDto signUpDto);
 
     MemberVo toVo(LogInRequestDto loginRequestDto);

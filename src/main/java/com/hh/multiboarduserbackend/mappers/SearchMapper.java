@@ -10,12 +10,9 @@ import org.mapstruct.factory.Mappers;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface SearchMapper {
-
-    SearchMapper INSTANCE = Mappers.getMapper(SearchMapper.class);
-
     SearchVo toVo(SearchDto searchDto);
 
-    default SearchVo toVo(SearchDto searchDto, PaginationDto paginationDto) {
+    default SearchVo toVoWithPagination(SearchDto searchDto, PaginationDto paginationDto) {
         int page = searchDto.page();
 
         if(page > paginationDto.totalPageCount()) {

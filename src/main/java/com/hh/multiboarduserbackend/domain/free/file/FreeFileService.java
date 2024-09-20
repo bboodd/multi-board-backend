@@ -34,9 +34,8 @@ public class FreeFileService {
      * @param freeFileId - pk
      * @return - 파일 정보
      */
-    public FileResponseDto findById(Long freeFileId) {
-        Optional<FileVo> fileVo = Optional.ofNullable(freeFileRepository.findById(freeFileId));
-        return FileResponseDto.toDto(fileVo.orElseThrow(() -> FileErrorCode.FILE_NOT_FOUND.defaultException()));
+    public Optional<FileVo> findById(Long freeFileId) {
+        return Optional.ofNullable(freeFileRepository.findById(freeFileId));
     }
 
     /**
@@ -44,10 +43,9 @@ public class FreeFileService {
      * @param freePostId - 게시글 아이디
      * @return - 파일 정보 리스트
      */
-    public List<FileResponseDto> findAllByPostId(Long freePostId) {
-        List<FileVo> fileList = freeFileRepository.findAllByPostId(freePostId);
-        return fileList.stream()
-                .map(FileResponseDto::toDto).collect(toList());
+    public List<FileVo> findAllByPostId(Long freePostId) {
+        List<FileVo> fileVoList = freeFileRepository.findAllByPostId(freePostId);
+        return fileVoList;
     }
 
     /**
@@ -55,10 +53,9 @@ public class FreeFileService {
      * @param idList - pk list
      * @return - 파일 정보 리스트
      */
-    public List<FileResponseDto> findAllByIds(List<Long> idList) {
-        List<FileVo> fileList = freeFileRepository.findAllByIds(idList);
-        return fileList.stream()
-                .map(FileResponseDto::toDto).collect(toList());
+    public List<FileVo> findAllByIds(List<Long> idList) {
+        List<FileVo> fileVoList = freeFileRepository.findAllByIds(idList);
+        return fileVoList;
     }
 
     /**

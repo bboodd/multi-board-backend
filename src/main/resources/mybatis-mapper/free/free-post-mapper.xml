@@ -85,7 +85,7 @@
         UPDATE
             free_post
         SET
-              free_categry_id = #{categoryId}
+              free_category_id = #{categoryId}
             , title = #{title}
             , content = #{content}
             , updated_date = NOW()
@@ -113,7 +113,8 @@
               <include refid="freePostColumns"></include>
             , (SELECT category_name FROM free_category WHERE free_category.free_category_id = free_post.free_category_id) AS categoryName
             , (SELECT nickname FROM member WHERE member.member_id = free_post.member_id) AS nickname
-            , (SELECT COUNT(*) FROM free_file WHERE free_file.free_post_id = free_post.free_post_id) AS fileCount
+            , (SELECT COUNT(*) FROM free_file WHERE free_file.free_post_id = free_post.free_post_id) AS fileCnt
+            , (SELECT COUNT(*) FROM free_comment WHERE free_comment.free_post_id = free_post.free_post_id) AS commentCnt
         FROM
             free_post
         <include refid="search"></include>

@@ -22,8 +22,4 @@ public class FileVo {
     private String savedPath;       // 저장된 경로
     private long savedSize;         // 저장된 크기
     private int deleteYn;           // 삭제시 1 미삭제 0
-
-    public static List<FileVo> toVoList(List<FileRequestDto> fileList, Long postId) {
-        return FileMapper.INSTANCE.toVoList(fileList, postId);
-    }
 }
