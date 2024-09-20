@@ -31,9 +31,8 @@ public class FreeCommentService {
      * @param freePostId - 게시글 아이디
      * @return - 리스트
      */
-    public List<CommentResponseDto> findAllByPostId(Long freePostId) {
-        List<CommentVo> commentVoList = freeCommentRepository.findAllByPostId(freePostId);
-        return commentVoList.stream().map(CommentResponseDto::toDto).collect(toList());
+    public List<CommentVo> findAllByPostId(Long freePostId) {
+        return freeCommentRepository.findAllByPostId(freePostId);
     }
 
     /**

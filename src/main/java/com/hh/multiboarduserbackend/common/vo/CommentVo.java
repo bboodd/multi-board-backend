@@ -15,14 +15,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class CommentVo {
 
-    private Long commentId;             // pk
-    private Long postId;                // fk
-    private Long memberId;              // fk
-    private String content;             // 내용
-    private LocalDateTime createdDate;  // 만들 날짜
-    private int deleteYn;               // 삭제시 1 미삭제 0
-
-    public static CommentVo toVo(CommentRequestDto commentRequestDto, Long memberId) {
-        return CommentMapper.INSTANCE.toVo(commentRequestDto, memberId);
-    }
+    private Long commentId;                 // pk
+    private Long postId;                    // fk
+    private Long memberId;                  // fk
+    private String content;                 // 내용
+    private LocalDateTime createdDate;      // 만들 날짜
+    private int deleteYn;                   // 삭제시 1 미삭제 0
+    private String nickname;                // 서브쿼리문
 }

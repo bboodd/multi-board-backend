@@ -14,9 +14,7 @@ public record CommentResponseDto (
         , String content
         , LocalDateTime createdDate
         , int deleteYn
+        , String nickname
 ) {
 
-    public static CommentResponseDto toDto(CommentVo commentVo) {
-        return CommentMapper.INSTANCE.toDto(commentVo);
-    }
 }

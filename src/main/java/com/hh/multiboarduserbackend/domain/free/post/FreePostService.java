@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.hh.multiboarduserbackend.common.dto.response.PostResponseDto.toDto;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
@@ -38,9 +37,8 @@ public class FreePostService {
      * @param freePostId - 게시글 아이디
      * @return - dto
      */
-    public PostResponseDto findById(Long freePostId) {
-        Optional<PostVo> post = Optional.ofNullable(freePostRepository.findById(freePostId));
-        return toDto(post.orElseThrow(() -> PostErrorCode.POST_NOT_FOUND.defaultException()));
+    public Optional<PostVo> findById(Long freePostId) {
+        return Optional.ofNullable(freePostRepository.findById(freePostId));
     }
 
     /**
@@ -77,12 +75,9 @@ public class FreePostService {
      * @param searchVo - 검색 정보
      * @return - 게시글 리스트
      */
-    public List<PostResponseDto> findAllBySearch(SearchVo searchVo) {
+    public List<PostVo> findAllBySearch(SearchVo searchVo) {
         List<PostVo> postList = freePostRepository.findAllBySearch(searchVo);
-
-        List<PostResponseDto> dtoList = postList.stream()
-                .map(PostResponseDto::toDto).collect(toList());
-        return dtoList;
+        return postList;
     }
 
     /**

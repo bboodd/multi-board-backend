@@ -65,10 +65,10 @@ class MemberControllerTest {
     void 회원가입검증_성공() throws Exception {
         //given
         SignUpDto signUpDto = SignUpDto.builder()
-                .loginId("qw12")
+                .loginId("zxcv")
                 .password("qw12!")
                 .checkPassword("qw12!")
-                .nickname("닉네임")
+                .nickname("zxcv")
                 .build();
         String json = objectMapper.writeValueAsString(signUpDto);
 
@@ -87,10 +87,10 @@ class MemberControllerTest {
     void 회원가입검증_연속된비밀번호_실패() throws Exception {
         //given
         SignUpDto signUpDto = SignUpDto.builder()
-                .loginId("testtest")
-                .password("qqqq123!")
-                .checkPassword("qqqq123!")
-                .nickname("닉네임")
+                .loginId("zxcv")
+                .password("qqq111!")
+                .checkPassword("qqq111!")
+                .nickname("zxcv")
                 .build();
         String json = objectMapper.writeValueAsString(signUpDto);
 
@@ -108,9 +108,9 @@ class MemberControllerTest {
     @Test
     void 아이디_중복체크_중복() throws Exception {
         //given
-        DuplicateCheckRequestDto check = DuplicateCheckRequestDto.builder().loginId("qwer").build();
+        DuplicateCheckRequestDto check = DuplicateCheckRequestDto.builder().loginId("qw12").build();
         String json = objectMapper.writeValueAsString(check);
-        String loginId = "{\"loginId\":\"qwer\"}";
+        String loginId = "{\"loginId\":\"qw12\"}";
 
 
         //when
@@ -118,12 +118,12 @@ class MemberControllerTest {
                 post("/api-board/members/check-duplicate")
                         .contentType(MediaType.APPLICATION_JSON)
                         .characterEncoding(StandardCharsets.UTF_8)
-                        .content(loginId));
+                        .content(json));
 
         //then
         resultActions
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("중복된 아이디 입니다."));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.valid").value(false));
     }
 
 }

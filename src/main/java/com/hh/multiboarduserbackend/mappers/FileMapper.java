@@ -13,16 +13,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface FileMapper {
-
-    FileMapper INSTANCE = Mappers.getMapper(FileMapper.class);
-
     FileResponseDto toDto(FileVo fileVo);
+
+    default List<FileResponseDto> toDtoList(List<FileVo> fileVoList) {
+        return fileVoList.stream().map(this::toDto).collect(toList());
+    }
 
     FileVo toVo(FileRequestDto fileRequestDto, Long postId);
 
-    default List<FileVo> toVoList(List<FileRequestDto> fileList, Long postId) {
+    default List<FileVo> toVoListWithPostId(List<FileRequestDto> fileList, Long postId) {
         List<FileVo> result = new ArrayList<>();
         fileList.forEach(fileRequestDto -> {
             FileVo fileVo = FileVo.builder()

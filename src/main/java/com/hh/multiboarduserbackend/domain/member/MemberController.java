@@ -2,15 +2,17 @@ package com.hh.multiboarduserbackend.domain.member;
 
 import com.hh.multiboarduserbackend.common.response.Response;
 import com.hh.multiboarduserbackend.exception.CustomException;
+import com.hh.multiboarduserbackend.jwt.JwtProvider;
 import com.hh.multiboarduserbackend.jwt.JwtToken;
+import com.hh.multiboarduserbackend.mappers.MemberMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import static com.hh.multiboarduserbackend.domain.member.MemberVo.toVo;
 
 @CrossOrigin(origins = "*")
 @RequiredArgsConstructor
@@ -20,6 +22,8 @@ import static com.hh.multiboarduserbackend.domain.member.MemberVo.toVo;
 public class MemberController {
 
     private final MemberService memberService;
+
+    private final MemberMapper memberModelMapper = Mappers.getMapper(MemberMapper.class);
 
     // 아이디 중복체크
     @PostMapping("/check-duplicate")
@@ -42,7 +46,9 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<Response> logIn(@RequestBody @Valid LogInRequestDto logInRequestDto) {
 
-        LogInResponseDto tokenAndNickname = memberService.logIn(toVo(logInRequestDto));
+        MemberVo memberVo = memberModelMapper.toVo(logInRequestDto);
+
+        LogInResponseDto tokenAndNickname = memberService.logIn(memberVo);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -53,7 +59,9 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity<Response> signUp(@RequestBody @Valid SignUpDto signUpDto) {
 
-        memberService.signUp(toVo(signUpDto));
+        MemberVo memberVo = memberModelMapper.toVo(signUpDto);
+
+        memberService.signUp(memberVo);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

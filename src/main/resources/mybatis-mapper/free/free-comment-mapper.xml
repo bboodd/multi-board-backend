@@ -12,10 +12,20 @@
         , delete_yn
     </sql>
 
+<!--    insert 컬럼    -->
+    <sql id="insertComment">
+          free_comment_id
+        , free_post_id
+        , member_id
+        , content
+        , created_date
+        , delete_yn
+    </sql>
+
 <!--    댓글 등록    -->
     <insert id="save" parameterType="com.hh.multiboarduserbackend.common.vo.CommentVo">
         INSERT INTO free_comment (
-            <include refid="freeCommentColumns"></include>
+            <include refid="insertComment"></include>
         ) VALUES (
               #{commentId}
             , #{postId}
@@ -29,7 +39,8 @@
 <!--    게시글 아이디에 해당하는 댓글 리스트 조회    -->
     <select id="findAllByPostId" parameterType="long" resultType="com.hh.multiboarduserbackend.common.vo.CommentVo">
         SELECT
-            <include refid="freeCommentColumns"></include>
+              <include refid="freeCommentColumns"></include>
+            , (SELECT nickname FROM member WHERE member.member_id = free_comment.member_id) AS nickname
         FROM
             free_comment
         WHERE

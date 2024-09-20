@@ -6,9 +6,11 @@ import com.hh.multiboarduserbackend.common.dto.response.CommentResponseDto;
 import com.hh.multiboarduserbackend.common.response.Response;
 import com.hh.multiboarduserbackend.common.vo.CommentVo;
 import com.hh.multiboarduserbackend.domain.member.LoginMember;
+import com.hh.multiboarduserbackend.mappers.CommentMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mapstruct.factory.Mappers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,16 +25,18 @@ import java.util.List;
 public class FreeCommentController {
 
     private final FreeCommentService freeCommentService;
+    private final CommentMapper commentModelMapper = Mappers.getMapper(CommentMapper.class);
 
     // 댓글 목록 조회
     @GetMapping("/posts/{freePostId}/comments")
     public ResponseEntity<Response> getComments(@PathVariable Long freePostId) {
 
-        List<CommentResponseDto> commentList = freeCommentService.findAllByPostId(freePostId);
+        List<CommentVo> commentVoList = freeCommentService.findAllByPostId(freePostId);
+        List<CommentResponseDto> commentDtoList = commentModelMapper.toDtoList((commentVoList));
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(Response.data(commentList));
+                .body(Response.data(commentDtoList));
     }
 
     // 댓글 등록
@@ -42,7 +46,9 @@ public class FreeCommentController {
 
         Long memberId = AuthenticationContextHolder.getContext();
 
-        freeCommentService.saveComment(CommentVo.toVo(commentRequestDto, memberId));
+        CommentVo commentVo = commentModelMapper.toVo(commentRequestDto, memberId, freePostId);
+
+        freeCommentService.saveComment(commentVo);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

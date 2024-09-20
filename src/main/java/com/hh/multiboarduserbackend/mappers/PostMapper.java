@@ -7,14 +7,19 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
+
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface PostMapper {
-
-    PostMapper INSTANCE = Mappers.getMapper(PostMapper.class);
-
     PostResponseDto toDto(PostVo postVo);
 
-    PostVo toVo(PostRequestDto postRequestDto, Long memberId);
+    default List<PostResponseDto> toDtoList(List<PostVo> postVoList) {
+        return postVoList.stream().map(this::toDto).collect(toList());
+    }
+
+    PostVo toVoWithMemberId(PostRequestDto postRequestDto, Long memberId);
 
 }

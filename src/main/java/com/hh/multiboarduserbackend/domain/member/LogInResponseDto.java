@@ -9,8 +9,4 @@ public record LogInResponseDto(
           JwtToken token
         , String nickname
 ) {
-
-    public static LogInResponseDto toDto(JwtToken token, String nickname) {
-        return MemberMapper.INSTANCE.toDto(token, nickname);
-    }
 }
