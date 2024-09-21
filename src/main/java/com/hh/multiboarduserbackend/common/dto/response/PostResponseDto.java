@@ -21,6 +21,7 @@ public record PostResponseDto(
         , String nickname
         , int fileCnt
         , int commentCnt
+        , String thumbnailUrl
 ) {
 
 }

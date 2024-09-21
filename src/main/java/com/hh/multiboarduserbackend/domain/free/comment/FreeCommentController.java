@@ -29,7 +29,7 @@ public class FreeCommentController {
 
     // 댓글 목록 조회
     @GetMapping("/posts/{freePostId}/comments")
-    public ResponseEntity<Response> getComments(@PathVariable Long freePostId) {
+    public ResponseEntity<?> getComments(@PathVariable Long freePostId) {
 
         List<CommentVo> commentVoList = freeCommentService.findAllByPostId(freePostId);
         List<CommentResponseDto> commentDtoList = commentModelMapper.toDtoList((commentVoList));
@@ -42,7 +42,7 @@ public class FreeCommentController {
     // 댓글 등록
     @LoginMember
     @PostMapping("/posts/{freePostId}/comments")
-    public ResponseEntity<Response> saveComment(@PathVariable Long freePostId, @RequestBody @Valid CommentRequestDto commentRequestDto) {
+    public ResponseEntity<?> saveComment(@PathVariable Long freePostId, @RequestBody @Valid CommentRequestDto commentRequestDto) {
 
         Long memberId = AuthenticationContextHolder.getContext();
 
@@ -58,7 +58,7 @@ public class FreeCommentController {
     //댓글 삭제
     @LoginMember
     @DeleteMapping("/posts/{freePostId}/comments/{freeCommentId}")
-    public ResponseEntity<Response> deleteComment(@PathVariable Long freePostId, @PathVariable Long freeCommentId) {
+    public ResponseEntity<?> deleteComment(@PathVariable Long freePostId, @PathVariable Long freeCommentId) {
 
         freeCommentService.deleteById(freeCommentId);
 

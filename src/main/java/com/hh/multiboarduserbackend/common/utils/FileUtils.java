@@ -2,7 +2,9 @@ package com.hh.multiboarduserbackend.common.utils;
 
 import com.hh.multiboarduserbackend.common.dto.request.FileRequestDto;
 import com.hh.multiboarduserbackend.common.dto.response.FileResponseDto;
+import com.hh.multiboarduserbackend.common.vo.FileVo;
 import com.hh.multiboarduserbackend.exception.FileErrorCode;
+import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -14,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -67,6 +70,57 @@ public class FileUtils {
                 .savedName(saveName)
                 .savedPath(uploadPath)
                 .savedSize(multipartFile.getSize())
+                .build();
+    }
+
+    /**
+     * File 매개변수가 이미지타입인지 확인
+     * @param file - File
+     * @return - boolean
+     */
+    private boolean checkImageType(File file) {
+        try {
+            String contentType = Files.probeContentType(file.toPath());
+            return contentType.startsWith("image");
+        } catch (IOException e) {
+            throw FileErrorCode.DEFAULT_ERROR_CODE.defaultException(e);
+        }
+    }
+
+    /**
+     * 썸네일 업로드 메서드
+     * @param fileVo - 썸네일로 변환할 파일 정보
+     * @return - FileVo
+     */
+    public FileVo uploadThumbnail(FileVo fileVo) {
+        String originFilePath = getUploadPath() + File.separator + fileVo.getSavedName();
+
+        String thumbnailSaveName = "thumbnail_" + fileVo.getSavedName();
+        String thumbnailFilePath = getUploadPath() + File.separator + thumbnailSaveName;
+
+        long thumbnailSize = 0;
+
+        try {
+            File originFile = new File(originFilePath);
+            if(checkImageType(originFile)) {
+                throw FileErrorCode.FILE_NOT_IMAGE.defaultException();
+            }
+            File thumbnailFile = new File(thumbnailFilePath);
+
+            Thumbnailator.createThumbnail(originFile, thumbnailFile, 360, 360);
+
+            thumbnailSize = thumbnailFile.length();
+        } catch (IOException e) {
+            throw FileErrorCode.DEFAULT_ERROR_CODE.defaultException(e);
+        }
+
+        return FileVo.builder()
+                .fileId(fileVo.getFileId())
+                .postId(fileVo.getPostId())
+                .originalName(fileVo.getOriginalName())
+                .savedName(thumbnailSaveName)
+                .savedPath(uploadPath)
+                .savedSize(thumbnailSize)
                 .build();
     }
 

@@ -33,7 +33,7 @@ public class FreeFileController {
 
     // 파일 리스트 조회
     @GetMapping("/posts/{freePostId}/files")
-    public ResponseEntity<Response> getFiles(@PathVariable Long freePostId) {
+    public ResponseEntity<?> getFiles(@PathVariable Long freePostId) {
 
         List<FileVo> fileVoList = freeFileService.findAllByPostId(freePostId);
         List<FileResponseDto> fileDtoList = fileModelMapper.toDtoList(fileVoList);
@@ -47,7 +47,7 @@ public class FreeFileController {
     @GetMapping("/posts/{freePostId}/files/{freeFileId}/download")
     public ResponseEntity<Resource> downloadFile(@PathVariable Long freePostId, @PathVariable Long freeFileId) {
 
-        FileVo fileVo = freeFileService.findById(freeFileId).orElseThrow(() -> FileErrorCode.FILE_NOT_FOUND.defaultException());
+        FileVo fileVo = freeFileService.findById(freeFileId).orElseThrow(FileErrorCode.FILE_NOT_FOUND::defaultException);
         FileResponseDto fileResponseDto = fileModelMapper.toDto(fileVo);
 
         Resource resource = fileUtils.readFileAsResource(fileResponseDto);

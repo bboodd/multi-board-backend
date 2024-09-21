@@ -28,4 +28,5 @@ public class PostVo {
     private String nickname;                // 서브쿼리문
     private int fileCnt;                    // 서브쿼리문
     private int commentCnt;                 // 서브쿼리문
+    private String thumbnailUrl;            // 서브쿼리문
 }
