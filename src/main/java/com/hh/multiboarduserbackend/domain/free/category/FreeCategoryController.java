@@ -28,7 +28,7 @@ public class FreeCategoryController {
 
     // 카테고리 목록 조회
     @GetMapping("/categories")
-    public ResponseEntity<Response> getCategories() {
+    public ResponseEntity<?> getCategories() {
 
         List<CategoryVo> categoryVoList = categoryService.findAll();
         List<CategoryResponseDto> categoryDtoList = categoryModelMapper.toDtoList(categoryVoList);

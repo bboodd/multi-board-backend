@@ -3,6 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.hh.multiboarduserbackend.domain.free.category.FreeCategoryRepository">
+<!--    select 컬럼    -->
     <sql id="freeCategoryColumns">
           free_category_id AS categoryId
         , category_name

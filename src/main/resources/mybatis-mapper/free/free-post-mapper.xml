@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.hh.multiboarduserbackend.domain.free.post.FreePostRepository">
-<!--    free_post 테이블 전체 컬럼    -->
+<!--    select 컬럼    -->
     <sql id="freePostColumns">
           free_post_id AS postId
         , member_id
@@ -64,7 +64,7 @@
     </sql>
 
 <!--    게시글 등록    -->
-    <insert id="save" useGeneratedKeys="true" keyProperty="postId">
+    <insert id="save" parameterType="com.hh.multiboarduserbackend.common.vo.PostVo" useGeneratedKeys="true" keyProperty="postId">
         INSERT INTO free_post (
             <include refid="insertFreePost"></include>
         ) VALUES (

@@ -23,7 +23,7 @@ public interface FileMapper {
         return fileVoList.stream().map(this::toDto).collect(toList());
     }
 
-    FileVo toVo(FileRequestDto fileRequestDto, Long postId);
+    FileVo toVoWithPostId(FileRequestDto fileRequestDto, Long postId);
 
     default List<FileVo> toVoListWithPostId(List<FileRequestDto> fileList, Long postId) {
         List<FileVo> result = new ArrayList<>();

@@ -54,9 +54,9 @@ public class FreePostController {
 
     // 게시글 리스트 조회
     @GetMapping("/posts")
-    public ResponseEntity<Response> getPosts(SearchDto searchDto) {
+    public ResponseEntity<?> getPosts(SearchDto searchDto) {
 
-        PagingAndListResponse pagingAndListResponse;
+        PagingAndListResponse<PostResponseDto> pagingAndListResponse;
 
         SearchVo searchVo = searchModelMapper.toVo(searchDto);
 
@@ -70,9 +70,9 @@ public class FreePostController {
 
             List<PostResponseDto> postResponseDtoList = postModelMapper.toDtoList(postVoList);
 
-            pagingAndListResponse = new PagingAndListResponse(postResponseDtoList, paginationDto);
+            pagingAndListResponse = new PagingAndListResponse<>(postResponseDtoList, paginationDto);
         } else {
-            pagingAndListResponse = new PagingAndListResponse(Collections.emptyList(), null);
+            pagingAndListResponse = new PagingAndListResponse<>(Collections.emptyList(), null);
         }
 
         return ResponseEntity
@@ -82,11 +82,11 @@ public class FreePostController {
 
     // 게시글 조회
     @GetMapping("/posts/{freePostId}")
-    public ResponseEntity<Response> getPost(@PathVariable Long freePostId) {
+    public ResponseEntity<?> getPost(@PathVariable Long freePostId) {
 
         freePostService.increaseViewCntById(freePostId);
 
-        PostVo postVo = freePostService.findById(freePostId).orElseThrow(() -> PostErrorCode.POST_NOT_FOUND.defaultException());
+        PostVo postVo = freePostService.findById(freePostId).orElseThrow(PostErrorCode.POST_NOT_FOUND::defaultException);
 
         PostResponseDto postResponseDto = postModelMapper.toDto(postVo);
 
@@ -98,7 +98,7 @@ public class FreePostController {
     // 게시글 저장
     @LoginMember
     @PostMapping("/posts")
-    public ResponseEntity<Response> savePost(@Valid PostRequestDto postRequestDto) {
+    public ResponseEntity<?> savePost(@Valid PostRequestDto postRequestDto) {
 
         final Long memberId = AuthenticationContextHolder.getContext();
         PostVo postVo = postModelMapper.toVoWithMemberId(postRequestDto, memberId);
@@ -116,7 +116,7 @@ public class FreePostController {
     // 게시글 수정
     @LoginMember
     @PutMapping("/posts/{freePostId}")
-    public ResponseEntity<Response> updatePost(@PathVariable Long freePostId, @Valid PostRequestDto postRequestDto) {
+    public ResponseEntity<?> updatePost(@PathVariable Long freePostId, @Valid PostRequestDto postRequestDto) {
 
         final Long memberId = AuthenticationContextHolder.getContext();
 
@@ -141,7 +141,7 @@ public class FreePostController {
     // 게시글 삭제
     @LoginMember
     @DeleteMapping("/posts/{freePostId}")
-    public ResponseEntity<Response> deletePost(@PathVariable Long freePostId) {
+    public ResponseEntity<?> deletePost(@PathVariable Long freePostId) {
 
         final Long memberId = AuthenticationContextHolder.getContext();
 

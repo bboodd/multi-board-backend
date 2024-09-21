@@ -24,8 +24,7 @@ public record PostRequestDto(
         , @NotBlank(message = "내용을 입력해 주세요.")
           @Size(max = 4000, message = "내용은 4000자 이하여야합니다.")
           String content
-        , @Size(max = 5, message = "파일은 최대 5개까지 업로드 가능합니다.")
-          List<MultipartFile> files
+        , List<MultipartFile> files
         , List<Long> removeFileIds
 ) {
 
