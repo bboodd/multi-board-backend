@@ -113,7 +113,7 @@
             <include refid="galleryPostColumns"></include>
             , (SELECT category_name FROM gallery_category WHERE gallery_category.gallery_category_id = gallery_post.gallery_category_id) AS categoryName
             , (SELECT nickname FROM member WHERE member.member_id = gallery_post.member_id) AS nickname
-            , (SELECT CANCAT(gallery_thumbnail.saved_path, gallery_thumbnail.saved_name) FROM gallery_thumbnail WHERE gallery_thumbnail.gallery_post_id = gallery_post.gallery_post_id) AS thumbnailUrl
+            , (SELECT GROUP_CONCAT(gallery_thumbnail.saved_path, gallery_thumbnail.saved_name) FROM gallery_thumbnail WHERE gallery_thumbnail.gallery_post_id = gallery_post.gallery_post_id) AS thumbnailUrl
         FROM
             gallery_post
         <include refid="search"></include>
