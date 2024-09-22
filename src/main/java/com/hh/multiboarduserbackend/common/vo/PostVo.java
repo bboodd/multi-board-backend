@@ -29,4 +29,6 @@ public class PostVo {
     private int fileCnt;                    // 서브쿼리문
     private int commentCnt;                 // 서브쿼리문
     private String thumbnailUrl;            // 서브쿼리문
+    private int answerCnt;                  // 서브쿼리문
+    private int lockYn;                     // 문의게시판 비밀글 여부
 }

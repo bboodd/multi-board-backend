@@ -24,4 +24,5 @@ public class SearchVo {
     private int limitStart;             // 쿼리 limit 변수
     private String orderBy;             // 정렬 조건
     private String sortBy;              // 정렬 방법
+    private Long memberId;              // 나의 문의 내역만 보기
 }

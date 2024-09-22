@@ -26,6 +26,7 @@ public record PostRequestDto(
           String content
         , List<MultipartFile> files
         , List<Long> removeFileIds
+        , int lockYn
 ) {
 
     public PostRequestDto {
