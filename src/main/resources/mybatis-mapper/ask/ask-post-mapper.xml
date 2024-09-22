@@ -4,6 +4,18 @@
 
 <mapper namespace="com.hh.multiboarduserbackend.domain.ask.post.AskPostRepository">
     <sql id="askPostColumns">
+          ask_post_id AS postId
+        , memeber_id
+        , title
+        , content
+        , view_cnt
+        , created_date
+        , updated_date
+        , delete_yn
+        , lock_yn
+    </sql>
+
+    <sql id="insertColumns">
           ask_post_id
         , memeber_id
         , title
@@ -14,4 +26,123 @@
         , delete_yn
         , lock_yn
     </sql>
+
+    <!--    검색조건    -->
+    <sql id="search">
+        <where>
+            <if test="startDate != null">
+                AND created_date >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND #{endDate} >= created_date
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND CONCAT(title, (SELECT nickname FROM member WHERE member.member_id = ask_post.member_id), content) LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="memberId != null and memberId != ''">
+                AND ask_member_id = #{memberId}
+            </if>
+            AND delete_yn = 0
+        </where>
+    </sql>
+
+    <!--    정렬 조건    -->
+    <sql id="sort">
+        ORDER BY
+            <choose>
+                <when test="orderBy == 'categoryId'">ask_category_id</when>
+                <when test="orderBy == 'title'">title</when>
+                <when test="orderBy == 'viewCnt'">view_cnt</when>
+                <otherwise>created_date</otherwise>
+            </choose>
+            <choose>
+                <when test="sortBy == 'asc'"> ASC</when>
+                <otherwise> DESC</otherwise>
+            </choose>
+    </sql>
+
+    <!--    게시글 등록    -->
+    <insert id="save" parameterType="com.hh.multiboarduserbackend.common.vo.PostVo" useGeneratedKeys="true" keyProperty="postId">
+        INSERT INTO ask_post (
+            <include refid="insertColumns"></include>
+        ) VALUES (
+              #{postId}
+            , #{memberId}
+            , #{title}
+            , #{content}
+            , 0
+            , NOW()
+            , NOW()
+            , 0
+            , #{lockYn}
+        )
+    </insert>
+
+    <!--    게시글 수정    -->
+    <update id="update" parameterType="com.hh.multiboarduserbackend.common.vo.PostVo">
+        UPDATE
+            ask_post
+        SET
+              title = #{title}
+            , content = #{content}
+            , lock_yn = #{lockYn}
+            , updated_date = NOW()
+        WHERE
+            ask_post_id = #{postId}
+          AND member_id = #{memberId}
+    </update>
+
+    <!--    게시글 단건 조회    -->
+    <select id="findById" parameterType="long" resultType="com.hh.multiboarduserbackend.common.vo.PostVo">
+        SELECT
+              <include refid="askPostColumns"></include>
+            , (SELECT nickname FROM member WHERE member.member_id = ask_post.member_id) AS nickname
+        FROM
+            ask_post
+        WHERE
+            ask_post_id = #{askPostId}
+            AND delete_yn = 0
+    </select>
+
+    <!--    게시글 리스트 조회    -->
+    <select id="findAllBySearch" parameterType="com.hh.multiboarduserbackend.common.vo.SearchVo" resultType="com.hh.multiboarduserbackend.common.vo.PostVo">
+        SELECT
+            <include refid="askPostColumns"></include>
+            , (SELECT nickname FROM member WHERE member.member_id = ask_post.member_id) AS nickname
+            , (SELECT COUNT(*) FROM ask_answer WHERE ask_post.ask_post_id = ask_answer.ask_post_id) AS answerCnt
+        FROM
+            ask_post
+        <include refid="search"></include>
+        <include refid="sort"></include>
+        LIMIT #{limitStart}, #{recordSize}
+    </select>
+
+    <!--    게시글 수 카운팅    -->
+    <select id="countAllBySearch" parameterType="com.hh.multiboarduserbackend.common.vo.SearchVo" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            ask_post
+        <include refid="search"></include>
+    </select>
+
+    <!--    게시글 조회수 증가    -->
+    <update id="increaseViewCntById" parameterType="long">
+        UPDATE
+            ask_post
+        SET
+            view_cnt = view_cnt + 1
+        WHERE
+            ask_post_id = #{askPostId}
+    </update>
+
+    <!--    게시글 삭제    -->
+    <update id="deleteById" parameterType="long">
+        UPDATE
+            ask_post
+        SET
+            delete_yn = 1
+        WHERE
+            ask_post_id = #{askPostId}
+    </update>
 </mapper>

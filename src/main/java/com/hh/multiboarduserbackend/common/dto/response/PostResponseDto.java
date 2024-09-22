@@ -22,6 +22,8 @@ public record PostResponseDto(
         , int fileCnt
         , int commentCnt
         , String thumbnailUrl
+        , int answerCnt
+        , int lockYn
 ) {
 
 }
