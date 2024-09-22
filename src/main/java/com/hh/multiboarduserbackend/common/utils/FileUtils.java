@@ -102,12 +102,12 @@ public class FileUtils {
 
         try {
             File originFile = new File(originFilePath);
-            if(checkImageType(originFile)) {
+            if(!checkImageType(originFile)) {
                 throw FileErrorCode.FILE_NOT_IMAGE.defaultException();
             }
             File thumbnailFile = new File(thumbnailFilePath);
 
-            Thumbnailator.createThumbnail(originFile, thumbnailFile, 360, 360);
+            Thumbnailator.createThumbnail(originFile, thumbnailFile, 250, 150);
 
             thumbnailSize = thumbnailFile.length();
         } catch (IOException e) {

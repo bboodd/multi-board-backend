@@ -32,7 +32,7 @@ public class GalleryFileController {
     private final FileMapper fileModelMapper = Mappers.getMapper(FileMapper.class);
 
     // 파일 리스트 조회
-    @GetMapping("/posts/{freePostId}/files")
+    @GetMapping("/posts/{galleryPostId}/files")
     public ResponseEntity<?> getFiles(@PathVariable Long galleryPostId) {
 
         List<FileVo> fileVoList = galleryFileService.findAllByPostId(galleryPostId);
@@ -44,7 +44,7 @@ public class GalleryFileController {
     }
 
     // 첨부파일 다운로드
-    @GetMapping("/posts/{freePostId}/files/{freeFileId}/download")
+    @GetMapping("/posts/{galleryPostId}/files/{galleryFileId}/download")
     public ResponseEntity<Resource> downloadFile(@PathVariable Long galleryPostId, @PathVariable Long galleryFileId) {
 
         FileVo fileVo = galleryFileService.findById(galleryFileId).orElseThrow(FileErrorCode.FILE_NOT_FOUND::defaultException);

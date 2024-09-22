@@ -29,16 +29,16 @@
 
     <!--    썸네일 저장    -->
     <insert id="save" parameterType="com.hh.multiboarduserbackend.common.vo.FileVo">
-        INSERT INTO free_file (
+        INSERT INTO gallery_thumbnail (
             <include refid="insertColumns"></include>
         ) VALUES (
               null
-            , #{file.postId}
-            , #{file.fileId}
-            , #{file.originalName}
-            , #{file.savedName}
-            , #{file.savedPath}
-            , #{file.savedSize}
+            , #{postId}
+            , #{fileId}
+            , #{originalName}
+            , #{savedName}
+            , #{savedPath}
+            , #{savedSize}
             , 0
         )
     </insert>

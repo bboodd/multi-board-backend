@@ -109,6 +109,8 @@ public class GalleryPostController {
         List<MultipartFile> fileList = postRequestDto.files();
         fileUploadAndSave(fileList, galleryPostId);
 
+        thumbnailUploadAndSave(galleryPostId);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(Response.message(galleryPostId + "번 게시글 등록완료"));
@@ -134,6 +136,8 @@ public class GalleryPostController {
         List<MultipartFile> fileList = postRequestDto.files();
         fileUploadAndSave(fileList, galleryPostId);
 
+        thumbnailUploadAndSave(galleryPostId);
+
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(Response.message(galleryPostId + "번 게시글 수정 완료"));
@@ -153,6 +157,18 @@ public class GalleryPostController {
                 .body(Response.message(galleryPostId + "번 게시글 삭제 완료"));
     }
 
+    // 썸네일 업로드 및 저장 메서드
+    private void thumbnailUploadAndSave(Long galleryPostId) {
+        // 썸네일이 없다면 업로드 및 저장
+        if(!galleryThumbnailService.checkExistsThumbnail(galleryPostId)) {
+            // db 에서 첫 파일 가져와서 변환
+            FileVo firstFile = galleryFileService.findFirstByPostId(galleryPostId).orElseThrow(FileErrorCode.FILE_NOT_FOUND::defaultException);
+            FileVo uploadThumbnail = fileUtils.uploadThumbnail(firstFile);
+
+            galleryThumbnailService.saveThumbnail(uploadThumbnail);
+        }
+    }
+
     // 파일 업로드 및 저장 메서드
     private void fileUploadAndSave(List<MultipartFile> fileList, Long galleryPostId) {
         if(!CollectionUtils.isEmpty(fileList)) {
@@ -163,15 +179,6 @@ public class GalleryPostController {
             List<FileVo> fileVoList = fileModelMapper.toVoListWithPostId(uploadFileList, galleryPostId);
 
             galleryFileService.saveFileList(fileVoList);
-
-            // 썸네일이 없다면 업로드 및 저장
-            if(!galleryThumbnailService.checkExistsThumbnail(galleryPostId)) {
-                // db에서 첫 파일 가져와서 변환
-                FileVo firstFile = galleryFileService.findFirstByPostId(galleryPostId).orElseThrow(FileErrorCode.FILE_NOT_FOUND::defaultException);
-                FileVo uploadThumbnail = fileUtils.uploadThumbnail(firstFile);
-
-                galleryThumbnailService.saveThumbnail(uploadThumbnail);
-            }
         }
     }
 
