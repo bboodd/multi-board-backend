@@ -61,6 +61,18 @@ public class NoticePostController {
                 .body(Response.data(pagingAndListResponse));
     }
 
+    // 공지글 조회
+    @GetMapping("/posts/fin")
+    public ResponseEntity<?> getFinPosts() {
+
+        List<PostVo> postVoList = noticePostService.findAllAsFin();
+        List<PostResponseDto> postResponseDtoList = postModelMapper.toDtoList(postVoList);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.data(postResponseDtoList));
+    }
+
     // 게시글 조회
     @GetMapping("/posts/{noticePostId}")
     public ResponseEntity<?> getPost(@PathVariable Long noticePostId) {

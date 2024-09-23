@@ -40,8 +40,11 @@ public class NoticePostService {
      * @return - 게시글 리스트
      */
     public List<PostVo> findAllBySearch(SearchVo searchVo) {
-        List<PostVo> postList = noticePostRepository.findAllBySearch(searchVo);
-        return postList;
+        return noticePostRepository.findAllBySearch(searchVo);
+    }
+
+    public List<PostVo> findAllAsFin() {
+        return noticePostRepository.findAllAsFin();
     }
 
     /**

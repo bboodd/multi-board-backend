@@ -16,8 +16,7 @@ import java.util.Objects;
 @Builder
 public record PostRequestDto(
           Long postId
-        , @NotNull(message = "분류를 선택해 주세요.")
-          Long categoryId
+        , Long categoryId
         , @NotBlank(message = "제목을 입력해 주세요.")
           @Size(max = 100, message = "제목은 100자 이하여야합니다.")
           String title
@@ -26,7 +25,7 @@ public record PostRequestDto(
           String content
         , List<MultipartFile> files
         , List<Long> removeFileIds
-        , int lockYn
+        , Integer lockYn
 ) {
 
     public PostRequestDto {
