@@ -16,4 +16,6 @@ public interface NoticePostRepository {
     int countAllBySearch(SearchVo searchVo);
 
     void increaseViewCntById(Long noticePostId);
+
+    List<PostVo> findAllAsFin();
 }

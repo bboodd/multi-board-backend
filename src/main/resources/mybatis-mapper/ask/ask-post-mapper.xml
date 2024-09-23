@@ -5,7 +5,7 @@
 <mapper namespace="com.hh.multiboarduserbackend.domain.ask.post.AskPostRepository">
     <sql id="askPostColumns">
           ask_post_id AS postId
-        , memeber_id
+        , member_id
         , title
         , content
         , view_cnt
@@ -17,7 +17,7 @@
 
     <sql id="insertColumns">
           ask_post_id
-        , memeber_id
+        , member_id
         , title
         , content
         , view_cnt
@@ -39,8 +39,8 @@
             <if test="keyword != null and keyword != ''">
                 AND CONCAT(title, (SELECT nickname FROM member WHERE member.member_id = ask_post.member_id), content) LIKE CONCAT('%', #{keyword}, '%')
             </if>
-            <if test="memberId != null and memberId != ''">
-                AND ask_member_id = #{memberId}
+            <if test="nickname != null and nickname != ''">
+                AND (SELECT nickname FROM member WHERE member.member_id = ask_post.member_id) = #{nickname}
             </if>
             AND delete_yn = 0
         </where>
@@ -50,7 +50,6 @@
     <sql id="sort">
         ORDER BY
             <choose>
-                <when test="orderBy == 'categoryId'">ask_category_id</when>
                 <when test="orderBy == 'title'">title</when>
                 <when test="orderBy == 'viewCnt'">view_cnt</when>
                 <otherwise>created_date</otherwise>

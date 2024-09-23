@@ -23,15 +23,19 @@ public record SearchDto (
          , Integer pageSize
          , String orderBy
          , String sortBy
-         , Long memberId
+         , String nickname
 ) {
 //    pattern = "yyyy-MM-dd`T`HH:mm:ss"
     public SearchDto {
         if(startDate == null) {
             startDate = LocalDateTime.now().minusMonths(1);
+        } else {
+            startDate = startDate.plusHours(9);
         }
         if(endDate == null) {
             endDate = LocalDateTime.now();
+        } else {
+            endDate = endDate.plusHours(9);
         }
         if(categoryId == null) {
             categoryId = 0L;

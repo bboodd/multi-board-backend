@@ -77,6 +77,18 @@
         LIMIT #{limitStart}, #{recordSize}
     </select>
 
+<!--    공지 게시글 조회    -->
+    <select id="findAllAsFin" resultType="com.hh.multiboarduserbackend.common.vo.PostVo">
+        SELECT
+            <include refid="noticePostColumns"></include>
+          , (SELECT category_name FROM notice_category WHERE notice_category.notice_category_id = notice_post.notice_category_id) AS categoryName
+          , (SELECT nickname FROM admin WHERE admin.admin_id = notice_post.admin_id) AS nickname
+        FROM
+            notice_post
+        WHERE
+            fin_yn = 1
+    </select>
+
     <!--    게시글 수 카운팅    -->
     <select id="countAllBySearch" parameterType="com.hh.multiboarduserbackend.common.vo.SearchVo" resultType="int">
         SELECT
