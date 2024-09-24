@@ -1,7 +1,5 @@
-package com.hh.multiboarduserbackend.common.dto.response;
+package com.hh.multiboarduserbackend.domain.comment.response;
 
-import com.hh.multiboarduserbackend.common.vo.CommentVo;
-import com.hh.multiboarduserbackend.mappers.CommentMapper;
 import lombok.Builder;
 
 import java.time.LocalDateTime;

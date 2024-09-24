@@ -38,6 +38,7 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.5.5.Final'
     implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
     implementation 'net.coobird:thumbnailator:0.4.8'
+    implementation 'org.mindrot:jbcrypt:0.4'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.5'

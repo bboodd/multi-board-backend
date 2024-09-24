@@ -1,10 +1,9 @@
 package com.hh.multiboarduserbackend.mappers;
 
-import com.hh.multiboarduserbackend.common.dto.response.CategoryResponseDto;
-import com.hh.multiboarduserbackend.common.vo.CategoryVo;
+import com.hh.multiboarduserbackend.domain.category.response.CategoryResponseDto;
+import com.hh.multiboarduserbackend.domain.category.CategoryVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 

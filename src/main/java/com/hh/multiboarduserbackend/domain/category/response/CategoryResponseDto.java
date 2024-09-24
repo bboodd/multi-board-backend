@@ -1,7 +1,5 @@
-package com.hh.multiboarduserbackend.common.dto.response;
+package com.hh.multiboarduserbackend.domain.category.response;
 
-import com.hh.multiboarduserbackend.common.vo.CategoryVo;
-import com.hh.multiboarduserbackend.mappers.CategoryMapper;
 import lombok.Builder;
 
 @Builder

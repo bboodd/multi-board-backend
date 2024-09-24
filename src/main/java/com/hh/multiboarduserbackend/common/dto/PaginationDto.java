@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.common.paging;
+package com.hh.multiboarduserbackend.common.dto;
 
 import com.hh.multiboarduserbackend.common.dto.SearchDto;
 import lombok.Builder;

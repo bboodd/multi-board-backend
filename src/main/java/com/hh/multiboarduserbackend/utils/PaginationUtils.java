@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.common.utils;
+package com.hh.multiboarduserbackend.utils;
 
 import com.hh.multiboarduserbackend.common.dto.SearchDto;
 import com.hh.multiboarduserbackend.common.dto.PaginationDto;

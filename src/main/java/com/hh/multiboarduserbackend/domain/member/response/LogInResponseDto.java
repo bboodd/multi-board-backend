@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.domain.member;
+package com.hh.multiboarduserbackend.domain.member.response;
 
 import com.hh.multiboarduserbackend.jwt.JwtToken;
 import com.hh.multiboarduserbackend.mappers.MemberMapper;

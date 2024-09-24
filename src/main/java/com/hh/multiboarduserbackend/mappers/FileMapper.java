@@ -1,16 +1,12 @@
 package com.hh.multiboarduserbackend.mappers;
 
-import com.hh.multiboarduserbackend.common.dto.request.FileRequestDto;
-import com.hh.multiboarduserbackend.common.dto.response.FileResponseDto;
-import com.hh.multiboarduserbackend.common.vo.FileVo;
-import org.mapstruct.IterableMapping;
+import com.hh.multiboarduserbackend.domain.file.request.FileRequestDto;
+import com.hh.multiboarduserbackend.domain.file.response.FileResponseDto;
+import com.hh.multiboarduserbackend.domain.file.FileVo;
 import org.mapstruct.Mapper;
-import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;

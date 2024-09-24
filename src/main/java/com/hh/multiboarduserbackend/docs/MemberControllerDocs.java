@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.docs.member;
+package com.hh.multiboarduserbackend.docs;
 
 public interface MemberControllerDocs {
 }
