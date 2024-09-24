@@ -25,4 +25,5 @@ public class SearchVo {
     private String orderBy;             // 정렬 조건
     private String sortBy;              // 정렬 방법
     private String nickname;            // 나의 문의 내역만 보기
+    private Long typeId;                // 게시판 타입 pk
 }
