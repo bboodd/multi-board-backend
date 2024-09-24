@@ -1,7 +1,5 @@
-package com.hh.multiboarduserbackend.common.dto.response;
+package com.hh.multiboarduserbackend.domain.post.response;
 
-import com.hh.multiboarduserbackend.common.vo.PostVo;
-import com.hh.multiboarduserbackend.mappers.PostMapper;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -16,14 +14,13 @@ public record PostResponseDto(
         , int viewCnt
         , LocalDateTime createdDate
         , LocalDateTime updatedDate
-        , int deleteYn
+        , Boolean deleteYn
         , String categoryName
         , String nickname
         , int fileCnt
         , int commentCnt
         , String thumbnailUrl
-        , int answerCnt
-        , int lockYn
+        , Boolean lockYn
 ) {
 
 }

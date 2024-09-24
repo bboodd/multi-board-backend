@@ -1,10 +1,10 @@
-package com.hh.multiboarduserbackend.common.paging;
+package com.hh.multiboarduserbackend.common.dto;
 
+import com.hh.multiboarduserbackend.common.dto.PaginationDto;
 import lombok.Builder;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Builder

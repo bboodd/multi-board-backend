@@ -1,7 +1,5 @@
-package com.hh.multiboarduserbackend.common.dto.response;
+package com.hh.multiboarduserbackend.domain.file.response;
 
-import com.hh.multiboarduserbackend.common.vo.FileVo;
-import com.hh.multiboarduserbackend.mappers.FileMapper;
 import lombok.Builder;
 
 @Builder

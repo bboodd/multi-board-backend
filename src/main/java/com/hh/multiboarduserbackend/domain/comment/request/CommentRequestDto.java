@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.common.dto.request;
+package com.hh.multiboarduserbackend.domain.comment.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

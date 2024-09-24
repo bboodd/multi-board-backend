@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.common.dto.request;
+package com.hh.multiboarduserbackend.domain.file.request;
 
 import lombok.Builder;
 

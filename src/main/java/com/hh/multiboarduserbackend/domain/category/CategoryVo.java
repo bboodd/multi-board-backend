@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.common.vo;
+package com.hh.multiboarduserbackend.domain.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

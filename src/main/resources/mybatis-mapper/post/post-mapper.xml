@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hh.multiboarduserbackend.domain.post.PostRepository">
+    <!--    post 컬럼    -->
+    <sql id="postColumns">
+          post_id
+        , type_id
+        , category_id
+        , title
+        , content
+        , view_cnt
+        , created_date
+        , updated_date
+        , delete_yn
+        , lock_yn
+        , fin_yn
+        , admin_id
+        , member_id
+    </sql>
+
+    <!--    검색조건    -->
+    <sql id="search">
+        <where>
+            <if test="startDate != null">
+                AND created_date >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND #{endDate} >= created_date
+            </if>
+            <if test="categoryId != null and categoryId != ''">
+                AND category_id = #{categoryId}
+            </if>
+            <if test="nickname != null and nickname != ''">
+                AND (SELECT nickname FROM member WHERE member.member_id = post.member_id) = #{nickname}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                <choose>
+                    <when test="typeId == 3">
+                        AND CONCAT(title, (SELECT nickname FROM admin WHERE admin.admin_id = post.admin_id), content) LIKE CONCAT('%', #{keyword}, '%')
+                    </when>
+                    <otherwise>
+                        AND CONCAT(title, (SELECT nickname FROM member WHERE member.member_id = post.member_id), content) LIKE CONCAT('%', #{keyword}, '%')
+                    </otherwise>
+                </choose>
+            </if>
+            AND delete_yn = 0
+            AND type_id = #{typeId}
+        </where>
+    </sql>
+
+    <!--    정렬 조건    -->
+    <sql id="sort">
+        ORDER BY
+        <choose>
+            <when test="orderBy == 'categoryId'">category_id</when>
+            <when test="orderBy == 'title'">title</when>
+            <when test="orderBy == 'viewCnt'">view_cnt</when>
+            <otherwise>created_date</otherwise>
+        </choose>
+        <choose>
+            <when test="sortBy == 'asc'"> ASC</when>
+            <otherwise> DESC</otherwise>
+        </choose>
+    </sql>
+
+    <!--    게시글 등록    -->
+    <insert id="save" parameterType="com.hh.multiboarduserbackend.domain.post.PostVo" useGeneratedKeys="true" keyProperty="postId">
+        INSERT INTO post (
+            <include refid="postColumns"></include>
+        ) VALUES (
+              #{postId}
+            , #{typeId}
+            , #{categoryId}
+            , #{title}
+            , #{content}
+            , 0
+            , NOW()
+            , NOW()
+            , 0
+            , #{lockYn}
+            , #{finYn}
+            , null
+            , #{memberId}
+        )
+    </insert>
+
+    <!--    게시글 수정    -->
+    <update id="update" parameterType="com.hh.multiboarduserbackend.domain.post.PostVo">
+        UPDATE
+            post
+        SET
+            category_id = #{categoryId}
+          , title = #{title}
+          , content = #{content}
+          , updated_date = NOW()
+          , lock_yn = #{lockYn}
+        WHERE
+            post_id = #{postId}
+            AND member_id = #{memberId}
+    </update>
+
+    <!--    게시글 단건 조회    -->
+    <select id="findById" parameterType="long" resultType="com.hh.multiboarduserbackend.domain.post.PostVo">
+        SELECT
+            <include refid="postColumns"></include>
+            , COALESCE((SELECT nickname FROM member WHERE member.member_id = post.member_id), (SELECT nickname FROM admin WHERE admin.admin_id = post.admin_id)) AS nickname
+            , (SELECT category_name FROM post_category WHERE post_category.category_id = post.category_id) AS categoryName
+        FROM
+            post
+        WHERE
+            post_id = #{postId}
+            AND delete_yn = 0
+    </select>
+
+    <!--    게시글 리스트 조회    -->
+    <select id="findAllBySearch" parameterType="com.hh.multiboarduserbackend.common.vo.SearchVo" resultType="com.hh.multiboarduserbackend.domain.post.PostVo">
+        SELECT
+            <include refid="postColumns"></include>
+            , COALESCE((SELECT nickname FROM member WHERE member.member_id = post.member_id), (SELECT nickname FROM admin WHERE admin.admin_id = post.admin_id)) AS nickname
+            , (SELECT category_name FROM post_category WHERE post_category.category_id = post.post_category_id) AS categoryName
+            , (SELECT COUNT(*) FROM post_file WHERE post_file.post_id = post.post_id) AS fileCnt
+            , (SELECT COUNT(*) FROM post_comment WHERE post_comment.post_id = post.post_id) AS commentCnt
+            , (SELECT GROUP_CONCAT(post_thumbnail.saved_path, post_thumbnail.saved_name) FROM post_thumbnail WHERE post_thumbnail.post_id = post.post_id) AS thumbnailUrl
+        FROM
+            post
+        <include refid="search"></include>
+        <include refid="sort"></include>
+        LIMIT #{limitStart}, #{recordSize}
+    </select>
+
+    <!--    게시글 수 카운팅    -->
+    <select id="countAllBySearch" parameterType="com.hh.multiboarduserbackend.common.vo.SearchVo" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            post
+        <include refid="search"></include>
+    </select>
+
+    <!--    게시글 조회수 증가    -->
+    <update id="increaseViewCntById" parameterType="long">
+        UPDATE
+            post
+        SET
+            view_cnt = view_cnt + 1
+        WHERE
+            post_id = #{postId}
+    </update>
+
+    <!--    게시글 삭제    -->
+    <update id="deleteById" parameterType="long">
+        UPDATE
+            post
+        SET
+            delete_yn = 1
+        WHERE
+            post_id = #{postId}
+    </update>
+</mapper>

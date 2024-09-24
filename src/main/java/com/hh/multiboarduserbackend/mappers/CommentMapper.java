@@ -1,11 +1,10 @@
 package com.hh.multiboarduserbackend.mappers;
 
-import com.hh.multiboarduserbackend.common.dto.request.CommentRequestDto;
-import com.hh.multiboarduserbackend.common.dto.response.CommentResponseDto;
-import com.hh.multiboarduserbackend.common.vo.CommentVo;
+import com.hh.multiboarduserbackend.domain.comment.request.CommentRequestDto;
+import com.hh.multiboarduserbackend.domain.comment.response.CommentResponseDto;
+import com.hh.multiboarduserbackend.domain.comment.CommentVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 

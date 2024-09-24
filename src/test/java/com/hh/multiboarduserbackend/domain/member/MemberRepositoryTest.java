@@ -27,13 +27,13 @@ class MemberRepositoryTest {
     @Test
     void 멤버찾기_로그인아이디_성공() {
         //given
-        MemberVo member = memberRepository.findByLoginId("qwer");
+        MemberVo member = memberRepository.findByLoginId("qw12");
 
         //when
 
         //then
-        assertThat(member.getNickname()).isEqualTo("qwer");
-        assertThat(member.getLoginId()).isEqualTo("qwer");
+        assertThat(member.getNickname()).isEqualTo("qw12");
+        assertThat(member.getLoginId()).isEqualTo("qw12");
     }
 
     @Test

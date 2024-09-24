@@ -1,7 +1,5 @@
-package com.hh.multiboarduserbackend.common.vo;
+package com.hh.multiboarduserbackend.domain.post;
 
-import com.hh.multiboarduserbackend.common.dto.request.PostRequestDto;
-import com.hh.multiboarduserbackend.mappers.PostMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,9 +21,9 @@ public class PostVo {
     private int viewCnt;                    // 조회수
     private LocalDateTime createdDate;      // 생성일시
     private LocalDateTime updatedDate;      // 수정일시
-    private Boolean deleteYn;               // 삭제 여부
-    private Boolean lockYn;                 // 비밀글 여부
-    private Boolean finYn;                  // 고정글 여부
+    private boolean deleteYn;               // 삭제 여부
+    private boolean lockYn;                 // 비밀글 여부
+    private boolean finYn;                  // 고정글 여부
     private Long adminId;                   // 관리자 pk
     private Long memberId;                  // 멤버 pk
 

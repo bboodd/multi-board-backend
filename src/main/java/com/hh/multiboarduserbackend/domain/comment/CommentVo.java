@@ -1,7 +1,5 @@
-package com.hh.multiboarduserbackend.common.vo;
+package com.hh.multiboarduserbackend.domain.comment;
 
-import com.hh.multiboarduserbackend.common.dto.request.CommentRequestDto;
-import com.hh.multiboarduserbackend.mappers.CommentMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

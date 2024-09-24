@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.common.dto.request;
+package com.hh.multiboarduserbackend.domain.post.request;
 
 import io.jsonwebtoken.lang.Collections;
 import jakarta.validation.constraints.NotBlank;
@@ -25,7 +25,7 @@ public record PostRequestDto(
           String content
         , List<MultipartFile> files
         , List<Long> removeFileIds
-        , Integer lockYn
+        , Boolean lockYn
 ) {
 
     public PostRequestDto {

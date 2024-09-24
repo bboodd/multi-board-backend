@@ -1,13 +1,9 @@
-package com.hh.multiboarduserbackend.common.vo;
+package com.hh.multiboarduserbackend.domain.file;
 
-import com.hh.multiboarduserbackend.common.dto.request.FileRequestDto;
-import com.hh.multiboarduserbackend.mappers.FileMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @Builder

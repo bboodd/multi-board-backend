@@ -1,11 +1,12 @@
 package com.hh.multiboarduserbackend.domain.member;
 
-import com.hh.multiboarduserbackend.exception.CustomException;
+import com.hh.multiboarduserbackend.domain.member.response.LogInResponseDto;
 import com.hh.multiboarduserbackend.exception.MemberErrorCode;
 import com.hh.multiboarduserbackend.jwt.JwtProvider;
 import com.hh.multiboarduserbackend.jwt.JwtToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -34,6 +35,9 @@ public class MemberService {
      */
     public Long signUp(MemberVo memberVo) {
         duplicateCheck(memberVo.getLoginId());
+        // 비밀번호 암호화
+        memberVo.setPassword(encodePassword(memberVo.getPassword()));
+
         memberRepository.save(memberVo);
         return memberVo.getMemberId();
     }
@@ -46,11 +50,11 @@ public class MemberService {
     public LogInResponseDto logIn(MemberVo memberVo) {
         // 아이디에 해당하는 회원이 없을 시 에러
         MemberVo findMember = findByLoginId(memberVo.getLoginId())
-                .orElseThrow(() -> MemberErrorCode.LOGIN_ERROR.defaultException());
+                .orElseThrow(() -> MemberErrorCode.NOT_MATCH_ERROR.defaultException());
 
         // 저장된 비밀번호가 일치하지 않을 시 에러
-        if(!findMember.getPassword().equals(memberVo.getPassword())) {
-            throw MemberErrorCode.LOGIN_ERROR.defaultException();
+        if(!comparePassword(memberVo.getPassword(), findMember.getPassword())) {
+            throw MemberErrorCode.NOT_MATCH_ERROR.defaultException();
         }
 
         JwtToken jwtToken = jwtProvider.generateToken(findMember.getMemberId());
@@ -71,6 +75,19 @@ public class MemberService {
         if(duplicate) {
             throw MemberErrorCode.DUPLICATE_LOGIN_ID.defaultException();
         }
+    }
+
+    /**
+     * Bcrypt 비밀번호 암호화
+     * @param password - 비밀번호 평문
+     * @return - 암호화 비밀번호
+     */
+    private String encodePassword(String password) {
+        return BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    private boolean comparePassword(String inputPas, String savedPas) {
+        return BCrypt.checkpw(inputPas, savedPas);
     }
 
 

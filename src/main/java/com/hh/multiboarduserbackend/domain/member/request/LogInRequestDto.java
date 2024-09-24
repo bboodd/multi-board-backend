@@ -1,4 +1,4 @@
-package com.hh.multiboarduserbackend.domain.member;
+package com.hh.multiboarduserbackend.domain.member.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

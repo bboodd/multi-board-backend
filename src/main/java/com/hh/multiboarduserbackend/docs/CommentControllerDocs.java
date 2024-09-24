@@ -3,8 +3,8 @@ package com.hh.multiboarduserbackend.docs;
 
 import com.hh.multiboarduserbackend.common.response.ErrorResponse;
 import com.hh.multiboarduserbackend.common.response.Response;
-//import com.hh.multiboarduserbackend.domain.comment.CommentRequestDto;
-//import com.hh.multiboarduserbackend.domain.comment.CommentResponseDto;
+//import com.hh.multiboarduserbackend.domain.comment.request.CommentRequestDto;
+//import com.hh.multiboarduserbackend.domain.comment.response.CommentResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
