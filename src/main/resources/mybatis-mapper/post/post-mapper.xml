@@ -119,7 +119,7 @@
         SELECT
             <include refid="postColumns"></include>
             , COALESCE((SELECT nickname FROM member WHERE member.member_id = post.member_id), (SELECT nickname FROM admin WHERE admin.admin_id = post.admin_id)) AS nickname
-            , (SELECT category_name FROM post_category WHERE post_category.category_id = post.post_category_id) AS categoryName
+            , (SELECT category_name FROM post_category WHERE post_category.category_id = post.category_id) AS categoryName
             , (SELECT COUNT(*) FROM post_file WHERE post_file.post_id = post.post_id) AS fileCnt
             , (SELECT COUNT(*) FROM post_comment WHERE post_comment.post_id = post.post_id) AS commentCnt
             , (SELECT GROUP_CONCAT(post_thumbnail.saved_path, post_thumbnail.saved_name) FROM post_thumbnail WHERE post_thumbnail.post_id = post.post_id) AS thumbnailUrl

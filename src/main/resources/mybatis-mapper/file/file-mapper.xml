@@ -110,7 +110,7 @@
 
     <!--    썸네일 저장    -->
     <insert id="saveThumbnail" parameterType="com.hh.multiboarduserbackend.domain.file.FileVo">
-        INSERT INTO gallery_thumbnail (
+        INSERT INTO post_thumbnail (
             <include refid="thumbnailColumns"></include>
         ) VALUES (
               null
