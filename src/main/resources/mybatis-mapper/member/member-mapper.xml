@@ -49,4 +49,14 @@
         WHERE
             login_id = #{loginId}
     </select>
+
+<!--    닉네임으로 회원 찾기    -->
+    <select id="findByNickname" parameterType="java.lang.String" resultType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+        SELECT
+            <include refid="memberColumns"></include>
+        FROM
+            member
+        WHERE
+            nickname = #{nickname}
+    </select>
 </mapper>

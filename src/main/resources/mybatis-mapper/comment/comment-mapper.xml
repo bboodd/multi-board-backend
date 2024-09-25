@@ -6,7 +6,7 @@
     <!--    comment 컬럼    -->
     <sql id="commentColumns">
           comment_id
-        , postId
+        , post_id
         , content
         , created_date
         , delete_yn
@@ -33,7 +33,7 @@
     <select id="findAllByPostId" parameterType="long" resultType="com.hh.multiboarduserbackend.domain.comment.CommentVo">
         SELECT
               <include refid="commentColumns"></include>
-            , COALESCE((SELECT nickname FROM member WHERE member.member_id = post.member_id), (SELECT nickname FROM admin WHERE admin.admin_id = post.admin_id)) AS nickname
+            , COALESCE((SELECT nickname FROM member WHERE member.member_id = post_comment.member_id), (SELECT nickname FROM admin WHERE admin.admin_id = post_comment.admin_id)) AS nickname
         FROM
             post_comment
         WHERE

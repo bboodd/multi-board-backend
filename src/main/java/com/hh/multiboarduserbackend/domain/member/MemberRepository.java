@@ -13,4 +13,6 @@ public interface MemberRepository {
     MemberVo findById(Long userId);
 
     MemberVo findByLoginId(String loginId);
+
+    MemberVo findByNickname(String nickname);
 }

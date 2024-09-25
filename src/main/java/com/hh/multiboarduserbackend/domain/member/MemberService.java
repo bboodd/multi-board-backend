@@ -28,13 +28,18 @@ public class MemberService {
         return Optional.ofNullable(memberRepository.findById(memberId));
     }
 
+    private Optional<MemberVo> findByNickname(String nickname) {
+        return Optional.ofNullable(memberRepository.findByNickname(nickname));
+    }
+
     /**
      * 회원가입 로직
      * @param memberVo - 회원가입 정보
      * @return - 회원 ID
      */
     public Long signUp(MemberVo memberVo) {
-        duplicateCheck(memberVo.getLoginId());
+        duplicateCheckLoginId(memberVo.getLoginId());
+        duplicateCheckNickname(memberVo.getNickname());
         // 비밀번호 암호화
         memberVo.setPassword(encodePassword(memberVo.getPassword()));
 
@@ -50,7 +55,7 @@ public class MemberService {
     public LogInResponseDto logIn(MemberVo memberVo) {
         // 아이디에 해당하는 회원이 없을 시 에러
         MemberVo findMember = findByLoginId(memberVo.getLoginId())
-                .orElseThrow(() -> MemberErrorCode.NOT_MATCH_ERROR.defaultException());
+                .orElseThrow(MemberErrorCode.NOT_MATCH_ERROR::defaultException);
 
         // 저장된 비밀번호가 일치하지 않을 시 에러
         if(!comparePassword(memberVo.getPassword(), findMember.getPassword())) {
@@ -70,10 +75,19 @@ public class MemberService {
      * 로그인 아이디 중복확인 검증 로직
      * @param loginId - 로그인 아이디
      */
-    public void duplicateCheck(String loginId) {
-        boolean duplicate = findByLoginId(loginId).isPresent();
-        if(duplicate) {
+    public void duplicateCheckLoginId(String loginId) {
+        if(findByLoginId(loginId).isPresent()) {
             throw MemberErrorCode.DUPLICATE_LOGIN_ID.defaultException();
+        }
+    }
+
+    /**
+     * 닉네임 중복확인 로직
+     * @param nickname - 입력 닉네임
+     */
+    public void duplicateCheckNickname(String nickname) {
+        if(findByNickname(nickname).isPresent()) {
+            throw MemberErrorCode.DUPLICATE_NICKNAME.defaultException();
         }
     }
 

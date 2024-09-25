@@ -27,11 +27,11 @@ public class MemberController {
     private final MemberMapper memberModelMapper = Mappers.getMapper(MemberMapper.class);
 
     // 아이디 중복체크
-    @PostMapping("/check-duplicate")
-    public ResponseEntity<Response> checkDuplicate(@RequestBody @Valid DuplicateCheckRequestDto duplicateCheckRequestDto) {
+    @PostMapping("/check-duplicate/loginId")
+    public ResponseEntity<?> checkDuplicateLoginId(@RequestBody @Valid DuplicateCheckRequestDto duplicateCheckRequestDto) {
 
         try {
-            memberService.duplicateCheck(duplicateCheckRequestDto.loginId());
+            memberService.duplicateCheckLoginId(duplicateCheckRequestDto.str());
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -43,9 +43,26 @@ public class MemberController {
                 .body(Response.valid(true));
     }
 
+    @PostMapping("/check-duplicate/nickname")
+    public ResponseEntity<?> checkDuplicateNickname(@RequestBody @Valid DuplicateCheckRequestDto duplicateCheckRequestDto) {
+
+        try {
+            memberService.duplicateCheckNickname(duplicateCheckRequestDto.str());
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(Response.valid(false));
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(Response.valid(true));
+
+    }
+
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<Response> logIn(@RequestBody @Valid LogInRequestDto logInRequestDto) {
+    public ResponseEntity<?> logIn(@RequestBody @Valid LogInRequestDto logInRequestDto) {
 
         MemberVo memberVo = memberModelMapper.toVo(logInRequestDto);
 
@@ -58,7 +75,7 @@ public class MemberController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<Response> signUp(@RequestBody @Valid SignUpDto signUpDto) {
+    public ResponseEntity<?> signUp(@RequestBody @Valid SignUpDto signUpDto) {
 
         MemberVo memberVo = memberModelMapper.toVo(signUpDto);
 
