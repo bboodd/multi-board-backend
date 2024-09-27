@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class LoggerAspect {
 
-    @Around("execution(* com.hh.multiboarduserbackend.domain..*Controller.*(..)) || execution(* com.hh.multiboarduserbackend.domain..*Service.*(..)) || execution(* com.hh.multiboarduserbackend.domain..*Mapper.*(..))")
+    @Around("execution(* com.hh.multiboarduserbackend.domain..*Controller.*(..)) || execution(* com.hh.multiboarduserbackend.domain..*Service.*(..)) || execution(* com.hh.multiboarduserbackend.domain..*Repository.*(..))")
     public Object printLog(ProceedingJoinPoint joinPoint) throws Throwable{
 
         String name = joinPoint.getSignature().getDeclaringTypeName();
