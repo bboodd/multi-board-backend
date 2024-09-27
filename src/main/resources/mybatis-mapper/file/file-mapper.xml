@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hh.multiboarduserbackend.domain.file.FileRepository">
+    <!--    file 컬럼    -->
+    <sql id="fileColumns">
+            file_id
+          , post_id
+          , original_name
+          , saved_name
+          , saved_path
+          , saved_size
+          , delete_yn
+    </sql>
+
+    <!--    thumbnail 컬럼    -->
+    <sql id="thumbnailColumns">
+            thumbnail_id
+          , file_id
+          , post_id
+          , original_name
+          , saved_name
+          , saved_path
+          , saved_size
+    </sql>
+
+    <!--    파일 리스트 저장    -->
+    <insert id="saveAll" parameterType="list">
+        INSERT INTO post_file (
+            <include refid="fileColumns"></include>
+        ) VALUES
+        <foreach collection="list" item="file" separator=",">
+            (
+              #{file.fileId}
+            , #{file.postId}
+            , #{file.originalName}
+            , #{file.savedName}
+            , #{file.savedPath}
+            , #{file.savedSize}
+            , 0
+            )
+        </foreach>
+    </insert>
+
+    <!--    파일 단건 조회    -->
+    <select id="findById" parameterType="long" resultType="com.hh.multiboarduserbackend.domain.file.FileVo">
+        SELECT
+            <include refid="fileColumns"></include>
+        FROM
+            post_file
+        WHERE
+            file_id = #{fileId}
+            AND delete_yn = 0
+    </select>
+
+    <!--    게시글 아이디로 파일 리스트 조회    -->
+    <select id="findAllByPostId" parameterType="long" resultType="com.hh.multiboarduserbackend.domain.file.FileVo">
+        SELECT
+            <include refid="fileColumns"></include>
+        FROM
+            post_file
+        WHERE
+            post_id = #{postId}
+            AND delete_yn = 0
+        ORDER BY
+            file_id ASC
+    </select>
+
+    <!--    파일 아이디 리스트로 파일 리스트 조회    -->
+    <select id="findAllByIds" parameterType="list" resultType="com.hh.multiboarduserbackend.domain.file.FileVo">
+        SELECT
+            <include refid="fileColumns"></include>
+        FROM
+            post_file
+        WHERE
+            delete_yn = 0
+            AND file_id IN
+            <foreach collection="list" item="fileId" open="(" separator="," close=")">
+                #{fileId}
+            </foreach>
+        ORDER BY
+            file_id ASC
+    </select>
+
+    <!--    파일 아이디 리스트로 파일 삭제    -->
+    <delete id="deleteAllByIds" parameterType="list">
+        DELETE
+        FROM
+            post_file
+        WHERE
+            file_id IN
+            <foreach collection="list" item="fileId" open="(" separator="," close=")">
+                #{fileId}
+            </foreach>
+    </delete>
+
+    <!--    썸네일용 첫 파일 조회    -->
+    <select id="findFirstByPostId" parameterType="long" resultType="com.hh.multiboarduserbackend.domain.file.FileVo">
+        SELECT
+            <include refid="fileColumns"></include>
+        FROM
+            post_file
+        WHERE
+            post_id = #{postId}
+        ORDER BY
+            file_id ASC
+        LIMIT 1
+    </select>
+
+    <!--    썸네일 저장    -->
+    <insert id="saveThumbnail" parameterType="com.hh.multiboarduserbackend.domain.file.FileVo">
+        INSERT INTO post_thumbnail (
+            <include refid="thumbnailColumns"></include>
+        ) VALUES (
+              null
+            , #{fileId}
+            , #{postId}
+            , #{originalName}
+            , #{savedName}
+            , #{savedPath}
+            , #{savedSize}
+        )
+    </insert>
+
+    <!--    썸네일 postId로 카운트    -->
+    <select id="countAllThumbnailByPostId" parameterType="long" resultType="int">
+        SELECT
+            COUNT(*)
+        FROM
+            post_thumbnail
+        WHERE
+            post_id = #{postId}
+    </select>
+</mapper>

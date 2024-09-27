@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hh.multiboarduserbackend.domain.member.MemberRepository">
+
+<!--    member 테이블 전체 컬럼    -->
+    <sql id="memberColumns">
+          member_id
+        , login_id
+        , password
+        , nickname
+        , delete_yn
+        , created_date
+        , updated_date
+    </sql>
+
+<!--    회원가입    -->
+    <insert id="save" parameterType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+        INSERT INTO member (
+          <include refid="memberColumns"></include>
+        ) VALUES (
+          #{memberId}
+        , #{loginId}
+        , #{password}
+        , #{nickname}
+        , 0
+        , NOW()
+        , NOW()
+        )
+    </insert>
+
+<!--    아이디로 회원 찾기    -->
+    <select id="findById" parameterType="long" resultType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+        SELECT
+            <include refid="memberColumns"></include>
+        FROM
+            member
+        WHERE
+            member_id = #{memberId}
+    </select>
+
+<!--    로그인 아이디로 회원 찾기    -->
+    <select id="findByLoginId" parameterType="java.lang.String" resultType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+        SELECT
+            <include refid="memberColumns"></include>
+        FROM
+            member
+        WHERE
+            login_id = #{loginId}
+    </select>
+
+<!--    닉네임으로 회원 찾기    -->
+    <select id="findByNickname" parameterType="java.lang.String" resultType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+        SELECT
+            <include refid="memberColumns"></include>
+        FROM
+            member
+        WHERE
+            nickname = #{nickname}
+    </select>
+</mapper>
