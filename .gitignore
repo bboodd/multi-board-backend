@@ -19,6 +19,7 @@ bin/
 
 ### IntelliJ IDEA ###
 application.properties
+application-dev.properties
 
 .idea
 *.iws
@@ -37,3 +38,5 @@ out/
 
 ### VS Code ###
 .vscode/
+!/data.sql
+!/schema.sql
