@@ -106,6 +106,7 @@ public class PostController {
             List<MultipartFile> fileList = postRequestDto.files();
             fileUploadAndSave(fileList, postId);
 
+            // TODO: 없애기 - headfrist 디자인패턴
             if(boardType.equals("gallery")) {
                 // 썸네일 업로드 및 저장
                 thumbnailUploadAndSave(postId);

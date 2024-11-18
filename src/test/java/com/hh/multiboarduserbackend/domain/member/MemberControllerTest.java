@@ -96,7 +96,7 @@ class MemberControllerTest {
     @Test
     void 아이디_중복체크_중복() throws Exception {
         //given
-        DuplicateCheckRequestDto check = DuplicateCheckRequestDto.builder().loginId("qw12").build();
+        DuplicateCheckRequestDto check = DuplicateCheckRequestDto.builder().str("qw12").build();
         String json = objectMapper.writeValueAsString(check);
         String loginId = "{\"loginId\":\"qw12\"}";
 
