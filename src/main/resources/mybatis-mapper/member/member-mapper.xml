@@ -16,7 +16,7 @@
     </sql>
 
 <!--    회원가입    -->
-    <insert id="save" parameterType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+    <insert id="save" parameterType="com.spring.multiboardbackend.domain.member.MemberVo">
         INSERT INTO member (
           <include refid="memberColumns"></include>
         ) VALUES (
@@ -31,7 +31,7 @@
     </insert>
 
 <!--    아이디로 회원 찾기    -->
-    <select id="findById" parameterType="long" resultType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+    <select id="findById" parameterType="long" resultType="com.spring.multiboardbackend.domain.member.MemberVo">
         SELECT
             <include refid="memberColumns"></include>
         FROM
@@ -41,7 +41,7 @@
     </select>
 
 <!--    로그인 아이디로 회원 찾기    -->
-    <select id="findByLoginId" parameterType="java.lang.String" resultType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+    <select id="findByLoginId" parameterType="java.lang.String" resultType="com.spring.multiboardbackend.domain.member.MemberVo">
         SELECT
             <include refid="memberColumns"></include>
         FROM
@@ -51,7 +51,7 @@
     </select>
 
 <!--    닉네임으로 회원 찾기    -->
-    <select id="findByNickname" parameterType="java.lang.String" resultType="com.hh.multiboarduserbackend.domain.member.MemberVo">
+    <select id="findByNickname" parameterType="java.lang.String" resultType="com.spring.multiboardbackend.domain.member.MemberVo">
         SELECT
             <include refid="memberColumns"></include>
         FROM
