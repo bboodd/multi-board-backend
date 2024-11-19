@@ -66,7 +66,7 @@
     </sql>
 
     <!--    게시글 등록    -->
-    <insert id="save" parameterType="com.hh.multiboarduserbackend.domain.post.PostVo" useGeneratedKeys="true" keyProperty="postId">
+    <insert id="save" parameterType="com.spring.multiboardbackend.domain.post.vo.PostVo" useGeneratedKeys="true" keyProperty="postId">
         INSERT INTO post (
             <include refid="postColumns"></include>
         ) VALUES (
@@ -87,7 +87,7 @@
     </insert>
 
     <!--    게시글 수정    -->
-    <update id="update" parameterType="com.hh.multiboarduserbackend.domain.post.PostVo">
+    <update id="update" parameterType="com.spring.multiboardbackend.domain.post.vo.PostVo">
         UPDATE
             post
         SET
@@ -102,7 +102,7 @@
     </update>
 
     <!--    게시글 단건 조회    -->
-    <select id="findById" parameterType="long" resultType="com.hh.multiboarduserbackend.domain.post.PostVo">
+    <select id="findById" parameterType="long" resultType="com.spring.multiboardbackend.domain.post.vo.PostVo">
         SELECT
             <include refid="postColumns"></include>
             , COALESCE((SELECT nickname FROM member WHERE member.member_id = post.member_id), (SELECT nickname FROM admin WHERE admin.admin_id = post.admin_id)) AS nickname
@@ -115,7 +115,7 @@
     </select>
 
     <!--    게시글 리스트 조회    -->
-    <select id="findAllBySearch" parameterType="com.hh.multiboarduserbackend.common.vo.SearchVo" resultType="com.hh.multiboarduserbackend.domain.post.PostVo">
+    <select id="findAllBySearch" parameterType="com.spring.multiboardbackend.global.common.vo.SearchVo" resultType="com.spring.multiboardbackend.domain.post.vo.PostVo">
         SELECT
             <include refid="postColumns"></include>
             , COALESCE((SELECT nickname FROM member WHERE member.member_id = post.member_id), (SELECT nickname FROM admin WHERE admin.admin_id = post.admin_id)) AS nickname
@@ -131,7 +131,7 @@
     </select>
 
     <!--    게시글 수 카운팅    -->
-    <select id="countAllBySearch" parameterType="com.hh.multiboarduserbackend.common.vo.SearchVo" resultType="int">
+    <select id="countAllBySearch" parameterType="com.spring.multiboardbackend.global.common.vo.SearchVo" resultType="int">
         SELECT
             COUNT(*)
         FROM
