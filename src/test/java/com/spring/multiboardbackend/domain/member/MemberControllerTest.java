@@ -1,8 +1,8 @@
 package com.spring.multiboardbackend.domain.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.multiboardbackend.domain.member.request.DuplicateCheckRequestDto;
-import com.spring.multiboardbackend.domain.member.request.SignUpDto;
+import com.spring.multiboardbackend.domain.member.dto.request.DuplicateCheckRequest;
+import com.spring.multiboardbackend.domain.member.dto.request.SignUpRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,13 +52,13 @@ class MemberControllerTest {
     @Test
     void 회원가입검증_성공() throws Exception {
         //given
-        SignUpDto signUpDto = SignUpDto.builder()
+        SignUpRequest signUpRequest = SignUpRequest.builder()
                 .loginId("zxcv")
                 .password("qw12!")
                 .checkPassword("qw12!")
                 .nickname("zxcv")
                 .build();
-        String json = objectMapper.writeValueAsString(signUpDto);
+        String json = objectMapper.writeValueAsString(signUpRequest);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api-board/members/signup")
@@ -74,13 +74,13 @@ class MemberControllerTest {
     @Test
     void 회원가입검증_연속된비밀번호_실패() throws Exception {
         //given
-        SignUpDto signUpDto = SignUpDto.builder()
+        SignUpRequest signUpRequest = SignUpRequest.builder()
                 .loginId("zxcv")
                 .password("qqq111!")
                 .checkPassword("qqq111!")
                 .nickname("zxcv")
                 .build();
-        String json = objectMapper.writeValueAsString(signUpDto);
+        String json = objectMapper.writeValueAsString(signUpRequest);
 
         //when
         ResultActions resultActions = mockMvc.perform(post("/api-board/members/signup")
@@ -96,7 +96,7 @@ class MemberControllerTest {
     @Test
     void 아이디_중복체크_중복() throws Exception {
         //given
-        DuplicateCheckRequestDto check = DuplicateCheckRequestDto.builder().str("qw12").build();
+        DuplicateCheckRequest check = DuplicateCheckRequest.builder().str("qw12").build();
         String json = objectMapper.writeValueAsString(check);
         String loginId = "{\"loginId\":\"qw12\"}";
 

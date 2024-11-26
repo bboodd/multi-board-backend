@@ -1,55 +1,51 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.hh.multiboarduserbackend.domain.comment.CommentRepository">
-    <!--    comment 컬럼    -->
+<mapper namespace="com.spring.multiboardbackend.domain.post.repository.CommentRepository">
+    <!-- 공통 컬럼 -->
     <sql id="commentColumns">
-          comment_id
-        , post_id
-        , content
-        , created_date
-        , delete_yn
-        , admin_id
-        , member_id
+        c.comment_id,
+        c.post_id,
+        c.member_id,
+        c.content,
+        c.created_at,
+        c.is_deleted
     </sql>
 
-    <!--    댓글 등록    -->
-    <insert id="save" parameterType="com.spring.multiboardbackend.domain.post.vo.CommentVo">
-        INSERT INTO post_comment (
-            <include refid="commentColumns"></include>
+    <!-- 댓글 등록 -->
+    <insert id="save" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comments (
+            post_id,
+            member_id,
+            content,
+            created_at,
+            is_deleted
         ) VALUES (
-              #{commentId}
-            , #{postId}
-            , #{content}
-            , NOW()
-            , 0
-            , null
-            , #{memberId}
+            #{postId},
+            #{memberId},
+            #{content},
+            NOW(),
+            false
         )
     </insert>
 
-    <!--    게시글 아이디에 해당하는 댓글 리스트 조회    -->
-    <select id="findAllByPostId" parameterType="long" resultType="com.spring.multiboardbackend.domain.post.vo.CommentVo">
-        SELECT
-              <include refid="commentColumns"></include>
-            , COALESCE((SELECT nickname FROM member WHERE member.member_id = post_comment.member_id), (SELECT nickname FROM admin WHERE admin.admin_id = post_comment.admin_id)) AS nickname
-        FROM
-            post_comment
+    <!-- 댓글 삭제 -->
+    <update id="deleteById">
+        UPDATE comments c
+        SET
+            c.is_deleted = true
         WHERE
-            post_id = #{postId}
-            AND delete_yn = 0
-        ORDER BY
-            comment_id ASC
+            c.comment_id = #{id}
+    </update>
+
+    <!-- 댓글 단건 조회 -->
+    <select id="findById" resultType="com.spring.multiboardbackend.domain.post.vo.CommentVO">
+        SELECT
+            <include refid="commentColumns"/>
+        FROM
+            comments c
+        WHERE
+            c.comment_id = #{id}
     </select>
 
-    <!--    댓글 삭제    -->
-    <update id="deleteById" parameterType="long">
-        UPDATE
-            post_comment
-        SET
-            delete_yn = 1
-        WHERE
-            comment_id = #{commentId}
-    </update>
 </mapper>

@@ -1,26 +1,54 @@
 package com.spring.multiboardbackend.domain.post.repository;
 
-import com.spring.multiboardbackend.domain.post.vo.FileVo;
+import com.spring.multiboardbackend.domain.post.enums.FileType;
+import com.spring.multiboardbackend.domain.post.vo.FileVO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Mapper
 public interface FileRepository {
 
-    void saveAll(List<FileVo> fileList);
+    /**
+     * 파일 목록 저장
+     */
+    int saveAll(@Param("fileList") List<FileVO> files);
 
-    FileVo findById(Long fileId);
+    /**
+     * 파일 단건 조회
+     */
+    Optional<FileVO> findById(Long id);
 
-    List<FileVo> findAllByPostId(Long postId);
+    /**
+     * 게시글의 첫번째 파일 조회
+     */
+    Optional<FileVO> findFirstByPostId(Long postId);
 
-    List<FileVo> findAllByIds(List<Long> idList);
+    /**
+     * 게시글의 모든 파일 조회
+     */
+    List<FileVO> findAllByPostId(Long postId);
 
-    void deleteAllByIds(List<Long> idList);
+    /**
+     * 파일 ID 목록으로 파일 조회
+     */
+    List<FileVO> findAllByIds(@Param("idList") List<Long> ids);
 
-    FileVo findFirstByPostId(Long postId);
+    /**
+     * 썸네일 저장
+     */
+    int saveThumbnail(@Param("file") FileVO file);
 
-    void saveThumbnail(FileVo fileVo);
+    /**
+     * 게시글의 썸네일 개수 조회
+     */
+    int countThumbnailByPostId(Long postId);
 
-    int countAllThumbnailByPostId(Long postId);
+    /**
+     * 파일 ID 목록으로 파일 삭제
+     */
+    int deleteAllByIds(@Param("idList") List<Long> ids);
 }

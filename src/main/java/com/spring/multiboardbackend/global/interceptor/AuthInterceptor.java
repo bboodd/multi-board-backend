@@ -1,7 +1,7 @@
 package com.spring.multiboardbackend.global.interceptor;
 
 import com.spring.multiboardbackend.global.security.auth.AuthenticationContextHolder;
-import com.spring.multiboardbackend.domain.member.LoginMember;
+import com.spring.multiboardbackend.domain.member.annotation.LoginMember;
 import com.spring.multiboardbackend.global.security.jwt.JwtProvider;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

@@ -1,9 +1,12 @@
 package com.spring.multiboardbackend.global.util;
 
-import com.spring.multiboardbackend.domain.post.dto.request.FileRequestDto;
-import com.spring.multiboardbackend.domain.post.dto.response.FileResponseDto;
-import com.spring.multiboardbackend.domain.post.vo.FileVo;
+import com.spring.multiboardbackend.domain.post.enums.FileType;
 import com.spring.multiboardbackend.domain.post.exception.FileErrorCode;
+import com.spring.multiboardbackend.global.exception.ErrorCode;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnailator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -13,7 +16,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -24,7 +26,11 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class FileUtils {
+    private static final String THUMBNAIL_PREFIX = "thumbnail_";
+    private static final int THUMBNAIL_WIDTH = 250;
+    private static final int THUMBNAIL_HEIGHT = 150;
 
     @Value("${upload-path}")
     private String uploadPath;
@@ -34,8 +40,8 @@ public class FileUtils {
      * @param multipartFileList - 파일 객체 list
      * @return db에 저장할 파일 정보 list
      */
-    public List<FileRequestDto> uploadFiles(List<MultipartFile> multipartFileList) {
-        List<FileRequestDto> files = new ArrayList<>();
+    public List<UploadedFile> uploadFiles(List<MultipartFile> multipartFileList) {
+        List<UploadedFile> files = new ArrayList<>();
         for (MultipartFile multipartFile : multipartFileList) {
             if(multipartFile.isEmpty()) {
                 continue;
@@ -50,78 +56,87 @@ public class FileUtils {
      * @param multipartFile - 파일 객체
      * @return db에 저장할 파일 정보
      */
-    public FileRequestDto uploadFile(MultipartFile multipartFile) {
+    public UploadedFile uploadFile(MultipartFile multipartFile) {
         if(multipartFile.isEmpty()) {
             return null;
         }
 
         String saveName = generateSaveFileName(multipartFile.getOriginalFilename());
-        String filePath = getUploadPath() + File.separator + saveName;
-        File uploadFile = new File(filePath);
+        Path filePath = Paths.get(uploadPath, saveName);
 
         try {
-            multipartFile.transferTo(uploadFile);
-        } catch (IOException e) {
-            throw FileErrorCode.DEFAULT_ERROR_CODE.defaultException(e);
-        }
+            Files.createDirectories(filePath.getParent()); // 디렉토리가 없을 경우 생성
+            Files.copy(multipartFile.getInputStream(), filePath);
 
-        return FileRequestDto.builder()
-                .originalName(multipartFile.getOriginalFilename())
-                .savedName(saveName)
-                .savedPath(uploadPath)
-                .savedSize(multipartFile.getSize())
-                .build();
+            return UploadedFile.of(
+                    multipartFile.getOriginalFilename(),
+                    saveName,
+                    uploadPath,
+                    multipartFile.getSize(),
+                    FileType.ATTACHMENT,
+                    multipartFile.getContentType()
+            );
+
+        } catch (IOException e) {
+            log.error("파일 업로드 실패: {}", e.getMessage());
+            throw ErrorCode.INTERNAL_SERVER_ERROR.defaultException(e);
+        }
     }
 
     /**
      * File 매개변수가 이미지타입인지 확인
-     * @param file - File
+     * @param path - 파일 경로
      * @return - boolean
      */
-    private boolean checkImageType(File file) {
+    private boolean checkImageType(Path path) {
         try {
-            String contentType = Files.probeContentType(file.toPath());
-            return contentType.startsWith("image");
+            String contentType = Files.probeContentType(path);
+            return contentType != null && contentType.startsWith("image");
         } catch (IOException e) {
-            throw FileErrorCode.DEFAULT_ERROR_CODE.defaultException(e);
+            throw ErrorCode.INTERNAL_SERVER_ERROR.defaultException(e);
         }
     }
 
     /**
      * 썸네일 업로드 메서드
-     * @param fileVo - 썸네일로 변환할 파일 정보
+     * @param file - 썸네일로 변환할 파일 정보
      * @return - FileVo
      */
-    public FileVo uploadThumbnail(FileVo fileVo) {
-        String originFilePath = getUploadPath() + File.separator + fileVo.getSavedName();
-
-        String thumbnailSaveName = "thumbnail_" + fileVo.getSavedName();
-        String thumbnailFilePath = getUploadPath() + File.separator + thumbnailSaveName;
-
-        long thumbnailSize = 0;
+    public UploadedFile uploadThumbnail(UploadedFile file) {
+        Path originPath = Paths.get(uploadPath, file.savedName());
+        String thumbnailName = THUMBNAIL_PREFIX + file.savedName();
+        Path thumbnailPath = Paths.get(uploadPath, thumbnailName);
 
         try {
-            File originFile = new File(originFilePath);
-            if(!checkImageType(originFile)) {
+            if (!Files.exists(originPath)) {
+                throw FileErrorCode.FILE_NOT_FOUND.defaultException();
+            }
+
+            if (!checkImageType(originPath)) {
                 throw FileErrorCode.FILE_NOT_IMAGE.defaultException();
             }
-            File thumbnailFile = new File(thumbnailFilePath);
 
-            Thumbnailator.createThumbnail(originFile, thumbnailFile, 250, 150);
+            Thumbnailator.createThumbnail(
+                    originPath.toFile(),
+                    thumbnailPath.toFile(),
+                    THUMBNAIL_WIDTH,
+                    THUMBNAIL_HEIGHT
+            );
 
-            thumbnailSize = thumbnailFile.length();
+            return UploadedFile.of(
+                    file.originalName(),
+                    thumbnailName,
+                    uploadPath,
+                    Files.size(thumbnailPath),
+                    FileType.THUMBNAIL,
+                    Files.probeContentType(thumbnailPath)
+            );
+
         } catch (IOException e) {
-            throw FileErrorCode.DEFAULT_ERROR_CODE.defaultException(e);
-        }
+            log.error("썸네일 생성 실패: {}", e.getMessage());
+            throw ErrorCode.INTERNAL_SERVER_ERROR.defaultException(e);
 
-        return FileVo.builder()
-                .fileId(fileVo.getFileId())
-                .postId(fileVo.getPostId())
-                .originalName(fileVo.getOriginalName())
-                .savedName(thumbnailSaveName)
-                .savedPath(uploadPath)
-                .savedSize(thumbnailSize)
-                .build();
+        }
     }
 
     /**
@@ -130,90 +145,46 @@ public class FileUtils {
      * @return 디스크에 저장할 파일명
      */
     private String generateSaveFileName(String originalName) {
-        String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+        String uuid = UUID.randomUUID().toString().replace("-", "");
         String extension = StringUtils.getFilenameExtension(originalName);
         return uuid + "." + extension;
-    }
-
-    /**
-     * 업로드 경로 반환
-     * @return 업로드 경로
-     */
-    private String getUploadPath() {
-        return makeDirectories(uploadPath);
-    }
-
-    /**
-     * 업로드 경로 반환
-     * @param addPath - 추가 경로
-     * @return 업로드 경로
-     */
-    private String getUploadPath(String addPath) {
-        return makeDirectories(uploadPath + File.separator + addPath);
-    }
-
-    /**
-     * 업로드 폴더(디렉터리) 생성
-     * @param filePath - 업로드 경로
-     * @return 업로드 경로
-     */
-    private String makeDirectories(String filePath) {
-        File dir = new File(filePath);
-        if(dir.exists() == false) {
-            dir.mkdir();
-        }
-        return dir.getPath();
     }
 
     /**
      * 파일 삭제 (from disk)
      * @param files - 삭제할 파일 정보 list
      */
-    public void deleteFiles(List<FileResponseDto> files) {
+    public void deleteFiles(List<UploadedFile> files) {
         if(CollectionUtils.isEmpty(files)) {
             return;
         }
-        for(FileResponseDto file : files) {
-            deleteFile(file.savedPath() + file.savedName());
-        }
+        files.forEach(file -> {
+            try {
+                Path filePath = Paths.get(file.savedPath(), file.savedName());
+                Files.deleteIfExists(filePath);
+            } catch (IOException e) {
+                log.error("파일 삭제 실패: {}", e.getMessage());
+                throw ErrorCode.INTERNAL_SERVER_ERROR.defaultException(e);
+            }
+        });
     }
 
     /**
-     * 파일 삭제 (from DisK)
-     * @param addPath - 추가 경로
-     * @param fileName - 파일명
-     */
-    private void deleteFile(String addPath, String fileName) {
-        String filePath = Paths.get(uploadPath, addPath, fileName).toString();
-        deleteFile(filePath);
-    }
-
-    /**
-     * 파일 삭제 (from Disk)
-     * @param filePath - 파일 경로
-     */
-    private void deleteFile(String filePath) {
-        File file = new File(filePath);
-        if(file.exists()) {
-            file.delete();
-        }
-    }
-
-    /**
-     * 파일 dto 받아서 resource 반환
      * @param file - 파일 정보
      * @return - Resource
      */
-    public Resource readFileAsResource(FileResponseDto file) {
-        String fileName = file.savedName();
-        Path filePath = Paths.get(uploadPath, fileName);
+    public Resource readFileAsResource(UploadedFile file) {
         try {
+            Path filePath = Paths.get(uploadPath, file.savedName());
             Resource resource = new UrlResource(filePath.toUri());
-            if(resource.exists() == false || resource.isFile() == false) {
+
+            if (!resource.exists() || !resource.isFile()) {
                 throw FileErrorCode.FILE_NOT_FOUND.defaultException();
             }
+
             return resource;
         } catch (MalformedURLException e) {
+            log.error("파일 리소스 반환 실패: {}", e.getMessage());
             throw FileErrorCode.FILE_NOT_FOUND.defaultException(e);
         }
     }

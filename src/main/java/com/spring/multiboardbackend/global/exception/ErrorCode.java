@@ -4,35 +4,37 @@ import org.springframework.http.HttpStatus;
 
 public interface ErrorCode {
     String name();
-    HttpStatus defaultHttpStatus();
-    String defaultMessage();
-    RuntimeException defaultException();
-    RuntimeException defaultException(Throwable cause);
+    HttpStatus getStatus();
+    String getMessage();
 
-    public static final ErrorCode DEFAULT_ERROR_CODE = new ErrorCode() {
+    // 기본 에러 코드 정의
+    ErrorCode INTERNAL_SERVER_ERROR = new ErrorCode() {
         @Override
         public String name() {
-            return "SERVER_ERROR";
+            return "INTERNAL_SERVER_ERROR";
         }
 
         @Override
-        public HttpStatus defaultHttpStatus() {
+        public HttpStatus getStatus() {
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
         @Override
-        public String defaultMessage() {
-            return "서버 오류";
-        }
-
-        @Override
-        public RuntimeException defaultException() {
-            return new CustomException("SERVER_ERROR");
-        }
-
-        @Override
-        public RuntimeException defaultException(Throwable cause) {
-            return new CustomException("SERVER_ERROR", cause);
+        public String getMessage() {
+            return "서버 오류가 발생했습니다";
         }
     };
+
+    // 편의 메서드
+    default CustomException defaultException() {
+        return new CustomException(this);
+    }
+
+    default CustomException defaultException(Throwable cause) {
+        return new CustomException(this, cause);
+    }
+
+    default CustomException defaultException(String additionalMessage) {
+        return new CustomException(this, getMessage() + " " + additionalMessage);
+    }
 }
