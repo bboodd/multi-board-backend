@@ -1,38 +1,37 @@
 package com.spring.multiboardbackend.global.exception;
 
+import lombok.Getter;
+
+@Getter
 public class CustomException extends RuntimeException{
 
-    protected ErrorCode ERROR_CODE;
-
-    private static ErrorCode getDefaultErrorCode() {
-        return ErrorCode.DEFAULT_ERROR_CODE;
-    }
-
-    public CustomException() {
-        this.ERROR_CODE = getDefaultErrorCode();
-    }
-
-    public CustomException(String message) {
-        super(message);
-        this.ERROR_CODE = getDefaultErrorCode();
-    }
-
-    public CustomException(String message, Throwable cause) {
-        super(message, cause);
-        this.ERROR_CODE = getDefaultErrorCode();
-    }
+    private final ErrorCode errorCode;
 
     public CustomException(ErrorCode errorCode) {
-        super(errorCode.defaultMessage());
-        this.ERROR_CODE = errorCode;
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
+    }
+
+    public CustomException(ErrorCode errorCode, String message) {
+        super(message);
+        this.errorCode = errorCode;
     }
 
     public CustomException(ErrorCode errorCode, Throwable cause) {
-        super(errorCode.defaultMessage(), cause);
-        this.ERROR_CODE = errorCode;
+        super(errorCode.getMessage(), cause);
+        this.errorCode = errorCode;
     }
 
-    public ErrorCode getErrorCode() {
-        return ERROR_CODE;
+    public CustomException(ErrorCode errorCode, String message, Throwable cause) {
+        super(message, cause);
+        this.errorCode = errorCode;
+    }
+
+    // 서버 에러용 정적 팩토리 메서드
+    public static CustomException internalServerError(Throwable cause) {
+        return new CustomException(
+                ErrorCode.INTERNAL_SERVER_ERROR,
+                cause
+        );
     }
 }

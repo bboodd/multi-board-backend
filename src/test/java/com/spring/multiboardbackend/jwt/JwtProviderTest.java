@@ -1,7 +1,7 @@
 package com.spring.multiboardbackend.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.multiboardbackend.domain.member.MemberService;
+import com.spring.multiboardbackend.domain.member.service.MemberService;
 import com.spring.multiboardbackend.global.exception.CustomException;
 import com.spring.multiboardbackend.global.security.jwt.JwtProperties;
 import com.spring.multiboardbackend.global.security.jwt.JwtProvider;

@@ -1,5 +1,7 @@
 package com.spring.multiboardbackend.domain.member;
 
+import com.spring.multiboardbackend.domain.member.repository.MemberRepository;
+import com.spring.multiboardbackend.domain.member.vo.MemberVO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -23,7 +25,7 @@ class MemberRepositoryTest {
     @Test
     void 멤버찾기_로그인아이디_성공() {
         //given
-        MemberVo member = memberRepository.findByLoginId("qw12");
+        MemberVO member = memberRepository.findByLoginId("qw12");
 
         //when
 
@@ -35,7 +37,7 @@ class MemberRepositoryTest {
     @Test
     void 멤버찾기_로그인아이디_실패() {
         //given
-        Optional<MemberVo> member = Optional.ofNullable(memberRepository.findByLoginId("잘못된아이디"));
+        Optional<MemberVO> member = Optional.ofNullable(memberRepository.findByLoginId("잘못된아이디"));
 
         //when
 
@@ -46,11 +48,11 @@ class MemberRepositoryTest {
     @Test
     void 회원가입_성공() {
         //given
-        MemberVo member = MemberVo.builder().loginId("아이디").password("비밀번호").nickname("닉네임").build();
+        MemberVO member = MemberVO.builder().loginId("아이디").password("비밀번호").nickname("닉네임").build();
 
         //when
         memberRepository.save(member);
-        Optional<MemberVo> findMember = Optional.ofNullable(memberRepository.findByLoginId("아이디"));
+        Optional<MemberVO> findMember = Optional.ofNullable(memberRepository.findByLoginId("아이디"));
 
         //then
         assertThat(findMember.get().getNickname()).isEqualTo(member.getNickname());

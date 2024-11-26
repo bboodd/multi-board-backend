@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.hh.multiboarduserbackend.domain.category.CategoryRepository">
-    <!--    category 컬럼    -->
-    <sql id="categoryColumns">
-          category_id
-        , type_id
-        , category_name
+<mapper namespace="com.spring.multiboardbackend.domain.board.repository.CategoryRepository">
+    <!-- 공통 컬럼 -->
+    <sql id="categoriesColumns">
+        c.category_id,
+        c.board_type_id,
+        c.name
     </sql>
 
-    <!--    전체 카테고리 리스트 조회    -->
-    <select id="findAll" resultType="com.spring.multiboardbackend.domain.board.vo.CategoryVo">
+    <!-- 카테고리 조회 -->
+    <select id="findAllByBoardTypeId" resultType="com.spring.multiboardbackend.domain.board.vo.CategoryVO">
         SELECT
-            <include refid="categoryColumns"></include>
+            <include refid="categoriesColumns"/>
         FROM
-            post_category
+            categories c
         WHERE
-            type_id = #{type_id}
+            c.board_type_id = #{boardTypeId}
+        ORDER BY
+            c.category_id
+    </select>
+
+    <select id="findById" resultType="com.spring.multiboardbackend.domain.board.vo.CategoryVO">
+        SELECT
+            <include refid="categoriesColumns"/>
+        FROM
+            categories c
+        WHERE
+            c.category_id = #{id}
     </select>
 </mapper>

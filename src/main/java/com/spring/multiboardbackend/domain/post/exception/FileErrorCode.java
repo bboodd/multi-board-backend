@@ -15,22 +15,12 @@ public enum FileErrorCode implements ErrorCode {
     private final HttpStatus status;
 
     @Override
-    public String defaultMessage() {
+    public String getMessage() {  // default 접두사 제거
         return message;
     }
 
     @Override
-    public HttpStatus defaultHttpStatus() {
+    public HttpStatus getStatus() {  // default 접두사 제거
         return status;
-    }
-
-    @Override
-    public CustomException defaultException() {
-        return new CustomException(this);
-    }
-
-    @Override
-    public CustomException defaultException(Throwable cause) {
-        return new CustomException(this, cause);
     }
 }

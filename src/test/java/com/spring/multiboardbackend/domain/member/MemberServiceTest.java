@@ -1,6 +1,9 @@
 package com.spring.multiboardbackend.domain.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.multiboardbackend.domain.member.repository.MemberRepository;
+import com.spring.multiboardbackend.domain.member.service.MemberService;
+import com.spring.multiboardbackend.domain.member.vo.MemberVO;
 import com.spring.multiboardbackend.global.exception.CustomException;
 import com.spring.multiboardbackend.global.security.jwt.JwtProvider;
 import com.spring.multiboardbackend.global.security.jwt.JwtToken;
@@ -32,7 +35,7 @@ class MemberServiceTest {
     @Test
     void 회원가입테스트_성공() {
         //given
-        MemberVo memberVo = MemberVo.builder()
+        MemberVO memberVo = MemberVO.builder()
                 .loginId("qwer").password("1234").nickname("abcd").build();
 
         //when
@@ -45,7 +48,7 @@ class MemberServiceTest {
     @Test
     void 회원가입검증테스트_중복_실패() {
         //given
-        MemberVo memberVo = MemberVo.builder()
+        MemberVO memberVo = MemberVO.builder()
                 .loginId("qwer").password("1234").nickname("abcd").build();
         given(memberRepository.findByLoginId("qwer")).willReturn(memberVo);
         //when
@@ -59,7 +62,7 @@ class MemberServiceTest {
     @Test
     void 로그인테스트_성공() {
         //given
-        MemberVo memberVo = MemberVo.builder().memberId(1L)
+        MemberVO memberVo = MemberVO.builder().memberId(1L)
                 .loginId("qwer").password("1234").nickname("abcd").build();
         JwtToken token = JwtToken.builder()
                 .accessToken("토큰").build();
@@ -76,7 +79,7 @@ class MemberServiceTest {
     @Test
     void 로그인검증테스트_없는아이디_실패() {
         //given
-        MemberVo memberVo = MemberVo.builder().memberId(1L)
+        MemberVO memberVo = MemberVO.builder().memberId(1L)
                 .loginId("qwer").password("1234").nickname("abcd").build();
 
         given(memberRepository.findByLoginId("qwer")).willReturn(null);
@@ -92,11 +95,11 @@ class MemberServiceTest {
     @Test
     void 로그인검증테스트_틀린비밀번호_실패() {
         //given
-        MemberVo memberVo = MemberVo.builder().memberId(1L)
+        MemberVO memberVo = MemberVO.builder().memberId(1L)
                 .loginId("qwer").password("1234").nickname("abcd").build();
-        MemberVo memberVo2 = MemberVo.builder().memberId(2L)
+        MemberVO memberVO2 = MemberVO.builder().memberId(2L)
                 .loginId("qwer").password("2345").nickname("abcd").build();
-        given(memberRepository.findByLoginId("qwer")).willReturn(memberVo2);
+        given(memberRepository.findByLoginId("qwer")).willReturn(memberVO2);
         //when
 
         //then

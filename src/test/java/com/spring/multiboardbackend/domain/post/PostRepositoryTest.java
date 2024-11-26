@@ -1,7 +1,7 @@
 package com.spring.multiboardbackend.domain.post;
 
 import com.spring.multiboardbackend.domain.post.repository.PostRepository;
-import com.spring.multiboardbackend.domain.post.vo.PostVo;
+import com.spring.multiboardbackend.domain.post.vo.PostVO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -25,7 +25,7 @@ class PostRepositoryTest {
     @Test
     void 게시글_저장_성공() {
         //given
-        PostVo post = PostVo.builder()
+        PostVO post = PostVO.builder()
                 .memberId(1L)
                 .categoryId(1L)
                 .title("제목")
