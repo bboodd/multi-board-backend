@@ -15,7 +15,7 @@ public record LoginRequest(
 
         @Schema(description = "비밀번호", example = "password123!")
         @NotBlank(message = "비밀번호를 입력해 주세요.")
-        @Size(min = 8, max = 20, message = "비밀번호는 8자 이상 20자 이하로 입력해 주세요.")
+        @Size(min = 4, max = 16, message = "비밀번호는 4자 이상 16자 이하로 입력해 주세요.")
         String password
 ) {
     /**

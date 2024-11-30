@@ -4,7 +4,7 @@
 <mapper namespace="com.spring.multiboardbackend.domain.board.repository.CategoryRepository">
     <!-- 공통 컬럼 -->
     <sql id="categoriesColumns">
-        c.category_id,
+        c.category_id as id,
         c.board_type_id,
         c.name
     </sql>

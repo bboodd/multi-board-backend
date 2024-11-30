@@ -4,7 +4,6 @@ import com.spring.multiboardbackend.domain.post.vo.PostVO;
 import com.spring.multiboardbackend.global.common.vo.SearchVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,4 +55,10 @@ public interface PostRepository {
      * 조회수 증가
      */
     void incrementViewCount(Long id);
+
+    /**
+     * 게시글 단건 조회 (삭제 여부 무관)
+     */
+    Optional<PostVO> findByIdWithDeleted(Long id);
+
 }

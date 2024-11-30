@@ -7,9 +7,7 @@ public record CategoryResponse(
         @Schema(description = "카테고리 ID", example = "1")
         Long id,
         @Schema(description = "카테고리 이름", example = "공지사항")
-        String name,
-        @Schema(description = "게시판 타입 ID", example = "1")
-        Long boardTypeId
+        String name
 ) {
 
 }

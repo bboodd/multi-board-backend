@@ -1,13 +1,11 @@
 package com.spring.multiboardbackend.global.util;
 
-import com.spring.multiboardbackend.domain.post.enums.FileType;
 
 public record UploadedFile(
         String originalName,
         String savedName,
         String savedPath,
         long fileSize,
-        FileType fileType,
         String contentType
 ) {
     public static UploadedFile of(
@@ -15,7 +13,6 @@ public record UploadedFile(
             String savedName,
             String savedPath,
             long fileSize,
-            FileType fileType,
             String contentType
     ) {
         return new UploadedFile(
@@ -23,7 +20,6 @@ public record UploadedFile(
                 savedName,
                 savedPath,
                 fileSize,
-                fileType,
                 contentType
         );
     }

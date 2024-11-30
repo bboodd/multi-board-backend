@@ -3,6 +3,7 @@ package com.spring.multiboardbackend.global.interceptor;
 import com.spring.multiboardbackend.global.security.auth.AuthenticationContextHolder;
 import com.spring.multiboardbackend.domain.member.annotation.LoginMember;
 import com.spring.multiboardbackend.global.security.jwt.JwtProvider;
+import com.spring.multiboardbackend.global.security.jwt.exception.JwtErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -80,9 +81,14 @@ public class AuthInterceptor implements HandlerInterceptor {
      */
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
+        if (bearerToken == null) {
+            throw JwtErrorCode.REQUIRED_ACCESS_TOKEN.defaultException();
+        }
+
         if(StringUtils.hasText(bearerToken) || bearerToken.startsWith("Bearer")) {
             return bearerToken.substring("Bearer ".length());
         }
+
         return null;
     }
 }

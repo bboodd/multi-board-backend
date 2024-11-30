@@ -1,6 +1,5 @@
 package com.spring.multiboardbackend.domain.member.mapper;
 
-import com.spring.multiboardbackend.domain.member.dto.request.LoginRequest;
 import com.spring.multiboardbackend.domain.member.dto.request.SignUpRequest;
 import com.spring.multiboardbackend.domain.member.dto.response.LoginResponse;
 import com.spring.multiboardbackend.domain.member.dto.response.MemberResponse;

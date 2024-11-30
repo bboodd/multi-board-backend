@@ -120,7 +120,7 @@ public class FileService {
      * @return 썸네일 존재 여부
      */
     private boolean hasThumbnail(Long postId) {
-        return fileRepository.countThumbnailByPostId(postId) > 0;
+        return fileRepository.existsThumbnailByPostId(postId);
     }
 
     /**
@@ -135,7 +135,7 @@ public class FileService {
 
             UploadedFile thumbnail = fileUtils.uploadThumbnail(fileMapper.toUploadedFile(fileVo));
 
-            fileRepository.saveThumbnail(fileMapper.toVO(thumbnail, postId));
+            fileRepository.saveThumbnail(fileMapper.toThumbnailVO(thumbnail, postId, fileVo.getId()));
         }
     }
 

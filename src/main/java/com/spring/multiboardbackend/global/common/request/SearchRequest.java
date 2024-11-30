@@ -6,7 +6,23 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
-@Schema(description = "검색 조건")
+@Schema(
+        description = "검색 조건",
+        requiredProperties = {}, // 필수 필드가 없음을 명시
+        example = """
+    {
+      "startDate": null,
+      "endDate": null,
+      "categoryId": null,
+      "keyword": null,
+      "page": 1,
+      "size": 10,
+      "orderBy": null,
+      "sortBy" : null,
+      "nickname": null
+    }
+    """
+)
 public record SearchRequest(
         @Schema(description = "검색 시작일시")
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")

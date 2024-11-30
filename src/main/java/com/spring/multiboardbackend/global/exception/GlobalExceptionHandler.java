@@ -1,6 +1,5 @@
 package com.spring.multiboardbackend.global.exception;
 
-import com.spring.multiboardbackend.global.common.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +9,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -38,13 +38,14 @@ public class GlobalExceptionHandler {
                 .getFieldErrors()
                 .stream()
                 .map(error -> Map.of(
-                        "field", error.getField(),
-                        "message", Optional.ofNullable(error.getDefaultMessage())
-                                .orElse("Invalid value")
+                        "field", error.getField()
+//                        , "message", Optional.ofNullable(error.getDefaultMessage())
+//                                .orElse("Invalid value")
                 ))
                 .toList();
 
-        log.error("Validation error: {}", errors);
+        String message = Objects.requireNonNull(e.getBindingResult().getFieldError()).getDefaultMessage();
+        log.error("Validation error: {}", message);
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)

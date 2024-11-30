@@ -11,4 +11,10 @@ public record DuplicateCheckRequest(
         @Size(min = 2, max = 20, message = "2자 이상 20자 이하로 입력해 주세요.")
         String value
 ) {
+        /**
+         * 정적 메서드
+         */
+        public static DuplicateCheckRequest of(String value) {
+                return new DuplicateCheckRequest(value);
+        }
 }

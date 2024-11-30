@@ -1,10 +1,9 @@
-package com.spring.multiboardbackend.global.common.response;
+package com.spring.multiboardbackend.global.exception;
 
-import com.spring.multiboardbackend.global.exception.ErrorCode;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
-import java.time.Instant;
-
+@JsonInclude(Include.NON_NULL)
 public record ErrorResponse(
         Error error
 ) {

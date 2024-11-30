@@ -4,11 +4,12 @@
 <mapper namespace="com.spring.multiboardbackend.domain.member.repository.MemberRepository">
     <!-- 공통 컬럼 -->
     <sql id="membersColumns">
-        m.member_id,
+        m.member_id as id,
+        m.role_id,
         m.login_id,
         m.password,
         m.nickname,
-        m.is_deleted,
+        m.is_deleted as deleted,
         m.last_login_at
     </sql>
 
@@ -16,10 +17,12 @@
     <insert id="save" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO members (
             login_id,
+            role_id,
             password,
             nickname
         ) VALUES (
             #{loginId},
+            1,
             #{password},
             #{nickname}
         )

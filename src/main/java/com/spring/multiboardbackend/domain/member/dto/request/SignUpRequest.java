@@ -1,6 +1,5 @@
 package com.spring.multiboardbackend.domain.member.dto.request;
 
-import com.spring.multiboardbackend.domain.member.exception.MemberErrorCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -14,7 +13,7 @@ public record SignUpRequest(
 
         @Schema(description = "비밀번호", example = "Pass123!@#")
         @NotBlank(message = "비밀번호를 입력해 주세요")
-        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[#?!@$ %^&*-]).{4,16}$", message = "비밀번호는 4~16자의 영문, 숫자, 특수문자를 모두 포함해야 합니다")
+        @Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[#?!@$ %^&*-]).{4,16}$", message = "비밀번호는 4~16자의 영문, 숫자, 특수문자를 모두 포함해야 합니다")
         String password,
 
         @Schema(description = "비밀번호 확인", example = "Pass123!@#")
@@ -29,30 +28,6 @@ public record SignUpRequest(
 ) {
 
     /**
-     * 비밀번호 유효성 검증
-     */
-    public SignUpRequest {
-        validatePasswords(password, checkPassword, loginId);
-    }
-
-    /**
-     * 비밀번호 관련 모든 검증을 처리하는 private 메서드
-     */
-    private static void validatePasswords(String password, String checkPassword, String loginId) {
-        if (password == null || checkPassword == null) {
-            throw MemberErrorCode.SIGN_UP_PASSWORD_CHECK_ERROR.defaultException();
-        }
-
-        if (!password.equals(checkPassword)) {
-            throw MemberErrorCode.SIGN_UP_PASSWORD_CHECK_ERROR.defaultException();
-        }
-
-        if (loginId != null && loginId.equals(password)) {
-            throw MemberErrorCode.ID_PASSWORD_EQUALS_ERROR.defaultException();
-        }
-    }
-
-    /**
      * 보안을 위한 toString 재정의
      */
     @Override
@@ -62,5 +37,13 @@ public record SignUpRequest(
                 loginId, nickname
         );
     }
+
+    /**
+     * 정적 메서드
+     */
+    public static SignUpRequest of(String loginId, String password, String checkPassword, String nickname) {
+        return new SignUpRequest(loginId, password, checkPassword, nickname);
+    }
+
 
 }

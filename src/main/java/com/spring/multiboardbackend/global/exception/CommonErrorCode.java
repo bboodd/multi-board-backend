@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
+@SuppressWarnings("java:S6548")
 public enum CommonErrorCode implements ErrorCode {
 
     INVALID_REQUEST("입력값이 올바르지 않습니다.", HttpStatus.BAD_REQUEST);

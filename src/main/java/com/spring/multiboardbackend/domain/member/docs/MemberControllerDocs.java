@@ -1,6 +1,7 @@
 package com.spring.multiboardbackend.domain.member.docs;
 
 import com.spring.multiboardbackend.domain.member.dto.response.MemberResponse;
+import com.spring.multiboardbackend.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -10,7 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 
 @Tag(name = "회원", description = "회원 API")
-@SecurityRequirement(name = "bearerAuth")
+@SecurityRequirement(name = "bearer-key")
 public interface MemberControllerDocs {
 
     @Operation(
@@ -26,11 +27,15 @@ public interface MemberControllerDocs {
     )
     @ApiResponse(
             responseCode = "401",
-            description = "인증되지 않은 사용자"
+            description = "인증되지 않은 사용자",
+            content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class))
     )
     @ApiResponse(
             responseCode = "404",
-            description = "회원 정보를 찾을 수 없음"
+            description = "회원 정보를 찾을 수 없음",
+            content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class))
     )
     ResponseEntity<MemberResponse> getMyInfo();
 }

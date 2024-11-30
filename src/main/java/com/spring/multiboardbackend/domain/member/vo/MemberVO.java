@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MemberVO {
     private Long id;
+    private Long roleId;
     private String loginId;
 
     @JsonIgnore

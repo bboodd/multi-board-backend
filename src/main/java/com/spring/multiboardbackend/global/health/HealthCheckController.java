@@ -1,6 +1,7 @@
 package com.spring.multiboardbackend.global.health;
 
 import com.zaxxer.hikari.HikariDataSource;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.activation.DataSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,16 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "헬스체크")
 public class HealthCheckController {
     private final HikariDataSource dataSource;
 
     @GetMapping("/healthcheck")
-    public ResponseEntity<?> healthcheck() {
+    public ResponseEntity<Map<String, String>> healthcheck() {
         boolean isDatabaseUp = checkDatabase().equals("UP");
 
         if (isDatabaseUp) {

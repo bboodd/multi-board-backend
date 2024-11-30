@@ -13,6 +13,6 @@ import org.mapstruct.ReportingPolicy;
 public interface SearchMapper {
 
     @Mapping(target = "offset", expression = "java((request.page() - 1) * request.size())")
-    SearchVO toVO(SearchRequest request, Long typeId);
+    SearchVO toVO(SearchRequest request, Long boardTypeId);
 
 }

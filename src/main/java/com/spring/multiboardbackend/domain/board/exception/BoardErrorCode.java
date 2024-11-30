@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
+@SuppressWarnings("java:S6548")
 public enum BoardErrorCode implements ErrorCode {
 
     BOARD_NOT_FOUND("게시판을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
