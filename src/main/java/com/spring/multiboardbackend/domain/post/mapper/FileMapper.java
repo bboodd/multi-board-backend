@@ -18,6 +18,8 @@ public interface FileMapper {
 
     FileVO toVO(UploadedFile uploadedFile, Long postId);
 
+    FileVO toThumbnailVO(UploadedFile uploadedFile, Long postId, Long fileId);
+
     // List<FileRequest> -> List<FileVo> 변환
     default List<FileVO> toVOList(List<UploadedFile> uploadedFiles, Long postId) {
         return uploadedFiles.stream()

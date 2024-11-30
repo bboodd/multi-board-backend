@@ -2,9 +2,6 @@ package com.spring.multiboardbackend.domain.post.repository;
 
 import com.spring.multiboardbackend.domain.post.vo.CommentVO;
 import org.apache.ibatis.annotations.Mapper;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
 import java.util.Optional;
 
 @Mapper

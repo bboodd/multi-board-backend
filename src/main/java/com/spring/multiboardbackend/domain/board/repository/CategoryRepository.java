@@ -2,8 +2,6 @@ package com.spring.multiboardbackend.domain.board.repository;
 
 import com.spring.multiboardbackend.domain.board.vo.CategoryVO;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;

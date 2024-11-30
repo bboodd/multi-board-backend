@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public class CustomException extends RuntimeException{
 
-    private final ErrorCode errorCode;
+    private final transient ErrorCode errorCode;
 
     public CustomException(ErrorCode errorCode) {
         super(errorCode.getMessage());

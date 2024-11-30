@@ -4,12 +4,12 @@
 <mapper namespace="com.spring.multiboardbackend.domain.post.repository.CommentRepository">
     <!-- 공통 컬럼 -->
     <sql id="commentColumns">
-        c.comment_id,
+        c.comment_id as id,
         c.post_id,
         c.member_id,
         c.content,
         c.created_at,
-        c.is_deleted
+        c.is_deleted as deleted
     </sql>
 
     <!-- 댓글 등록 -->

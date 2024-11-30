@@ -1,5 +1,6 @@
 package com.spring.multiboardbackend.domain.post.docs;
 
+import com.spring.multiboardbackend.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,11 +27,15 @@ public interface FileControllerDocs {
     )
     @ApiResponse(
             responseCode = "404",
-            description = "파일을 찾을 수 없음"
+            description = "파일을 찾을 수 없음",
+            content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class))
     )
     @ApiResponse(
             responseCode = "500",
-            description = "파일 다운로드 중 서버 오류 발생"
+            description = "파일 다운로드 중 서버 오류 발생",
+            content = @Content(
+                    schema = @Schema(implementation = ErrorResponse.class))
     )
     ResponseEntity<Resource> downloadFile(
             @Parameter(description = "게시판 타입", example = "free", required = true)

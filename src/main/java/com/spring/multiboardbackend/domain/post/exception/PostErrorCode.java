@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
+@SuppressWarnings("java:S6548")
 public enum PostErrorCode implements ErrorCode {
 
     POST_NOT_FOUND("게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

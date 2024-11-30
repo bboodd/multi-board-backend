@@ -1,10 +1,8 @@
 package com.spring.multiboardbackend.domain.post.repository;
 
-import com.spring.multiboardbackend.domain.post.enums.FileType;
 import com.spring.multiboardbackend.domain.post.vo.FileVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,13 +40,16 @@ public interface FileRepository {
      */
     int saveThumbnail(@Param("file") FileVO file);
 
+
     /**
-     * 게시글의 썸네일 개수 조회
+     * 썸네일 존재 여부 확인
      */
-    int countThumbnailByPostId(Long postId);
+    boolean existsThumbnailByPostId(Long postId);
 
     /**
      * 파일 ID 목록으로 파일 삭제
      */
     int deleteAllByIds(@Param("idList") List<Long> ids);
+
+
 }

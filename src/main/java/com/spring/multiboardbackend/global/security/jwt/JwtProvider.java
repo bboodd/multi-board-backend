@@ -17,7 +17,7 @@ import java.util.Date;
 @Component
 public class JwtProvider {
 
-    private static final long ACCESS_TOKEN_TIME = 1000 * 60 * 60 * 24 * 30 * 1000; // 한달
+    private static final long ACCESS_TOKEN_TIME = 1000L * 60 * 60 * 24 * 30 * 1000; // 한달
 
     private final JwtProperties jwtProperties;
     private final SecretKey key;

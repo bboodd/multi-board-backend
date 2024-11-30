@@ -26,10 +26,10 @@ import java.util.List;
 public class SecurityConfig {
 
     private static final String[] WHITE_LIST_URL = {
-            "/api/auth/**",
-            "/api/members/check-duplicate",
+            "/api/**",
             "/swagger-ui/**",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/healthcheck"
     };
 
     @Bean

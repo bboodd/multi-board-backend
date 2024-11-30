@@ -16,13 +16,18 @@ public class LoggerAspect {
     public Object printLog(ProceedingJoinPoint joinPoint) throws Throwable{
 
         String name = joinPoint.getSignature().getDeclaringTypeName();
-        String type =
-                StringUtils.contains(name, "Controller") ? "Controller ===> " :
-                StringUtils.contains(name, "Service") ? "Service ===> " :
-                StringUtils.contains(name, "Mapper") ? "Mapper ===> " :
-                "";
+        String type;
+        if (StringUtils.contains(name, "Controller")) {
+            type = "Controller ===> ";
+        } else if (StringUtils.contains(name, "Service")) {
+            type = "Service ===> ";
+        } else if (StringUtils.contains(name, "Mapper")) {
+            type = "Mapper ===> ";
+        } else {
+            type = "";
+        }
 
-        log.debug(type + name + "." + joinPoint.getSignature().getName() + "()");
+        log.debug("{}{}.{}()", type, name, joinPoint.getSignature().getName());
         return joinPoint.proceed();
     }
 }

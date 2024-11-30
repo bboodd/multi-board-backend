@@ -4,13 +4,12 @@
 <mapper namespace="com.spring.multiboardbackend.domain.post.repository.FileRepository">
     <!-- 공통 컬럼 -->
     <sql id="filesColumns">
-        f.file_id,
+        f.file_id as id,
         f.post_id,
         f.original_name,
         f.saved_name,
         f.saved_path,
         f.file_size,
-        f.file_type,
         f.content_type,
         f.created_at
     </sql>
@@ -23,7 +22,6 @@
             saved_name,
             saved_path,
             file_size,
-            file_type,
             content_type,
             created_at
         )
@@ -35,7 +33,6 @@
                 #{file.savedName},
                 #{file.savedPath},
                 #{file.fileSize},
-                #{file.fileType},
                 #{file.contentType},
                 NOW()
             )
@@ -104,35 +101,34 @@
 
     <!-- 썸네일 저장 -->
     <insert id="saveThumbnail">
-        INSERT INTO files (
+        INSERT INTO thumbnail (
+            file_id,
             post_id,
             original_name,
             saved_name,
             saved_path,
             file_size,
-            file_type,
             content_type,
             created_at
         ) VALUES (
+            #{file.fileId},
             #{file.postId},
             #{file.originalName},
             #{file.savedName},
             #{file.savedPath},
             #{file.fileSize},
-            'THUMBNAIL',
             #{file.contentType},
             NOW()
         )
     </insert>
 
-    <!-- 썸네일 개수 조회 -->
-    <select id="countThumbnailByPostId" resultType="int">
-        SELECT
-            COUNT(*)
-        FROM
-            files f
-        WHERE
-            f.post_id = #{postId}
-          AND f.file_type = 'THUMBNAIL'
+    <!--  썸네일 존재 여부 확인  -->
+    <select id="existsThumbnailByPostId" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM thumbnail
+            WHERE
+                post_id = #{postId}
+        )
     </select>
 </mapper>

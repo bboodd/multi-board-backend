@@ -50,6 +50,8 @@ public class PostService {
 
         if (isFileSupportBoard(type)) {
             List<FileResponse> savedFiles = fileService.saveFiles(request.files(), post.getId(), type);
+            log.info("-------------------------------------");
+            log.info("Saved Files: {}", savedFiles);
             return postMapper.toResponseForCreateAndUpdate(post, savedFiles);
         }
 
@@ -160,9 +162,10 @@ public class PostService {
      */
     @Transactional
     public void incrementViewCount(Long id) {
-        postRepository.findById(id)
-                .orElseThrow(PostErrorCode.POST_NOT_FOUND::defaultException);
-
-        postRepository.incrementViewCount(id);
+        if (postRepository.findById(id).isPresent()) {
+            postRepository.incrementViewCount(id);
+        } else {
+            throw PostErrorCode.POST_NOT_FOUND.defaultException();
+        }
     }
 }

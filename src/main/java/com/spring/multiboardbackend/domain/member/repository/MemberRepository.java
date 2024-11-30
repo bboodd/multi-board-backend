@@ -3,7 +3,6 @@ package com.spring.multiboardbackend.domain.member.repository;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 

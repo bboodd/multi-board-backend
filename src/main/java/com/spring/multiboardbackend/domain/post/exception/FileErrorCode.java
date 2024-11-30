@@ -1,11 +1,13 @@
 package com.spring.multiboardbackend.domain.post.exception;
 
-import com.spring.multiboardbackend.global.exception.CustomException;
 import com.spring.multiboardbackend.global.exception.ErrorCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+@Getter
 @RequiredArgsConstructor
+@SuppressWarnings("java:S6548")
 public enum FileErrorCode implements ErrorCode {
 
     FILE_NOT_FOUND("파일을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

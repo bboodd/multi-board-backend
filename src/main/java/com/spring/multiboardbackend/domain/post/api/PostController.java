@@ -5,9 +5,7 @@ import com.spring.multiboardbackend.domain.post.dto.response.PostsResponse;
 import com.spring.multiboardbackend.domain.post.service.PostService;
 import com.spring.multiboardbackend.global.security.auth.AuthenticationContextHolder;
 import com.spring.multiboardbackend.global.common.request.SearchRequest;
-import com.spring.multiboardbackend.global.util.FileUtils;
 import com.spring.multiboardbackend.domain.board.enums.BoardType;
-import com.spring.multiboardbackend.domain.post.service.FileService;
 import com.spring.multiboardbackend.domain.member.annotation.LoginMember;
 import com.spring.multiboardbackend.domain.post.dto.request.PostRequest;
 import com.spring.multiboardbackend.domain.post.dto.response.PostResponse;
@@ -15,10 +13,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -48,6 +45,8 @@ public class PostController implements PostControllerDocs {
     @GetMapping("/{boardType}/posts/{postId}")
     public ResponseEntity<PostResponse> getPost(@PathVariable String boardType, @PathVariable Long postId) {
 
+        BoardType.from(boardType);
+
         postService.incrementViewCount(postId);
 
         return ResponseEntity
@@ -59,7 +58,7 @@ public class PostController implements PostControllerDocs {
      * 게시글 작성
      */
     @LoginMember
-    @PostMapping("/{boardType}/posts")
+    @PostMapping(value = "/{boardType}/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostResponse> savePost(@PathVariable String boardType, @Valid PostRequest request) {
 
         Long memberId = AuthenticationContextHolder.getContext();
@@ -76,7 +75,7 @@ public class PostController implements PostControllerDocs {
 
     // 게시글 수정
     @LoginMember
-    @PutMapping("/{boardType}/posts/{postId}")
+    @PutMapping(value = "/{boardType}/posts/{postId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostResponse> updatePost(@PathVariable String boardType, @PathVariable Long postId, @Valid PostRequest request) {
 
         Long memberId = AuthenticationContextHolder.getContext();

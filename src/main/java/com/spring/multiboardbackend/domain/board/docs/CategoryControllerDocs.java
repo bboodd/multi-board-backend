@@ -1,6 +1,7 @@
 package com.spring.multiboardbackend.domain.board.docs;
 
 import com.spring.multiboardbackend.domain.board.dto.response.CategoryResponse;
+import com.spring.multiboardbackend.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -12,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-@Tag(name = "Category API", description = "카테고리 관련 API")
+@Tag(name = "카테고리", description = "카테고리 관련 API")
 public interface CategoryControllerDocs {
 
     @Operation(
@@ -34,7 +35,7 @@ public interface CategoryControllerDocs {
             description = "게시판 타입을 찾을 수 없음",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = Response.class)
+                    schema = @Schema(implementation = ErrorResponse.class)
             )
     )
     ResponseEntity<List<CategoryResponse>> getCategories(

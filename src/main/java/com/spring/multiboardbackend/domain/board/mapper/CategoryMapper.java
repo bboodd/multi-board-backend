@@ -3,7 +3,6 @@ package com.spring.multiboardbackend.domain.board.mapper;
 import com.spring.multiboardbackend.domain.board.dto.response.CategoryResponse;
 import com.spring.multiboardbackend.domain.board.vo.CategoryVO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;

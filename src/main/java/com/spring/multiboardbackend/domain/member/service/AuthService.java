@@ -36,6 +36,7 @@ public class AuthService {
      */
     @Transactional
     public MemberResponse signUp(SignUpRequest request) {
+        validateSignupPasswords(request.password(), request.checkPassword(), request.loginId());
         validateDuplicateLoginId(request.loginId());
         validateDuplicateNickname(request.nickname());
 
@@ -62,7 +63,7 @@ public class AuthService {
         MemberVO member = memberRepository.findByLoginId(request.loginId())
                 .orElseThrow(MemberErrorCode.MEMBER_NOT_FOUND::defaultException);
 
-        validatePassword(request.password(), member.getPassword());
+        validateLoginPassword(request.password(), member.getPassword());
 
         memberRepository.updateLastLoginAt(member.getId());
 
@@ -131,12 +132,33 @@ public class AuthService {
     }
 
     /**
-     * 비밀번호 일치 여부 검증
+     * 회원가입시 비밀번호 검증
+     *
+     * @param password 입력 비밀번호
+     * @param checkPassword 확인 비밀번호
+     * @param loginId 로그인 아이디
+     */
+    private static void validateSignupPasswords(String password, String checkPassword, String loginId) {
+        if (password == null || checkPassword == null) {
+            throw MemberErrorCode.SIGN_UP_PASSWORD_CHECK_ERROR.defaultException();
+        }
+
+        if (!password.equals(checkPassword)) {
+            throw MemberErrorCode.SIGN_UP_PASSWORD_CHECK_ERROR.defaultException();
+        }
+
+        if (loginId != null && loginId.equals(password)) {
+            throw MemberErrorCode.ID_PASSWORD_EQUALS_ERROR.defaultException();
+        }
+    }
+
+    /**
+     * 로그인시 비밀번호 일치 여부 검증
      *
      * @param rawPassword 입력된 비밀번호
      * @param encodedPassword 저장된 암호화 비밀번호
      */
-    private void validatePassword(String rawPassword, String encodedPassword) {
+    private void validateLoginPassword(String rawPassword, String encodedPassword) {
         if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
             throw MemberErrorCode.INVALID_PASSWORD.defaultException();
         }

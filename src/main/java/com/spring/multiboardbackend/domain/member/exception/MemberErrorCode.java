@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
+@SuppressWarnings("java:S6548")
 public enum MemberErrorCode implements ErrorCode {
 
     MEMBER_NOT_FOUND("회원을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),

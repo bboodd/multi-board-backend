@@ -26,7 +26,7 @@ public class SearchVO {
 
     // 추가 조건
     private String nickname;
-    private Long typeId;
+    private Long boardTypeId;
 
     // 페이징 관련 유틸리티 메서드
     public int getOffset() {

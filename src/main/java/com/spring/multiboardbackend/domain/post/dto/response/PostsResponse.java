@@ -1,6 +1,5 @@
 package com.spring.multiboardbackend.domain.post.dto.response;
 
-import com.spring.multiboardbackend.domain.board.dto.response.CategoryResponse;
 import com.spring.multiboardbackend.global.common.response.Pagination;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
