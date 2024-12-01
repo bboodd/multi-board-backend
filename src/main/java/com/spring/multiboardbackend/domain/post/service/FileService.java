@@ -1,22 +1,13 @@
 package com.spring.multiboardbackend.domain.post.service;
 
-import com.spring.multiboardbackend.domain.board.enums.BoardType;
-import com.spring.multiboardbackend.domain.post.dto.response.FileResponse;
 import com.spring.multiboardbackend.domain.post.exception.FileErrorCode;
-import com.spring.multiboardbackend.domain.post.mapper.FileMapper;
 import com.spring.multiboardbackend.domain.post.repository.FileRepository;
 import com.spring.multiboardbackend.domain.post.vo.FileVO;
-import com.spring.multiboardbackend.global.util.FileUtils;
-import com.spring.multiboardbackend.global.util.UploadedFile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -26,129 +17,67 @@ import java.util.List;
 public class FileService {
 
     private final FileRepository fileRepository;
-    private final FileMapper fileMapper;
-    private final FileUtils fileUtils;
 
     /**
-     * 파일 목록 저장 처리
+     * 여러 파일을 저장합니다.
      *
      * @param files 저장할 파일 목록
-     * @param postId 게시글 ID
-     * @param type 게시판 타입
-     * @return 저장된 파일 목록 Response
+     * @return 저장된 파일 목록
      */
     @Transactional
-    public List<FileResponse> saveFiles(List<MultipartFile> files, Long postId, BoardType type) {
-        return processFiles(files, postId, type);
+    public List<FileVO> saveFiles(List<FileVO> files) {
+        fileRepository.saveAll(files);
+
+        return files;
     }
 
     /**
-     * 파일 목록 수정 처리
+     * 지정된 ID 목록의 파일들을 삭제합니다.
      *
      * @param removeIds 삭제할 파일 ID 목록
-     * @param newFiles 새로 추가할 파일 목록
-     * @param postId 게시글 ID
-     * @param type 게시판 타입
-     * @return 수정된 파일 목록 Response
      */
-    @Transactional
-    public List<FileResponse> updateFiles(List<Long> removeIds, List<MultipartFile> newFiles, Long postId, BoardType type) {
-        // 파일 삭제
-        if (!CollectionUtils.isEmpty(removeIds)) {
-            List<FileVO> files = fileRepository.findAllByIds(removeIds);
-            fileUtils.deleteFiles(fileMapper.toUploadedFileList(files));
-            fileRepository.deleteAllByIds(removeIds);
-        }
-
-        // 새로운 파일 업로드
-        return processFiles(newFiles, postId, type);
+    public void deleteAllByIds(List<Long> removeIds) {
+        fileRepository.deleteAllByIds(removeIds);
     }
 
     /**
-     * 파일 처리 공통 로직
+     * 파일 ID로 파일 정보를 조회합니다.
      *
-     * @param files 처리할 파일 목록
-     * @param postId 게시글 ID
-     * @param type 게시판 타입
-     * @return 처리된 파일 목록 Response
+     * @param id 조회할 파일의 ID
+     * @return 파일 정보
      */
-    private List<FileResponse> processFiles(List<MultipartFile> files, Long postId, BoardType type) {
-        if (CollectionUtils.isEmpty(files)) {
-            return Collections.emptyList();
-        }
-
-        List<UploadedFile> uploadedFiles = fileUtils.uploadFiles(files);
-
-        List<FileVO> fileVOList = fileMapper.toVOList(uploadedFiles, postId);
-
-        fileRepository.saveAll(fileVOList);
-
-        if (type.equals(BoardType.GALLERY)) {
-            processThumbnail(postId);
-        }
-
-        return fileMapper.toResponseList(fileVOList);
-    }
-
-    /**
-     * ID로 파일 조회
-     *
-     * @param id 조회할 파일 ID
-     * @return 파일 정보 Response
-     */
-    public FileResponse findById(Long id) {
-        FileVO fileVo = fileRepository.findById(id)
+    public FileVO findById(Long id) {
+        return fileRepository.findById(id)
                 .orElseThrow(FileErrorCode.FILE_NOT_FOUND::defaultException);
-        return fileMapper.toResponse(fileVo);
     }
 
     /**
-     * 게시글의 파일 목록 조회
+     * 게시글에 첨부된 첫 번째 파일을 조회합니다.
      *
      * @param postId 게시글 ID
-     * @return 파일 목록 Response
+     * @return 첫 번째 파일 정보
      */
-    public List<FileResponse> findAllByPostId(Long postId) {
-        List<FileVO> files = fileRepository.findAllByPostId(postId);
-        return fileMapper.toResponseList(files);
-    }
-
-    /**
-     * 게시글의 썸네일 존재 여부 확인
-     *
-     * @param postId 게시글 ID
-     * @return 썸네일 존재 여부
-     */
-    private boolean hasThumbnail(Long postId) {
-        return fileRepository.existsThumbnailByPostId(postId);
-    }
-
-    /**
-     * 게시글 썸네일 처리
-     *
-     * @param postId 게시글 ID
-     */
-    private void processThumbnail(Long postId) {
-        if (!hasThumbnail(postId)) {
-            FileVO fileVo = fileRepository.findFirstByPostId(postId)
-                    .orElseThrow(FileErrorCode.FILE_NOT_FOUND::defaultException);
-
-            UploadedFile thumbnail = fileUtils.uploadThumbnail(fileMapper.toUploadedFile(fileVo));
-
-            fileRepository.saveThumbnail(fileMapper.toThumbnailVO(thumbnail, postId, fileVo.getId()));
-        }
-    }
-
-    /**
-     * 파일 다운로드
-     *
-     * @param fileId 다운로드할 파일 ID
-     * @return 파일 Resource
-     */
-    public Resource downloadFile(Long fileId) {
-        FileVO file = fileRepository.findById(fileId)
+    public FileVO findFirstByPostId(Long postId) {
+        return fileRepository.findFirstByPostId(postId)
                 .orElseThrow(FileErrorCode.FILE_NOT_FOUND::defaultException);
+    }
 
-        return fileUtils.readFileAsResource(fileMapper.toUploadedFile(file));
+    /**
+     * 지정된 ID 목록의 파일들을 조회합니다.
+     *
+     * @param ids 조회할 파일 ID 목록
+     * @return 파일 정보 목록
+     */
+    public List<FileVO> findAllByIds(List<Long> ids) {
+        return fileRepository.findAllByIds(ids);
+    }
+
+    /**
+     * 게시글의 썸네일 이미지를 저장합니다.
+     *
+     * @param thumbnail 저장할 썸네일 정보
+     */
+    public void saveThumbnail(FileVO thumbnail) {
+        fileRepository.saveThumbnail(thumbnail);
     }
 }

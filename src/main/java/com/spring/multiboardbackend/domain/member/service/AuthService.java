@@ -1,12 +1,7 @@
 package com.spring.multiboardbackend.domain.member.service;
 
-import com.spring.multiboardbackend.domain.member.dto.request.LoginRequest;
-import com.spring.multiboardbackend.domain.member.dto.request.SignUpRequest;
-import com.spring.multiboardbackend.domain.member.dto.response.LoginResponse;
-import com.spring.multiboardbackend.domain.member.dto.response.MemberResponse;
 import com.spring.multiboardbackend.domain.member.enums.Role;
 import com.spring.multiboardbackend.domain.member.exception.MemberErrorCode;
-import com.spring.multiboardbackend.domain.member.mapper.MemberMapper;
 import com.spring.multiboardbackend.domain.member.repository.MemberRepository;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
 import com.spring.multiboardbackend.global.security.jwt.JwtProvider;
@@ -24,57 +19,47 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final MemberRepository memberRepository;
-    private final MemberMapper memberMapper;
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
     /**
-     * 회원가입 처리
+     * 새로운 회원을 등록합니다.
      *
-     * @param request 회원가입 요청 정보
-     * @return 가입된 회원 정보 Response
+     * @param member 등록할 회원 정보
+     * @return 등록된 회원 정보
      */
     @Transactional
-    public MemberResponse signUp(SignUpRequest request) {
-        validateSignupPasswords(request.password(), request.checkPassword(), request.loginId());
-        validateDuplicateLoginId(request.loginId());
-        validateDuplicateNickname(request.nickname());
-
-        MemberVO member = memberMapper.toVO(request);
+    public MemberVO signUp(MemberVO member) {
+        validateDuplicateLoginId(member.getLoginId());
+        validateDuplicateNickname(member.getNickname());
 
         member = MemberVO.builder()
                 .loginId(member.getLoginId())
-                .password(passwordEncoder.encode(request.password()))
+                .password(passwordEncoder.encode(member.getPassword()))
                 .nickname(member.getNickname())
                 .build();
 
         memberRepository.save(member);
-        return memberMapper.toResponse(member);
+
+        return member;
     }
 
     /**
-     * 로그인 처리
+     * 회원 로그인을 처리하고 JWT 토큰을 발급합니다.
      *
-     * @param request 로그인 요청 정보
-     * @return 로그인 결과 Response
+     * @param memberId 로그인할 회원의 ID
+     * @return 생성된 JWT 토큰
      */
     @Transactional
-    public LoginResponse login(LoginRequest request) {
-        MemberVO member = memberRepository.findByLoginId(request.loginId())
-                .orElseThrow(MemberErrorCode.MEMBER_NOT_FOUND::defaultException);
-
-        validateLoginPassword(request.password(), member.getPassword());
-
-        memberRepository.updateLastLoginAt(member.getId());
-
-        JwtToken token = jwtProvider.generateToken(member.getId());
-        return memberMapper.toLoginResponse(token, member.getNickname());
+    public JwtToken login(Long memberId) {
+        memberRepository.updateLastLoginAt(memberId);
+        return jwtProvider.generateToken(memberId);
     }
 
     /**
-     * 회원의 특정 권한 보유 여부 확인
+     * 회원이 특정 권한을 가지고 있는지 확인합니다.
      *
-     * @param memberId 회원 ID
+     * @param memberId 확인할 회원의 ID
      * @param role 확인할 권한
      * @return 권한 보유 여부
      */
@@ -83,21 +68,21 @@ public class AuthService {
     }
 
     /**
-     * 회원의 관리자 권한 보유 여부 확인
+     * 회원이 관리자 권한을 가지고 있는지 확인합니다.
      *
-     * @param memberId 회원 ID
-     * @return 관리자 여부
+     * @param memberId 확인할 회원의 ID
+     * @return 관리자 권한 보유 여부
      */
     public boolean isAdmin(Long memberId) {
         return hasRole(memberId, Role.ADMIN);
     }
 
     /**
-     * 아이디/닉네임 중복 검사
+     * 아이디 또는 닉네임의 중복 여부를 확인합니다.
      *
      * @param value 검사할 값
-     * @param type 검사 유형(LOGIN_ID/NICKNAME)
-     * @return 사용 가능 여부
+     * @param type 검사 유형 (LOGIN_ID/NICKNAME)
+     * @return 사용 가능 여부 (true: 사용 가능, false: 중복)
      */
     public boolean checkDuplicate(String value, String type) {
         boolean isDuplicate = switch (type.toUpperCase()) {
@@ -110,7 +95,7 @@ public class AuthService {
     }
 
     /**
-     * 로그인 아이디 중복 확인
+     * 로그인 아이디의 중복 여부를 확인합니다.
      *
      * @param loginId 확인할 로그인 아이디
      */
@@ -121,7 +106,7 @@ public class AuthService {
     }
 
     /**
-     * 닉네임 중복 확인
+     * 닉네임의 중복 여부를 확인합니다.
      *
      * @param nickname 확인할 닉네임
      */
@@ -130,38 +115,4 @@ public class AuthService {
             throw MemberErrorCode.DUPLICATE_NICKNAME.defaultException();
         }
     }
-
-    /**
-     * 회원가입시 비밀번호 검증
-     *
-     * @param password 입력 비밀번호
-     * @param checkPassword 확인 비밀번호
-     * @param loginId 로그인 아이디
-     */
-    private static void validateSignupPasswords(String password, String checkPassword, String loginId) {
-        if (password == null || checkPassword == null) {
-            throw MemberErrorCode.SIGN_UP_PASSWORD_CHECK_ERROR.defaultException();
-        }
-
-        if (!password.equals(checkPassword)) {
-            throw MemberErrorCode.SIGN_UP_PASSWORD_CHECK_ERROR.defaultException();
-        }
-
-        if (loginId != null && loginId.equals(password)) {
-            throw MemberErrorCode.ID_PASSWORD_EQUALS_ERROR.defaultException();
-        }
-    }
-
-    /**
-     * 로그인시 비밀번호 일치 여부 검증
-     *
-     * @param rawPassword 입력된 비밀번호
-     * @param encodedPassword 저장된 암호화 비밀번호
-     */
-    private void validateLoginPassword(String rawPassword, String encodedPassword) {
-        if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
-            throw MemberErrorCode.INVALID_PASSWORD.defaultException();
-        }
-    }
-
 }

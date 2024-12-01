@@ -2,8 +2,10 @@ package com.spring.multiboardbackend.domain.board.api;
 
 import com.spring.multiboardbackend.domain.board.docs.CategoryControllerDocs;
 import com.spring.multiboardbackend.domain.board.dto.response.CategoryResponse;
+import com.spring.multiboardbackend.domain.board.mapper.CategoryMapper;
 import com.spring.multiboardbackend.domain.board.service.CategoryService;
 import com.spring.multiboardbackend.domain.board.enums.BoardType;
+import com.spring.multiboardbackend.domain.board.vo.CategoryVO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,7 @@ import java.util.List;
 public class CategoryController implements CategoryControllerDocs {
 
     private final CategoryService categoryService;
+    private final CategoryMapper categoryMapper;
 
     // 카테고리 목록 조회
     @GetMapping("/{boardType}/categories")
@@ -26,8 +29,10 @@ public class CategoryController implements CategoryControllerDocs {
 
         BoardType type = BoardType.from(boardType);
 
+        List<CategoryVO> categories = categoryService.findAllByBoardType(type.getId());
+
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(categoryService.findAllByBoardType(type.getId()));
+                .body(categoryMapper.toResponseList(categories));
     }
 }

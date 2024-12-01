@@ -1,8 +1,6 @@
 package com.spring.multiboardbackend.domain.member.service;
 
-import com.spring.multiboardbackend.domain.member.dto.response.MemberResponse;
 import com.spring.multiboardbackend.domain.member.exception.MemberErrorCode;
-import com.spring.multiboardbackend.domain.member.mapper.MemberMapper;
 import com.spring.multiboardbackend.domain.member.repository.MemberRepository;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
 import com.spring.multiboardbackend.global.exception.CustomException;
@@ -31,9 +29,6 @@ class MemberServiceTest {
     @Mock
     private MemberRepository memberRepository;
 
-    @Mock
-    private MemberMapper memberMapper;
-
     @Nested
     @DisplayName("회원 조회")
     class FindById {
@@ -44,20 +39,17 @@ class MemberServiceTest {
             // given
             Long memberId = 1L;
             MemberVO member = createMemberVO(memberId);
-            MemberResponse expectedResponse = createMemberResponse(memberId);
 
             given(memberRepository.findById(memberId)).willReturn(Optional.of(member));
-            given(memberMapper.toResponse(member)).willReturn(expectedResponse);
 
             // when
-            MemberResponse result = memberService.findById(memberId);
+            MemberVO result = memberService.findById(memberId);
 
             // then
-            assertThat(result.id()).isEqualTo(memberId);
-            assertThat(result.loginId()).isEqualTo("testUser");
-            assertThat(result.nickname()).isEqualTo("테스트유저");
+            assertThat(result.getId()).isEqualTo(memberId);
+            assertThat(result.getLoginId()).isEqualTo("testUser");
+            assertThat(result.getNickname()).isEqualTo("테스트유저");
             verify(memberRepository).findById(memberId);
-            verify(memberMapper).toResponse(member);
         }
 
         @Test
@@ -83,9 +75,5 @@ class MemberServiceTest {
                 .password("hashedPassword")
                 .nickname("테스트유저")
                 .build();
-    }
-
-    private MemberResponse createMemberResponse(Long id) {
-        return new MemberResponse(id, "testUser", "테스트유저");
     }
 }

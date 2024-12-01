@@ -61,4 +61,6 @@ public interface PostRepository {
      */
     Optional<PostVO> findByIdWithDeleted(Long id);
 
+    boolean existsThumbnailById(Long id);
+
 }

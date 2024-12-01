@@ -27,5 +27,5 @@ public interface PostMapper {
     PostVO toVOForUpdate(PostRequest request, Long id);
 
     @Mapping(target = "files", source = "files")
-    PostResponse toResponseForCreateAndUpdate(PostVO post, List<FileResponse> files);
+    PostResponse toResponseWithFile(PostVO post, List<FileResponse> files);
 }

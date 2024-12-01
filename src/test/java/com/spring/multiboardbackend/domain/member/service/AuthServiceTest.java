@@ -1,12 +1,7 @@
 package com.spring.multiboardbackend.domain.member.service;
 
-import com.spring.multiboardbackend.domain.member.dto.request.LoginRequest;
-import com.spring.multiboardbackend.domain.member.dto.request.SignUpRequest;
-import com.spring.multiboardbackend.domain.member.dto.response.LoginResponse;
-import com.spring.multiboardbackend.domain.member.dto.response.MemberResponse;
 import com.spring.multiboardbackend.domain.member.enums.Role;
 import com.spring.multiboardbackend.domain.member.exception.MemberErrorCode;
-import com.spring.multiboardbackend.domain.member.mapper.MemberMapper;
 import com.spring.multiboardbackend.domain.member.repository.MemberRepository;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
 import com.spring.multiboardbackend.global.exception.CustomException;
@@ -21,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,9 +34,6 @@ class AuthServiceTest {
     private MemberRepository memberRepository;
 
     @Mock
-    private MemberMapper memberMapper;
-
-    @Mock
     private JwtProvider jwtProvider;
 
     @Mock
@@ -56,22 +47,19 @@ class AuthServiceTest {
         @DisplayName("회원가입 성공")
         void signUp_Success() {
             // given
-            SignUpRequest request = createSignUpRequest();
-            MemberVO memberVO = createMemberVO();
-            MemberResponse expectedResponse = createMemberResponse();
+            MemberVO member = createMemberVO();
 
-            given(memberRepository.existsByLoginId(request.loginId())).willReturn(false);
-            given(memberRepository.existsByNickname(request.nickname())).willReturn(false);
-            given(memberMapper.toVO(request)).willReturn(memberVO);
-            given(passwordEncoder.encode(request.password())).willReturn("encodedPassword");
-            given(memberMapper.toResponse(any(MemberVO.class))).willReturn(expectedResponse);
+            given(memberRepository.existsByLoginId(member.getLoginId())).willReturn(false);
+            given(memberRepository.existsByNickname(member.getNickname())).willReturn(false);
+            given(passwordEncoder.encode(member.getPassword())).willReturn("encodedPassword");
 
             // when
-            MemberResponse result = authService.signUp(request);
+            MemberVO result = authService.signUp(member);
 
             // then
-            assertThat(result.id()).isEqualTo(expectedResponse.id());
-            assertThat(result.loginId()).isEqualTo(expectedResponse.loginId());
+            assertThat(result.getId()).isNull();
+            assertThat(member.getId()).isEqualTo(1L);
+            assertThat(result.getLoginId()).isEqualTo(member.getLoginId());
             verify(memberRepository).save(any(MemberVO.class));
         }
 
@@ -79,12 +67,12 @@ class AuthServiceTest {
         @DisplayName("중복된 로그인 아이디로 가입 시도시 실패")
         void signUp_DuplicateLoginId_Fail() {
             // given
-            SignUpRequest request = createSignUpRequest();
-            given(memberRepository.existsByLoginId(request.loginId())).willReturn(true);
+            MemberVO member = createMemberVO();
+            given(memberRepository.existsByLoginId(member.getLoginId())).willReturn(true);
 
             // when & then
             CustomException exception = assertThrows(CustomException.class,
-                    () -> authService.signUp(request));
+                    () -> authService.signUp(member));
 
             assertThat(exception.getErrorCode()).isEqualTo(MemberErrorCode.DUPLICATE_LOGIN_ID);
         }
@@ -93,13 +81,13 @@ class AuthServiceTest {
         @DisplayName("중복된 닉네임으로 가입 시도시 실패")
         void signUp_DuplicateNickname_Fail() {
             // given
-            SignUpRequest request = createSignUpRequest();
-            given(memberRepository.existsByLoginId(request.loginId())).willReturn(false);
-            given(memberRepository.existsByNickname(request.nickname())).willReturn(true);
+            MemberVO member = createMemberVO();
+            given(memberRepository.existsByLoginId(member.getLoginId())).willReturn(false);
+            given(memberRepository.existsByNickname(member.getNickname())).willReturn(true);
 
             // when & then
             CustomException exception = assertThrows(CustomException.class,
-                    () -> authService.signUp(request));
+                    () -> authService.signUp(member));
 
             assertThat(exception.getErrorCode()).isEqualTo(MemberErrorCode.DUPLICATE_NICKNAME);
         }
@@ -113,54 +101,17 @@ class AuthServiceTest {
         @DisplayName("로그인 성공")
         void login_Success() {
             // given
-            LoginRequest request = createLoginRequest();
-            MemberVO member = createMemberVO();
-            JwtToken token = createJwtToken();
-            LoginResponse expectedResponse = createLoginResponse();
+            Long memberId = 1L;
+            JwtToken expectedToken = createJwtToken();
 
-            given(memberRepository.findByLoginId(request.loginId())).willReturn(Optional.of(member));
-            given(passwordEncoder.matches(request.password(), member.getPassword())).willReturn(true);
-            given(jwtProvider.generateToken(member.getId())).willReturn(token);
-            given(memberMapper.toLoginResponse(token, member.getNickname())).willReturn(expectedResponse);
+            given(jwtProvider.generateToken(memberId)).willReturn(expectedToken);
 
             // when
-            LoginResponse result = authService.login(request);
+            JwtToken result = authService.login(memberId);
 
             // then
-            assertThat(result.token()).isEqualTo(expectedResponse.token());
-            assertThat(result.nickname()).isEqualTo(expectedResponse.nickname());
-            verify(memberRepository).updateLastLoginAt(member.getId());
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 아이디로 로그인 시도시 실패")
-        void login_NonexistentLoginId_Fail() {
-            // given
-            LoginRequest request = createLoginRequest();
-            given(memberRepository.findByLoginId(request.loginId())).willReturn(Optional.empty());
-
-            // when & then
-            CustomException exception = assertThrows(CustomException.class,
-                    () -> authService.login(request));
-
-            assertThat(exception.getErrorCode()).isEqualTo(MemberErrorCode.MEMBER_NOT_FOUND);
-        }
-
-        @Test
-        @DisplayName("잘못된 비밀번호로 로그인 시도시 실패")
-        void login_InvalidPassword_Fail() {
-            // given
-            LoginRequest request = createLoginRequest();
-            MemberVO member = createMemberVO();
-
-            given(memberRepository.findByLoginId(request.loginId())).willReturn(Optional.of(member));
-            given(passwordEncoder.matches(request.password(), member.getPassword())).willReturn(false);
-
-            // when & then
-            CustomException exception = assertThrows(CustomException.class,
-                    () -> authService.login(request));
-
-            assertThat(exception.getErrorCode()).isEqualTo(MemberErrorCode.INVALID_PASSWORD);
+            assertThat(result).isEqualTo(expectedToken);
+            verify(memberRepository).updateLastLoginAt(memberId);
         }
     }
 
@@ -239,29 +190,13 @@ class AuthServiceTest {
         }
     }
 
-    private SignUpRequest createSignUpRequest() {
-        return SignUpRequest.of("testUser", "Password123!", "Password123!", "테스트유저");
-    }
-
-    private LoginRequest createLoginRequest() {
-        return new LoginRequest("testUser", "Password123!");
-    }
-
     private MemberVO createMemberVO() {
         return MemberVO.builder()
                 .id(1L)
                 .loginId("testUser")
-                .password("encodedPassword")
+                .password("Password123!")
                 .nickname("테스트유저")
                 .build();
-    }
-
-    private MemberResponse createMemberResponse() {
-        return new MemberResponse(1L, "testUser", "테스트유저");
-    }
-
-    private LoginResponse createLoginResponse() {
-        return new LoginResponse(createJwtToken(), "테스트유저");
     }
 
     private JwtToken createJwtToken() {

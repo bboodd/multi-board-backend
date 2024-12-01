@@ -42,11 +42,6 @@ public interface FileRepository {
 
 
     /**
-     * 썸네일 존재 여부 확인
-     */
-    boolean existsThumbnailByPostId(Long postId);
-
-    /**
      * 파일 ID 목록으로 파일 삭제
      */
     int deleteAllByIds(@Param("idList") List<Long> ids);

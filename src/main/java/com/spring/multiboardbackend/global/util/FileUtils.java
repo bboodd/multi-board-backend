@@ -1,6 +1,5 @@
 package com.spring.multiboardbackend.global.util;
 
-import com.spring.multiboardbackend.domain.post.enums.FileType;
 import com.spring.multiboardbackend.domain.post.exception.FileErrorCode;
 import com.spring.multiboardbackend.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +14,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
-import software.amazon.awssdk.core.sync.ResponseTransformer;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
 

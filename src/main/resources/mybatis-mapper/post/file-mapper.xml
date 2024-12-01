@@ -121,14 +121,4 @@
             NOW()
         )
     </insert>
-
-    <!--  썸네일 존재 여부 확인  -->
-    <select id="existsThumbnailByPostId" resultType="boolean">
-        SELECT EXISTS (
-            SELECT 1
-            FROM thumbnail
-            WHERE
-                post_id = #{postId}
-        )
-    </select>
 </mapper>
