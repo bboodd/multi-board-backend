@@ -1,8 +1,6 @@
 package com.spring.multiboardbackend.domain.board.service;
 
-import com.spring.multiboardbackend.domain.board.dto.response.CategoryResponse;
 import com.spring.multiboardbackend.domain.board.exception.BoardErrorCode;
-import com.spring.multiboardbackend.domain.board.mapper.CategoryMapper;
 import com.spring.multiboardbackend.domain.board.repository.CategoryRepository;
 import com.spring.multiboardbackend.domain.board.vo.CategoryVO;
 import com.spring.multiboardbackend.global.exception.CustomException;
@@ -32,9 +30,6 @@ class CategoryServiceTest {
     @Mock
     private CategoryRepository categoryRepository;
 
-    @Mock
-    private CategoryMapper categoryMapper;
-
     @Nested
     @DisplayName("게시판 타입별 카테고리 목록 조회")
     class FindAllByBoardType {
@@ -48,23 +43,17 @@ class CategoryServiceTest {
                     createCategoryVO(1L, "카테고리1"),
                     createCategoryVO(2L, "카테고리2")
             );
-            List<CategoryResponse> expectedResponses = List.of(
-                    createCategoryResponse(1L, "카테고리1"),
-                    createCategoryResponse(2L, "카테고리2")
-            );
 
             given(categoryRepository.findAllByBoardTypeId(boardTypeId)).willReturn(categories);
-            given(categoryMapper.toResponseList(categories)).willReturn(expectedResponses);
 
             // when
-            List<CategoryResponse> result = categoryService.findAllByBoardType(boardTypeId);
+            List<CategoryVO> result = categoryService.findAllByBoardType(boardTypeId);
 
             // then
             assertThat(result).hasSize(2);
-            assertThat(result.get(0).id()).isEqualTo(1L);
-            assertThat(result.get(0).name()).isEqualTo("카테고리1");
+            assertThat(result.get(0).getId()).isEqualTo(1L);
+            assertThat(result.get(0).getName()).isEqualTo("카테고리1");
             verify(categoryRepository).findAllByBoardTypeId(boardTypeId);
-            verify(categoryMapper).toResponseList(categories);
         }
 
         @Test
@@ -73,15 +62,13 @@ class CategoryServiceTest {
             // given
             Long boardTypeId = 1L;
             given(categoryRepository.findAllByBoardTypeId(boardTypeId)).willReturn(List.of());
-            given(categoryMapper.toResponseList(List.of())).willReturn(List.of());
 
             // when
-            List<CategoryResponse> result = categoryService.findAllByBoardType(boardTypeId);
+            List<CategoryVO> result = categoryService.findAllByBoardType(boardTypeId);
 
             // then
             assertThat(result).isEmpty();
             verify(categoryRepository).findAllByBoardTypeId(boardTypeId);
-            verify(categoryMapper).toResponseList(List.of());
         }
     }
 
@@ -95,19 +82,16 @@ class CategoryServiceTest {
             // given
             Long categoryId = 1L;
             CategoryVO category = createCategoryVO(categoryId, "카테고리1");
-            CategoryResponse expectedResponse = createCategoryResponse(categoryId, "카테고리1");
 
             given(categoryRepository.findById(categoryId)).willReturn(Optional.of(category));
-            given(categoryMapper.toResponse(category)).willReturn(expectedResponse);
 
             // when
-            CategoryResponse result = categoryService.findById(categoryId);
+            CategoryVO result = categoryService.findById(categoryId);
 
             // then
-            assertThat(result.id()).isEqualTo(categoryId);
-            assertThat(result.name()).isEqualTo("카테고리1");
+            assertThat(result.getId()).isEqualTo(categoryId);
+            assertThat(result.getName()).isEqualTo("카테고리1");
             verify(categoryRepository).findById(categoryId);
-            verify(categoryMapper).toResponse(category);
         }
 
         @Test
@@ -131,9 +115,5 @@ class CategoryServiceTest {
                 .id(id)
                 .name(name)
                 .build();
-    }
-
-    private CategoryResponse createCategoryResponse(Long id, String name) {
-        return new CategoryResponse(id, name);
     }
 }

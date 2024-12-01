@@ -1,8 +1,10 @@
 package com.spring.multiboardbackend.domain.post.api;
 
 import com.spring.multiboardbackend.domain.post.docs.FileControllerDocs;
+import com.spring.multiboardbackend.domain.post.mapper.FileMapper;
 import com.spring.multiboardbackend.domain.post.service.FileService;
-import com.spring.multiboardbackend.domain.post.dto.response.FileResponse;
+import com.spring.multiboardbackend.domain.post.vo.FileVO;
+import com.spring.multiboardbackend.global.util.FileUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
@@ -19,14 +21,18 @@ import java.nio.charset.StandardCharsets;
 public class FileController implements FileControllerDocs {
 
     private final FileService fileService;
+    private final FileMapper fileMapper;
+    private final FileUtils fileUtils;
 
-    // 첨부파일 다운로드
+    /**
+     * 첨부파일 다운로드
+     */
     @GetMapping("/{fileId}/download")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String boardType, @PathVariable Long postId, @PathVariable Long fileId) {
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long fileId) {
 
-        FileResponse fileResponse = fileService.findById(fileId);
+        FileVO file = fileService.findById(fileId);
 
-        String fileName = URLEncoder.encode(fileResponse.originalName(), StandardCharsets.UTF_8);
+        String fileName = URLEncoder.encode(file.getOriginalName(), StandardCharsets.UTF_8);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -35,7 +41,7 @@ public class FileController implements FileControllerDocs {
                         .filename(fileName)
                         .build()
                         .toString())
-                .header(HttpHeaders.CONTENT_LENGTH, fileResponse.fileSize() + "")
-                .body(fileService.downloadFile(fileId));
+                .header(HttpHeaders.CONTENT_LENGTH, file.getFileSize() + "")
+                .body(fileUtils.readFileAsResource(fileMapper.toUploadedFile(file)));
     }
 }

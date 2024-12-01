@@ -1,8 +1,6 @@
 package com.spring.multiboardbackend.domain.board.service;
 
-import com.spring.multiboardbackend.domain.board.dto.response.CategoryResponse;
 import com.spring.multiboardbackend.domain.board.exception.BoardErrorCode;
-import com.spring.multiboardbackend.domain.board.mapper.CategoryMapper;
 import com.spring.multiboardbackend.domain.board.repository.CategoryRepository;
 import com.spring.multiboardbackend.domain.board.vo.CategoryVO;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +17,6 @@ import java.util.List;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
 
     /**
      * 게시판 타입별 카테고리 목록 조회
@@ -27,9 +24,8 @@ public class CategoryService {
      * @param boardTypeId 게시판 타입 ID
      * @return 카테고리 응답 Response 리스트
      */
-    public List<CategoryResponse> findAllByBoardType(Long boardTypeId) {
-        List<CategoryVO> categories = categoryRepository.findAllByBoardTypeId(boardTypeId);
-        return categoryMapper.toResponseList(categories);
+    public List<CategoryVO> findAllByBoardType(Long boardTypeId) {
+        return categoryRepository.findAllByBoardTypeId(boardTypeId);
     }
 
     /**
@@ -38,9 +34,8 @@ public class CategoryService {
      * @param id 조회할 카테고리 ID
      * @return 카테고리 응답 Response
      */
-    public CategoryResponse findById(Long id) {
+    public CategoryVO findById(Long id) {
         return categoryRepository.findById(id)
-                .map(categoryMapper::toResponse)
                 .orElseThrow(BoardErrorCode.CATEGORY_NOT_FOUND::defaultException);
     }
 }

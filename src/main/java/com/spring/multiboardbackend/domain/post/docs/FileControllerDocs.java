@@ -38,11 +38,6 @@ public interface FileControllerDocs {
                     schema = @Schema(implementation = ErrorResponse.class))
     )
     ResponseEntity<Resource> downloadFile(
-            @Parameter(description = "게시판 타입", example = "free", required = true)
-            String boardType,
-
-            @Parameter(description = "게시글 ID", example = "1", required = true)
-            Long postId,
 
             @Parameter(description = "파일 ID", example = "1", required = true)
             Long fileId

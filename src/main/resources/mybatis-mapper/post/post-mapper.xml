@@ -264,4 +264,14 @@
         FROM posts p
         WHERE p.post_id = #{id}
     </select>
+
+    <!--  썸네일 존재 여부 확인  -->
+    <select id="existsThumbnailById" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM thumbnail
+            WHERE
+                post_id = #{id}
+        )
+    </select>
 </mapper>
