@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public enum BoardType {
 
     FREE("자유게시판", "free", 1L),
-    ASK("문의게시판", "qna", 2L),
+    QNA("문의게시판", "qna", 2L),
     NOTICE("공지게시판", "notice", 3L),
     GALLERY("갤러리게시판", "gallery", 4L);
 

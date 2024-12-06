@@ -27,6 +27,9 @@ public record PostResponse(
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         LocalDateTime createdAt,
 
+        @Schema(description = "카테고리 ID")
+        Long categoryId,
+
         @Schema(description = "카테고리명", example = "자유게시판")
         String categoryName,
 
@@ -39,11 +42,11 @@ public record PostResponse(
         @Schema(description = "댓글 수", example = "5")
         int commentCount,
 
-        @Schema(description = "썸네일 URL")
-        String thumbnailUrl,
-
         @Schema(description = "비밀글 여부")
         boolean locked,
+
+        @Schema(description = "고정글 여부")
+        boolean fixed,
 
         @Schema(description = "파일 목록")
         List<FileResponse> files,

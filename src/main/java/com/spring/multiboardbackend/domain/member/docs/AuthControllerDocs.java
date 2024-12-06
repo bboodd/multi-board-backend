@@ -3,9 +3,9 @@ package com.spring.multiboardbackend.domain.member.docs;
 import com.spring.multiboardbackend.domain.member.dto.request.DuplicateCheckRequest;
 import com.spring.multiboardbackend.domain.member.dto.request.LoginRequest;
 import com.spring.multiboardbackend.domain.member.dto.request.SignUpRequest;
-import com.spring.multiboardbackend.domain.member.dto.response.LoginResponse;
 import com.spring.multiboardbackend.domain.member.dto.response.MemberResponse;
 import com.spring.multiboardbackend.global.exception.ErrorResponse;
+import com.spring.multiboardbackend.global.security.jwt.JwtToken;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -64,7 +64,7 @@ public interface AuthControllerDocs {
             responseCode = "200",
             description = "로그인 성공",
             content = @Content(
-                    schema = @Schema(implementation = LoginResponse.class),
+                    schema = @Schema(implementation = JwtToken.class),
                     examples = @ExampleObject(
                             value = """
                             {
@@ -87,7 +87,7 @@ public interface AuthControllerDocs {
             content = @Content(
                     schema = @Schema(implementation = ErrorResponse.class))
     )
-    ResponseEntity<LoginResponse> login(
+    ResponseEntity<JwtToken> login(
             @Schema(
                     description = "로그인 정보",
                     requiredMode = Schema.RequiredMode.REQUIRED,

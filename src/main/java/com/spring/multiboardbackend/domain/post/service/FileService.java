@@ -24,7 +24,7 @@ public class FileService {
      * @param files 저장할 파일 목록
      * @return 저장된 파일 목록
      */
-    @Transactional
+    @Transactional(readOnly = false)
     public List<FileVO> saveFiles(List<FileVO> files) {
         fileRepository.saveAll(files);
 
@@ -36,8 +36,13 @@ public class FileService {
      *
      * @param removeIds 삭제할 파일 ID 목록
      */
+    @Transactional(readOnly = false)
     public void deleteAllByIds(List<Long> removeIds) {
         fileRepository.deleteAllByIds(removeIds);
+    }
+
+    public List<FileVO> findAllByPostId(Long postId) {
+        return fileRepository.findAllByPostId(postId);
     }
 
     /**
@@ -77,7 +82,13 @@ public class FileService {
      *
      * @param thumbnail 저장할 썸네일 정보
      */
+    @Transactional(readOnly = false)
     public void saveThumbnail(FileVO thumbnail) {
         fileRepository.saveThumbnail(thumbnail);
+    }
+
+    public FileVO findThumbnailByPostId(Long postId) {
+        return fileRepository.findThumbnailByPostId(postId)
+                .orElseThrow(FileErrorCode.FILE_NOT_FOUND::defaultException);
     }
 }

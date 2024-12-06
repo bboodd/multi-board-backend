@@ -4,13 +4,12 @@ import com.spring.multiboardbackend.domain.member.docs.AuthControllerDocs;
 import com.spring.multiboardbackend.domain.member.dto.request.DuplicateCheckRequest;
 import com.spring.multiboardbackend.domain.member.dto.request.LoginRequest;
 import com.spring.multiboardbackend.domain.member.dto.request.SignUpRequest;
-import com.spring.multiboardbackend.domain.member.dto.response.LoginResponse;
 import com.spring.multiboardbackend.domain.member.dto.response.MemberResponse;
 import com.spring.multiboardbackend.domain.member.exception.MemberErrorCode;
 import com.spring.multiboardbackend.domain.member.mapper.MemberMapper;
 import com.spring.multiboardbackend.domain.member.service.AuthService;
-import com.spring.multiboardbackend.domain.member.service.MemberService;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
+import com.spring.multiboardbackend.global.security.jwt.JwtProvider;
 import com.spring.multiboardbackend.global.security.jwt.JwtToken;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +20,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("api/boards/auth")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController implements AuthControllerDocs {
 
     private final AuthService authService;
-    private final MemberService memberService;
+    private final JwtProvider jwtProvider;
     private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -36,24 +35,21 @@ public class AuthController implements AuthControllerDocs {
     public ResponseEntity<MemberResponse> signUp(@Valid @RequestBody SignUpRequest request) {
         validateSignupPasswords(request.password(), request.checkPassword(), request.loginId());
 
-        MemberVO member = authService.signUp(memberMapper.toVO(request));
+        MemberVO signup = memberMapper.toVO(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .body(memberMapper.toResponse(member));
+                .body(memberMapper.toResponse(authService.signUp(signup)));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        MemberVO member = memberService.findByLoginId(request.loginId());
+    public ResponseEntity<JwtToken> login(@Valid @RequestBody LoginRequest request) {
 
-        validateLoginPassword(request.password(), member.getPassword());
-
-        JwtToken token = authService.login(member.getId());
+        MemberVO member = authService.login(request.loginId(), request.password());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(memberMapper.toLoginResponse(token, member.getNickname()));
+                .body(jwtProvider.generateToken(member.getId()));
     }
 
     @PostMapping("/check-duplicate/login-id")
@@ -82,12 +78,6 @@ public class AuthController implements AuthControllerDocs {
 
         if (loginId != null && loginId.equals(password)) {
             throw MemberErrorCode.ID_PASSWORD_EQUALS_ERROR.defaultException();
-        }
-    }
-
-    private void validateLoginPassword(String rawPassword, String encodedPassword) {
-        if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
-            throw MemberErrorCode.INVALID_PASSWORD.defaultException();
         }
     }
 

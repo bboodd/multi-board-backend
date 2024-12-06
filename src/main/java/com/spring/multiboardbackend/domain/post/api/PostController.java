@@ -49,7 +49,6 @@ public class PostController implements PostControllerDocs {
     private final FileUtils fileUtils;
     private final AuthService authService;
 
-
     private static final List<BoardType> FILE_SUPPORT_BOARDS = List.of(BoardType.FREE, BoardType.GALLERY);
 
     /**
@@ -105,6 +104,10 @@ public class PostController implements PostControllerDocs {
 
         Long memberId = AuthenticationContextHolder.getContext();
         BoardType type = BoardType.from(boardType);
+
+        if (type != BoardType.QNA && request.categoryId() == null) {
+            throw PostErrorCode.REQUIRED_CATEGORY.defaultException();
+        }
 
         // 게시글 저장
         PostVO post = postService.save(postMapper.toVO(request, memberId, type.getId()));
@@ -209,7 +212,7 @@ public class PostController implements PostControllerDocs {
      * @return fileResponse
      */
     private List<FileResponse> processFiles(List<MultipartFile> files, Long postId, BoardType type) {
-        if (CollectionUtils.isEmpty(files)) {
+        if (CollectionUtils.isEmpty(files) || files.get(0).isEmpty()) {
             return Collections.emptyList();
         }
 
@@ -217,7 +220,9 @@ public class PostController implements PostControllerDocs {
 
         List<FileVO> fileVOList = fileMapper.toVOList(uploadedFiles, postId);
 
-        fileService.saveFiles(fileVOList);
+        if (!fileVOList.isEmpty()) {
+            fileService.saveFiles(fileVOList);
+        }
 
         if (type.equals(BoardType.GALLERY)) {
             processThumbnail(postId);

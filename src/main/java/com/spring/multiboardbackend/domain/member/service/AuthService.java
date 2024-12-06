@@ -4,8 +4,6 @@ import com.spring.multiboardbackend.domain.member.enums.Role;
 import com.spring.multiboardbackend.domain.member.exception.MemberErrorCode;
 import com.spring.multiboardbackend.domain.member.repository.MemberRepository;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
-import com.spring.multiboardbackend.global.security.jwt.JwtProvider;
-import com.spring.multiboardbackend.global.security.jwt.JwtToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final MemberRepository memberRepository;
-    private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -33,27 +30,35 @@ public class AuthService {
         validateDuplicateLoginId(member.getLoginId());
         validateDuplicateNickname(member.getNickname());
 
-        member = MemberVO.builder()
+        MemberVO signup = MemberVO.builder()
                 .loginId(member.getLoginId())
                 .password(passwordEncoder.encode(member.getPassword()))
                 .nickname(member.getNickname())
                 .build();
 
-        memberRepository.save(member);
+        memberRepository.save(signup);
 
-        return member;
+        return signup;
     }
 
     /**
      * 회원 로그인을 처리하고 JWT 토큰을 발급합니다.
      *
-     * @param memberId 로그인할 회원의 ID
-     * @return 생성된 JWT 토큰
+     * @param loginId 로그인할 아이디
+     * @param password 로그인할 패스워드
+     * @return memberVO
      */
     @Transactional
-    public JwtToken login(Long memberId) {
-        memberRepository.updateLastLoginAt(memberId);
-        return jwtProvider.generateToken(memberId);
+    public MemberVO login(String loginId, String password) {
+
+        MemberVO member = memberRepository.findByLoginId(loginId)
+                        .orElseThrow(MemberErrorCode.MEMBER_NOT_FOUND::defaultException);
+
+        validateLoginPassword(password, member.getPassword());
+
+        memberRepository.updateLastLoginAt(member.getId());
+
+        return member;
     }
 
     /**
@@ -113,6 +118,13 @@ public class AuthService {
     private void validateDuplicateNickname(String nickname) {
         if (memberRepository.existsByNickname(nickname)) {
             throw MemberErrorCode.DUPLICATE_NICKNAME.defaultException();
+        }
+    }
+
+
+    private void validateLoginPassword(String rawPassword, String encodedPassword) {
+        if (!passwordEncoder.matches(rawPassword, encodedPassword)) {
+            throw MemberErrorCode.INVALID_PASSWORD.defaultException();
         }
     }
 }

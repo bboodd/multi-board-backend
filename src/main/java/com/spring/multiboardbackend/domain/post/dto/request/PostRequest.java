@@ -2,7 +2,6 @@ package com.spring.multiboardbackend.domain.post.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +13,6 @@ import java.util.List;
 public record PostRequest(
 
         @Schema(description = "카테고리 ID", requiredMode = Schema.RequiredMode.REQUIRED)
-        @NotNull(message = "카테고리를 선택해주세요")
         Long categoryId,
 
         @Schema(description = "제목", example = "게시글 제목", requiredMode = Schema.RequiredMode.REQUIRED)
@@ -34,7 +32,8 @@ public record PostRequest(
         List<Long> removeFileIds,
 
         @Schema(description = "비밀글 여부", defaultValue = "false")
-        Boolean locked
+        Boolean locked,
+        Boolean fixed
 ) {
     @Builder
     public PostRequest {

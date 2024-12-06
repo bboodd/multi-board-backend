@@ -5,8 +5,8 @@
     <!-- 공통 컬럼 -->
     <sql id="postsColumns">
         p.post_id as id,
-        p.category_id,
-        p.board_type_id,
+        p.category_id as categoryId,
+        p.board_type_id as boardTypeId,
         p.title,
         p.content,
         p.view_count,
@@ -39,12 +39,8 @@
         <!-- Files 컬렉션 -->
         <collection property="files" ofType="com.spring.multiboardbackend.domain.post.vo.FileVO">
             <id property="id" column="files.id"/>
-            <result property="postId" column="files.postId"/>
             <result property="originalName" column="files.originalName"/>
-            <result property="savedName" column="files.savedName"/>
-            <result property="savedPath" column="files.savedPath"/>
             <result property="fileSize" column="files.fileSize"/>
-            <result property="fileType" column="files.fileType"/>
             <result property="contentType" column="files.contentType"/>
             <result property="createdAt" column="files.createdAt"/>
         </collection>
@@ -52,11 +48,8 @@
         <!-- Comments 컬렉션 -->
         <collection property="comments" ofType="com.spring.multiboardbackend.domain.post.vo.CommentVO">
             <id property="id" column="comments.id"/>
-            <result property="postId" column="comments.postId"/>
-            <result property="memberId" column="comments.memberId"/>
             <result property="content" column="comments.content"/>
             <result property="createdAt" column="comments.createdAt"/>
-            <result property="deleted" column="comments.deleted"/>
             <result property="nickname" column="comments.nickname"/>
         </collection>
     </resultMap>
@@ -137,7 +130,8 @@
             title = #{title},
             content = #{content},
             updated_at = NOW(),
-            is_locked = #{locked}
+            is_locked = #{locked},
+            is_fixed = #{fixed}
         WHERE
             post_id = #{id}
           AND is_deleted = false
@@ -167,17 +161,13 @@
             /* 파일 정보 */
             f.file_id as "files.id",
             f.original_name as "files.originalName",
-            f.saved_name as "files.savedName",
-            f.saved_path as "files.savedPath",
             f.file_size as "files.fileSize",
             f.content_type as "files.contentType",
             f.created_at as "files.createdAt",
             /* 댓글 정보 */
             cm.comment_id as "comments.id",
             cm.content as "comments.content",
-            cm.member_id as "comments.memberId",
             cm.created_at as "comments.createdAt",
-            cm.is_deleted as "comments.deleted",
             cm_m.nickname as "comments.nickname"
         FROM
             posts p
@@ -201,11 +191,7 @@
             m.nickname,
             c.name as category_name,
             (SELECT COUNT(*) FROM files f WHERE f.post_id = p.post_id) as file_count,
-            (SELECT COUNT(*) FROM comments cm WHERE cm.post_id = p.post_id) as comment_count,
-            (SELECT CONCAT(t.saved_path, '/', t.saved_name)
-            FROM thumbnail t
-            WHERE t.post_id = p.post_id
-            LIMIT 1) as thumbnail_url
+            (SELECT COUNT(*) FROM comments cm WHERE cm.post_id = p.post_id AND cm.is_deleted = false) as comment_count
         FROM
             posts p
             LEFT JOIN members m ON p.member_id = m.member_id
@@ -273,5 +259,23 @@
             WHERE
                 post_id = #{id}
         )
+    </select>
+
+    <!-- 공지사항 조회 -->
+    <select id="findAllWithFixed" resultType="com.spring.multiboardbackend.domain.post.vo.PostVO">
+        SELECT
+            <include refid="postsColumns"/>,
+            m.nickname,
+            c.name as category_name,
+            (SELECT COUNT(*) FROM files f WHERE f.post_id = p.post_id) as file_count,
+            (SELECT COUNT(*) FROM comments cm WHERE cm.post_id = p.post_id) as comment_count
+        FROM
+            posts p
+            LEFT JOIN members m ON p.member_id = m.member_id
+            LEFT JOIN categories c ON p.category_id = c.category_id
+        WHERE
+            p.is_fixed = true
+        ORDER BY p.created_at DESC
+        LIMIT 5
     </select>
 </mapper>

@@ -72,7 +72,7 @@ class MemberControllerTest {
             given(memberMapper.toResponse(member)).willReturn(expectedResponse);
 
             // when & then
-            mockMvc.perform(get("/api/members/me")
+            mockMvc.perform(get("/api/boards/members/me")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
                     .andExpect(status().isOk())

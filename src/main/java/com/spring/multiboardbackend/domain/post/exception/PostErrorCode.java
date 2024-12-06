@@ -12,7 +12,8 @@ import org.springframework.http.HttpStatus;
 public enum PostErrorCode implements ErrorCode {
 
     POST_NOT_FOUND("게시글을 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
-    PERMISSION_DENIED("게시물 수정 권한이 없습니다.", HttpStatus.FORBIDDEN);
+    PERMISSION_DENIED("게시물 수정 권한이 없습니다.", HttpStatus.FORBIDDEN),
+    REQUIRED_CATEGORY("카테고리는 필수 입니다.", HttpStatus.BAD_REQUEST);
 
     private final String message;
     private final HttpStatus status;
