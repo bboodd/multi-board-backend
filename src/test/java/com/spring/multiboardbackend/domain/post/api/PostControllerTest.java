@@ -329,12 +329,13 @@ class PostControllerTest {
                 "테스트 내용",           // content
                 0,                     // viewCount
                 LocalDateTime.now(),   // createdAt
+                1L,
                 "자유",                 // categoryName
                 "테스트유저",             // nickname
                 0,                     // fileCount
                 0,                     // commentCount
-                null,                  // thumbnailUrl
                 false,                 // locked
+                false,
                 List.of(),             // files
                 List.of()              // comments
         );
@@ -347,12 +348,13 @@ class PostControllerTest {
                 "수정된 내용",                           // content
                 0,                                     // viewCount
                 LocalDateTime.now(),                   // createdAt
+                1L,
                 "자유게시판",                            // categoryName
                 "테스트유저",                            // nickname
                 0,                                     // fileCount
                 0,                                     // commentCount
-                null,                                  // thumbnailUrl
                 false,                                 // locked
+                false,
                 List.of(),                            // files
                 List.of()                             // comments
         );
@@ -365,12 +367,13 @@ class PostControllerTest {
                 "테스트 내용",           // content
                 0,                     // viewCount
                 LocalDateTime.now(),   // createdAt
+                1L,
                 "자유",                 // categoryName
                 "테스트유저",             // nickname
                 0,                     // fileCount
                 0,                     // commentCount
-                null,                  // thumbnailUrl
                 false,                 // locked
+                false,
                 List.of(createFileResponse()),             // files
                 List.of()              // comments
         );

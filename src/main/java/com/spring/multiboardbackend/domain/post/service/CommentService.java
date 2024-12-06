@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -35,6 +37,10 @@ public class CommentService {
     public CommentVO findById(Long id) {
         return commentRepository.findById(id)
                 .orElseThrow(CommentErrorCode.COMMENT_NOT_FOUND::defaultException);
+    }
+
+    public List<CommentVO> findAllByPostId(Long postId) {
+        return commentRepository.findAllByPostId(postId);
     }
 
     /**

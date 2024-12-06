@@ -14,8 +14,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -48,17 +51,16 @@ class AuthServiceTest {
         void signUp_Success() {
             // given
             MemberVO member = createMemberVO();
+            String encodedPassword = BCrypt.hashpw(member.getPassword(), BCrypt.gensalt());
 
             given(memberRepository.existsByLoginId(member.getLoginId())).willReturn(false);
             given(memberRepository.existsByNickname(member.getNickname())).willReturn(false);
-            given(passwordEncoder.encode(member.getPassword())).willReturn("encodedPassword");
+            given(passwordEncoder.encode(member.getPassword())).willReturn(encodedPassword);
 
             // when
             MemberVO result = authService.signUp(member);
 
             // then
-            assertThat(result.getId()).isNull();
-            assertThat(member.getId()).isEqualTo(1L);
             assertThat(result.getLoginId()).isEqualTo(member.getLoginId());
             verify(memberRepository).save(any(MemberVO.class));
         }
@@ -101,17 +103,29 @@ class AuthServiceTest {
         @DisplayName("로그인 성공")
         void login_Success() {
             // given
-            Long memberId = 1L;
-            JwtToken expectedToken = createJwtToken();
+            String loginId = "testUser";
+            String password = "password123!";
+            String encodedPassword = BCrypt.hashpw(password, BCrypt.gensalt());
 
-            given(jwtProvider.generateToken(memberId)).willReturn(expectedToken);
+            MemberVO member = MemberVO.builder()
+                    .id(1L)
+                    .loginId(loginId)
+                    .password(encodedPassword)
+                    .build();
+
+            given(memberRepository.findByLoginId(loginId))
+                    .willReturn(Optional.of(member));
+
+            given(passwordEncoder.matches(password, encodedPassword)).willReturn(true);
 
             // when
-            JwtToken result = authService.login(memberId);
+            MemberVO result = authService.login(loginId, password);
 
             // then
-            assertThat(result).isEqualTo(expectedToken);
-            verify(memberRepository).updateLastLoginAt(memberId);
+            assertThat(result.getLoginId()).isEqualTo(loginId);
+
+            verify(memberRepository).findByLoginId(loginId);
+            verify(memberRepository).updateLastLoginAt(member.getId());
         }
     }
 
@@ -197,9 +211,5 @@ class AuthServiceTest {
                 .password("Password123!")
                 .nickname("테스트유저")
                 .build();
-    }
-
-    private JwtToken createJwtToken() {
-        return new JwtToken("Bearer", "accessToken", "refreshToken");
     }
 }

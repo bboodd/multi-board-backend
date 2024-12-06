@@ -123,4 +123,8 @@ public class PostService {
     public boolean hasThumbnail(Long id) {
         return postRepository.existsThumbnailById(id);
     }
+
+    public List<PostVO> findFixed() {
+        return postRepository.findAllWithFixed();
+    }
 }

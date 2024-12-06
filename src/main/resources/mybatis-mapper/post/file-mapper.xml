@@ -111,7 +111,7 @@
             content_type,
             created_at
         ) VALUES (
-            #{file.fileId},
+            #{file.id},
             #{file.postId},
             #{file.originalName},
             #{file.savedName},
@@ -121,4 +121,15 @@
             NOW()
         )
     </insert>
+
+    <!--  게시글 ID로 썸네일 조회  -->
+    <select id="findThumbnailByPostId" resultType="com.spring.multiboardbackend.domain.post.vo.FileVO">
+        SELECT
+            <include refid="filesColumns"/>
+        FROM
+            thumbnail f
+        WHERE
+            f.post_id = #{postId}
+        LIMIT 1
+    </select>
 </mapper>

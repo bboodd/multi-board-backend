@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.multiboardbackend.domain.member.dto.request.DuplicateCheckRequest;
 import com.spring.multiboardbackend.domain.member.dto.request.LoginRequest;
 import com.spring.multiboardbackend.domain.member.dto.request.SignUpRequest;
-import com.spring.multiboardbackend.domain.member.dto.response.LoginResponse;
 import com.spring.multiboardbackend.domain.member.dto.response.MemberResponse;
 import com.spring.multiboardbackend.domain.member.mapper.MemberMapper;
 import com.spring.multiboardbackend.domain.member.service.AuthService;
 import com.spring.multiboardbackend.domain.member.service.MemberService;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
+import com.spring.multiboardbackend.global.security.jwt.JwtProvider;
 import com.spring.multiboardbackend.global.security.jwt.JwtToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,6 +51,9 @@ class AuthControllerTest {
     @Mock
     private MemberMapper memberMapper;
 
+    @Mock
+    private JwtProvider jwtProvider;
+
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
 
@@ -80,12 +83,12 @@ class AuthControllerTest {
             MemberVO memberVO = createMemberVO();
             MemberResponse expectedResponse = new MemberResponse(1L, "testUser", "테스트유저");
 
+            given(authService.signUp(any(MemberVO.class))).willReturn(memberVO);
             given(memberMapper.toVO(any(SignUpRequest.class))).willReturn(memberVO);
-            given(authService.signUp(memberVO)).willReturn(memberVO);
-            given(memberMapper.toResponse(memberVO)).willReturn(expectedResponse);
+            given(memberMapper.toResponse(any(MemberVO.class))).willReturn(expectedResponse);
 
             // when & then
-            mockMvc.perform(post("/api/auth/signup")
+            mockMvc.perform(post("/api/boards/auth/signup")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andDo(print())
@@ -107,23 +110,19 @@ class AuthControllerTest {
             LoginRequest request = new LoginRequest("testUser", "Password123!");
             MemberVO memberVO = createMemberVO();
             JwtToken expectedToken = new JwtToken("Bearer", "test-access-token", "test-refresh-token");
-            LoginResponse expectedResponse = new LoginResponse(expectedToken, "테스트유저");
 
-            given(memberService.findByLoginId(request.loginId())).willReturn(memberVO);
-            given(passwordEncoder.matches(request.password(), memberVO.getPassword())).willReturn(true);
-            given(authService.login(memberVO.getId())).willReturn(expectedToken);
-            given(memberMapper.toLoginResponse(expectedToken, memberVO.getNickname())).willReturn(expectedResponse);
+            given(authService.login(request.loginId(), request.password())).willReturn(memberVO);
+            given(jwtProvider.generateToken(memberVO.getId())).willReturn(expectedToken);
 
             // when & then
-            mockMvc.perform(post("/api/auth/login")
+            mockMvc.perform(post("/api/boards/auth/login")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.token.grantType").value("Bearer"))     // type -> grantType으로 수정
-                    .andExpect(jsonPath("$.token.accessToken").value("test-access-token"))
-                    .andExpect(jsonPath("$.token.refreshToken").value("test-refresh-token"))
-                    .andExpect(jsonPath("$.nickname").value("테스트유저"));
+                    .andExpect(jsonPath("$.grantType").value("Bearer"))
+                    .andExpect(jsonPath("$.accessToken").value("test-access-token"))
+                    .andExpect(jsonPath("$.refreshToken").value("test-refresh-token"));
         }
     }
     @Nested
@@ -138,7 +137,7 @@ class AuthControllerTest {
             given(authService.checkDuplicate("testUser", "LOGIN_ID")).willReturn(true);
 
             // when & then
-            mockMvc.perform(post("/api/auth/check-duplicate/login-id")
+            mockMvc.perform(post("/api/boards/auth/check-duplicate/login-id")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andDo(print())
@@ -154,7 +153,7 @@ class AuthControllerTest {
             given(authService.checkDuplicate("테스트유저", "NICKNAME")).willReturn(true);
 
             // when & then
-            mockMvc.perform(post("/api/auth/check-duplicate/nickname")
+            mockMvc.perform(post("/api/boards/auth/check-duplicate/nickname")
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(objectMapper.writeValueAsString(request)))
                     .andDo(print())

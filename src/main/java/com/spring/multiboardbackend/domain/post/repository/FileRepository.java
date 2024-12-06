@@ -40,6 +40,8 @@ public interface FileRepository {
      */
     int saveThumbnail(@Param("file") FileVO file);
 
+    Optional<FileVO> findThumbnailByPostId(Long postId);
+
 
     /**
      * 파일 ID 목록으로 파일 삭제

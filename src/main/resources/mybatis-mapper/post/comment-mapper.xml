@@ -48,4 +48,14 @@
             c.comment_id = #{id}
     </select>
 
+    <!--  댓글 목록 조회  -->
+    <select id="findAllByPostId" resultType="com.spring.multiboardbackend.domain.post.vo.CommentVO">
+        SELECT
+            <include refid="commentColumns"/>
+        FROM
+            comments c
+        WHERE
+            c.post_id = #{postId}
+            AND c.is_deleted = false
+    </select>
 </mapper>

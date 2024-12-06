@@ -21,8 +21,7 @@ public interface FileControllerDocs {
             responseCode = "200",
             description = "파일 다운로드 성공",
             content = @Content(
-                    mediaType = "application/octet-stream",
-                    schema = @Schema(type = "string", format = "binary")
+                    schema = @Schema(type = "string")
             )
     )
     @ApiResponse(
@@ -40,6 +39,10 @@ public interface FileControllerDocs {
     ResponseEntity<Resource> downloadFile(
 
             @Parameter(description = "파일 ID", example = "1", required = true)
-            Long fileId
+            Long fileId,
+            @Parameter
+            String boardType,
+            @Parameter
+            Long postId
     );
 }

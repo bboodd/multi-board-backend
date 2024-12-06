@@ -63,4 +63,8 @@ public interface PostRepository {
 
     boolean existsThumbnailById(Long id);
 
+    List<PostVO> findAllWithFixed();
+
+
+
 }

@@ -24,11 +24,11 @@ import java.time.LocalDateTime;
     """
 )
 public record SearchRequest(
-        @Schema(description = "검색 시작일시")
+        @Schema(description = "검색 시작일시", defaultValue = "1달 전")
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime startDate,
 
-        @Schema(description = "검색 종료일시")
+        @Schema(description = "검색 종료일시", defaultValue = "현재")
         @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         LocalDateTime endDate,
 

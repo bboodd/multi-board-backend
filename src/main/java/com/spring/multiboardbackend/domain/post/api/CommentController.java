@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @Slf4j
@@ -61,5 +63,18 @@ public class CommentController implements CommentControllerDocs {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(commentService.deleteById(commentId));
+    }
+
+    /**
+     * 댓글 조회
+     */
+    @GetMapping("/{boardType}/posts/{postId}/comments")
+    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable String boardType, @PathVariable Long postId) {
+
+        List<CommentVO> comments = commentService.findAllByPostId(postId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(commentMapper.toResponseList(comments));
     }
 }

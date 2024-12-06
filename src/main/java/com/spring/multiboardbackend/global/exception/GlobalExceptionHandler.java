@@ -65,8 +65,8 @@ public class GlobalExceptionHandler {
 
         Map<String, String> errors = Map.of(
                 "domain", "Exception",
-                "reason", e.getClass().getSimpleName(),
-                "message", e.getMessage() != null ? e.getMessage() : "Unknown error"
+                "reason", e.getClass().getSimpleName()
+//                "message", e.getMessage() != null ? e.getMessage() : "Unknown error"
         );
 
         return ResponseEntity

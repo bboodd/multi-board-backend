@@ -33,7 +33,6 @@ public class PostVO {
     private String nickname;
     private int fileCount;
     private int commentCount;
-    private String thumbnailUrl;
     private List<FileVO> files;
     private List<CommentVO> comments;
 }
