@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:fragment="sidebarFragment">
+    <nav class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" aria-label="메인 메뉴">
+        <!-- 브랜드 로고 및 타이틀 -->
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" th:href="@{/admin/dashboard}" aria-label="대시보드로 이동">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-laugh-wink" aria-hidden="true"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">게시판 관리자</div>
+        </a>
+
+        <hr class="sidebar-divider my-0">
+
+        <!-- 대시보드 메뉴 -->
+        <li class="nav-item active">
+            <a class="nav-link" th:href="@{/admin/dashboard}">
+                <i class="fas fa-fw fa-tachometer-alt" aria-hidden="true"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+
+        <hr class="sidebar-divider">
+
+        <!-- 게시판 섹션 -->
+        <div class="sidebar-heading" aria-label="게시판 메뉴">
+            게시판 관리
+        </div>
+
+        <!-- 게시판 메뉴 아이템 -->
+        <li class="nav-item">
+            <div class="nav-link collapsed">
+                <div class="bg-white py-2 rounded">
+                    <ul class="nav flex-column" aria-label="게시판 목록">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" th:href="@{/admin/boards/free}">
+                                <i class="fas fa-fw fa-comments" aria-hidden="true"></i>
+                                자유게시판
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" th:href="@{/admin/boards/gallery}">
+                                <i class="fas fa-fw fa-images" aria-hidden="true"></i>
+                                갤러리
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" th:href="@{/admin/boards/qna}">
+                                <i class="fas fa-fw fa-question-circle" aria-hidden="true"></i>
+                                문의게시판
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" th:href="@{/admin/boards/notice}">
+                                <i class="fas fa-fw fa-bullhorn" aria-hidden="true"></i>
+                                공지사항
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </li>
+
+        <hr class="sidebar-divider d-none d-md-block">
+
+    </nav>
+</th:block>
+
+</html>

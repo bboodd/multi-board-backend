@@ -65,6 +65,6 @@ public interface PostRepository {
 
     List<PostVO> findAllWithFixed();
 
-
+    List<PostVO> findDashboardPosts();
 
 }

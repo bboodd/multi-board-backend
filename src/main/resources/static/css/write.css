@@ -1,0 +1,65 @@
+.file-item {
+    display: flex;
+    align-items: center;
+}
+
+.file-item a {
+    margin-right: 1rem;
+}
+
+.file-item a:hover {
+    text-decoration: underline !important;
+}
+
+.thumbnail-preview {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.form-control:required {
+    border-left: 4px solid #4e73df;
+}
+
+.form-group label {
+    margin-bottom: 0.5rem;
+}
+
+.file-upload-area {
+    background-color: #f8f9fc;
+    border-color: #d1d3e2;
+}
+
+.comments-section .card {
+    transition: transform 0.2s ease;
+}
+
+.comments-section .card:hover {
+    transform: translateY(-2px);
+}
+
+.list-group-item {
+    transition: background-color 0.2s ease;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fc;
+}
+
+.btn {
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.card {
+    border: none;
+}
+
+.form-control:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}

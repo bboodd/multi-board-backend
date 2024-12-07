@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -126,5 +128,13 @@ public class PostService {
 
     public List<PostVO> findFixed() {
         return postRepository.findAllWithFixed();
+    }
+
+    public Map<Long, List<PostVO>> findDashboardPosts() {
+        return postRepository.findDashboardPosts().stream()
+                .collect(Collectors.groupingBy(
+                        PostVO::getBoardTypeId,
+                        Collectors.toList()
+                ));
     }
 }

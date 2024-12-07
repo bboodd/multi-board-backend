@@ -1,0 +1,72 @@
+
+    /* 카드 스타일 */
+.card {
+    transition: transform 0.2s ease-in-out;
+}
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* 갤러리 아이템 스타일 */
+.gallery-item-wrapper {
+    overflow: hidden;
+    border-radius: 0.35rem;
+}
+
+.gallery-item img {
+    transition: transform 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-item-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.7);
+    padding: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover .gallery-item-overlay {
+    opacity: 1;
+}
+
+/* 뱃지 스타일 */
+.badge-soft-success {
+    color: #1cc88a;
+    background-color: #edfaf5;
+}
+
+.badge-soft-warning {
+    color: #f6c23e;
+    background-color: #fff8ec;
+}
+
+/* 테이블 스타일 */
+.table td {
+    vertical-align: middle;
+    padding: 1rem;
+}
+
+.table thead th {
+    font-weight: 600;
+    background-color: #f8f9fc;
+    border-bottom: 2px solid #e3e6f0;
+}
+
+/* 링크 스타일 */
+.card-body a {
+    color: #4e73df;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.card-body a:hover {
+    color: #2e59d9;
+    text-decoration: none;
+}
