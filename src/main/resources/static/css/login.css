@@ -1,0 +1,94 @@
+
+:root {
+    --primary-color: #4e73df;
+    --hover-color: #f8f9fc;
+    --input-height: 55px;
+}
+
+body {
+    background-color: #fff;
+    min-height: 100vh;
+}
+
+.login-wrapper {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 500px;
+    transition: transform 0.3s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+}
+
+.login-box {
+    background-color: var(--primary-color);
+    border-radius: 0.35rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.login-box h1 {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    font-weight: 700;
+}
+
+.form-control {
+    border-radius: 4px;
+    height: var(--input-height);
+    font-size: 1rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+.btn {
+    border-radius: 4px;
+    height: var(--input-height);
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-white {
+    color: var(--primary-color);
+    background-color: #fff;
+    border-color: #fff;
+}
+
+.btn-white:hover {
+    color: var(--primary-color);
+    background-color: var(--hover-color);
+    border-color: var(--hover-color);
+    transform: translateY(-2px);
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group .toggle-password {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    z-index: 10;
+}
+
+.alert {
+    border-radius: 4px;
+}

@@ -1,0 +1,95 @@
+
+.table thead th {
+    background-color: #f8f9fc;
+    border-bottom: 2px solid #4e73df;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fc;
+    transition: background-color 0.2s ease;
+}
+
+.table td {
+    vertical-align: middle;
+    padding: 1rem;
+}
+
+.badge {
+    font-weight: 600;
+    padding: 0.5em 0.75em;
+}
+
+.table-active {
+    background-color: #eaecf4 !important;
+}
+
+.page-link {
+    border-radius: 0.35rem;
+    margin: 0 0.2rem;
+    padding: 0.5rem 1rem;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #4e73df;
+    border-color: #4e73df;
+}
+
+.text-primary {
+    color: #4e73df !important;
+}
+
+.btn-primary {
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.search-button {
+    height: 100%;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.form-control:focus {
+    border-color: #4e73df;
+    box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+}
+
+/* 갤러리 썸네일 스타일 */
+.img-thumbnail {
+    border: 2px solid #e3e6f0;
+    transition: all 0.2s ease;
+}
+
+.img-thumbnail:hover {
+    border-color: #4e73df;
+    transform: scale(1.05);
+}
+
+/* 페이지네이션 스타일 */
+.pagination {
+    margin-top: 2rem;
+}
+
+.form-control {
+    height: 38px;
+}
+
+.input-group-text {
+    height: 38px;
+    background-color: #f8f9fc;
+    border-color: #d1d3e2;
+}
+
+.btn-primary {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
