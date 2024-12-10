@@ -33,7 +33,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -50,6 +52,23 @@ public class PostController implements PostControllerDocs {
     private final AuthService authService;
 
     private static final List<BoardType> FILE_SUPPORT_BOARDS = List.of(BoardType.FREE, BoardType.GALLERY);
+
+    /**
+     * 대시보드 데이터 조회
+     */
+    @GetMapping("/dashboard")
+    public ResponseEntity<Map<String, List<PostResponse>>> getDashboardPosts() {
+
+        Map<Long, List<PostVO>> dashboardPosts = postService.findDashboardPosts();
+
+        Map<String, List<PostResponse>> response = new HashMap<>();
+        response.put("freePosts", postMapper.toResponseList(dashboardPosts.get(BoardType.FREE.getId())));
+        response.put("galleryPosts", postMapper.toResponseList(dashboardPosts.get(BoardType.GALLERY.getId())));
+        response.put("qnaPosts", postMapper.toResponseList(dashboardPosts.get(BoardType.QNA.getId())));
+        response.put("noticePosts", postMapper.toResponseList(dashboardPosts.get(BoardType.NOTICE.getId())));
+
+        return ResponseEntity.ok(response);
+    }
 
     /**
      * 게시글 목록 조회

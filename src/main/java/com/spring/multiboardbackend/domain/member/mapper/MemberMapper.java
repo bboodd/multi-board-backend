@@ -6,7 +6,6 @@ import com.spring.multiboardbackend.domain.member.dto.response.MemberResponse;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
 import com.spring.multiboardbackend.global.security.jwt.JwtToken;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(
@@ -15,7 +14,6 @@ import org.mapstruct.ReportingPolicy;
 )
 public interface MemberMapper {
 
-    @Mapping(target = "password", ignore = true)
     MemberVO toVO(SignUpRequest request);
 
     LoginResponse toLoginResponse(JwtToken token, String nickname);
