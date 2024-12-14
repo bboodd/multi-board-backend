@@ -5,6 +5,7 @@ import com.spring.multiboardbackend.domain.member.mapper.MemberMapper;
 import com.spring.multiboardbackend.domain.member.service.MemberService;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
 import com.spring.multiboardbackend.global.security.auth.AuthenticationContextHolder;
+import com.spring.multiboardbackend.global.security.util.SecurityUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -34,6 +35,9 @@ class MemberControllerTest {
 
     @Mock
     private MemberMapper memberMapper;
+
+    @Mock
+    private SecurityUtil securityUtil;
 
     private MockMvc mockMvc;
 
@@ -67,12 +71,12 @@ class MemberControllerTest {
                     "테스트유저"
             );
 
-            AuthenticationContextHolder.setContext(memberId);
+            given(securityUtil.getCurrentMemberId()).willReturn(memberId);
             given(memberService.findById(memberId)).willReturn(member);
             given(memberMapper.toResponse(member)).willReturn(expectedResponse);
 
             // when & then
-            mockMvc.perform(get("/api/boards/members/me")
+            mockMvc.perform(get("/api/members/me")
                             .contentType(MediaType.APPLICATION_JSON))
                     .andDo(print())
                     .andExpect(status().isOk())

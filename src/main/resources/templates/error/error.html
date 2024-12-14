@@ -1,15 +1,43 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>ERROR</title>
-</head>
-<body>
-<div>
-    <h1>Error Page</h1>
-    error code : <span th:text="${code}"></span>
-    <br>error msg : <span th:text="${msg}"></span>
-    <br>error status : <span th:text="${status}"></span>
-</div>
-</body>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic}">
+
+<th:block layout:fragment="content">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+
+            <div class="card shadow-lg my-5">
+                <div class="card-body p-5">
+                    <!-- Nested Row within Card Body -->
+                    <div class="row">
+                        <div class="col-lg-5 d-none d-lg-block bg-danger text-white">
+                            <div class="d-flex align-items-center justify-content-center h-100">
+                                <h1 class="display-4">에러!</h1>
+                            </div>
+                        </div>
+                        <div class="col-lg-7">
+                            <div class="p-4">
+                                <div class="text-center">
+                                    <h1 class="h4 text-gray-900 mb-4">문제가 발생했습니다.</h1>
+                                </div>
+                                <div>
+                                    <p class="text-gray-700">에러 코드: <strong th:text="${code}">CODE</strong></p>
+                                    <p class="text-gray-700">에러 메시지: <strong th:text="${msg}">MESSAGE</strong></p>
+                                    <p class="text-gray-700">에러 상태: <strong th:text="${status}">STATUS</strong></p>
+                                </div>
+                                <hr>
+                                <div class="text-center">
+                                    <a class="btn btn-primary btn-block" href="/admin/dashboard">대시보드로 돌아가기 &larr;</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</th:block>
+
 </html>

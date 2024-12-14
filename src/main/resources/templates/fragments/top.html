@@ -24,7 +24,9 @@
                    data-toggle="dropdown"
                    aria-haspopup="true"
                    aria-expanded="false">
-                    <span class="mr-2 text-gray-600 small" th:text="|${session.ADMIN_NAME} 님 환영합니다|">
+<!--                    <span class="mr-2 text-gray-600 small" th:text="${adminName} + '님 환영합니다'">-->
+
+                    <span class="mr-2 text-gray-600 small" th:text="${#authentication.getPrincipal().getMember().getNickname()} + '님 환영합니다'">
                         관리자님 환영합니다
                     </span>
                     <img class="img-profile rounded-circle"

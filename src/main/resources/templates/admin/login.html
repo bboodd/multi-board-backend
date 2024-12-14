@@ -29,14 +29,14 @@
                     </div>
 
                     <!-- 에러 메시지 -->
-                    <div th:if="${errorMessage}"
+                    <div th:if="${session.errorMessage}"
                          class="alert alert-danger"
                          role="alert"
                          aria-live="polite">
-                        <p th:text="${errorMessage}">에러 메시지</p>
+                        <p th:text="${session.errorMessage}">에러 메시지</p>
                     </div>
 
-                    <form th:action="@{/admin/login}"
+                    <form th:action="@{/admin/loginProcess}"
                           method="post"
                           id="loginForm"
                           novalidate>

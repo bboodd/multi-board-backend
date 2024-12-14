@@ -14,14 +14,14 @@ import com.spring.multiboardbackend.domain.post.vo.PostVO;
 import com.spring.multiboardbackend.global.common.mapper.SearchMapper;
 import com.spring.multiboardbackend.global.common.response.Pagination;
 import com.spring.multiboardbackend.global.common.vo.SearchVO;
-import com.spring.multiboardbackend.global.security.auth.AuthenticationContextHolder;
 import com.spring.multiboardbackend.global.common.request.SearchRequest;
 import com.spring.multiboardbackend.domain.board.enums.BoardType;
-import com.spring.multiboardbackend.domain.member.annotation.LoginMember;
 import com.spring.multiboardbackend.domain.post.dto.request.PostRequest;
 import com.spring.multiboardbackend.domain.post.dto.response.PostResponse;
+import com.spring.multiboardbackend.global.security.util.SecurityUtil;
 import com.spring.multiboardbackend.global.util.FileUtils;
 import com.spring.multiboardbackend.global.util.UploadedFile;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +50,7 @@ public class PostController implements PostControllerDocs {
     private final FileService fileService;
     private final FileUtils fileUtils;
     private final AuthService authService;
+    private final SecurityUtil securityUtil;
 
     private static final List<BoardType> FILE_SUPPORT_BOARDS = List.of(BoardType.FREE, BoardType.GALLERY);
 
@@ -57,6 +58,7 @@ public class PostController implements PostControllerDocs {
      * 대시보드 데이터 조회
      */
     @GetMapping("/dashboard")
+    @Operation(summary = "게시판마다 게시글 일부 조회", description = "게시판들의 게시글 목록을 조회합니다.")
     public ResponseEntity<Map<String, List<PostResponse>>> getDashboardPosts() {
 
         Map<Long, List<PostVO>> dashboardPosts = postService.findDashboardPosts();
@@ -116,12 +118,11 @@ public class PostController implements PostControllerDocs {
     /**
      * 게시글 작성
      */
-    @LoginMember
     @PostMapping(value = "/{boardType}/posts",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostResponse> savePost(@PathVariable String boardType, @Valid PostRequest request) {
 
-        Long memberId = AuthenticationContextHolder.getContext();
+        Long memberId = securityUtil.getCurrentMemberId();
         BoardType type = BoardType.from(boardType);
 
         if (type != BoardType.QNA && request.categoryId() == null) {
@@ -152,12 +153,11 @@ public class PostController implements PostControllerDocs {
     /**
      * 게시글 수정
      */
-    @LoginMember
     @PutMapping(value = "/{boardType}/posts/{postId}",
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostResponse> updatePost(@PathVariable String boardType, @PathVariable Long postId, @Valid PostRequest request) {
 
-        Long memberId = AuthenticationContextHolder.getContext();
+        Long memberId = securityUtil.getCurrentMemberId();
         BoardType type = BoardType.from(boardType);
 
         PostVO oldPost = postService.findById(postId);
@@ -196,11 +196,10 @@ public class PostController implements PostControllerDocs {
     /**
      * 게시글 삭제
      */
-    @LoginMember
     @DeleteMapping("/{boardType}/posts/{postId}")
     public ResponseEntity<Boolean> deletePost(@PathVariable String boardType, @PathVariable Long postId) {
 
-        Long memberId = AuthenticationContextHolder.getContext();
+        Long memberId = securityUtil.getCurrentMemberId();
 
         PostVO post = postService.findById(postId);
 

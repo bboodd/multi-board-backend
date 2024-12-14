@@ -6,10 +6,10 @@ import com.spring.multiboardbackend.domain.post.exception.CommentErrorCode;
 import com.spring.multiboardbackend.domain.post.mapper.CommentMapper;
 import com.spring.multiboardbackend.domain.post.service.CommentService;
 import com.spring.multiboardbackend.domain.post.vo.CommentVO;
-import com.spring.multiboardbackend.global.security.auth.AuthenticationContextHolder;
 import com.spring.multiboardbackend.domain.post.dto.request.CommentRequest;
 import com.spring.multiboardbackend.domain.post.dto.response.CommentResponse;
-import com.spring.multiboardbackend.domain.member.annotation.LoginMember;
+import com.spring.multiboardbackend.global.security.util.SecurityUtil;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,21 +22,21 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @Slf4j
-@RequestMapping("/api/boards")
+@RequestMapping("/api/posts")
 public class CommentController implements CommentControllerDocs {
 
     private final CommentService commentService;
     private final CommentMapper commentMapper;
     private final AuthService authService;
+    private final SecurityUtil securityUtil;
 
     /**
      * 댓글 등록
      */
-    @LoginMember
-    @PostMapping("/{boardType}/posts/{postId}/comments")
+    @PostMapping("/{postId}/comments")
     public ResponseEntity<CommentResponse> saveComment(@PathVariable String boardType, @PathVariable Long postId, @RequestBody @Valid CommentRequest request) {
 
-        Long memberId = AuthenticationContextHolder.getContext();
+        Long memberId = securityUtil.getCurrentMemberId();
 
         CommentVO comment = commentService.saveComment(commentMapper.toVO(request, memberId, postId));
 
@@ -48,11 +48,10 @@ public class CommentController implements CommentControllerDocs {
     /**
      * 댓글 삭제
      */
-    @LoginMember
-    @DeleteMapping("/{boardType}/posts/{postId}/comments/{commentId}")
+    @DeleteMapping("/{postId}/comments/{commentId}")
     public ResponseEntity<Boolean> deleteComment(@PathVariable String boardType, @PathVariable Long postId, @PathVariable Long commentId) {
 
-        Long memberId = AuthenticationContextHolder.getContext();
+        Long memberId = securityUtil.getCurrentMemberId();
 
         CommentVO comment = commentService.findById(commentId);
 
@@ -68,7 +67,8 @@ public class CommentController implements CommentControllerDocs {
     /**
      * 댓글 조회
      */
-    @GetMapping("/{boardType}/posts/{postId}/comments")
+    @GetMapping("/{postId}/comments")
+    @Operation(summary = "댓글 목록 조회", description = "댓글 목록을 조회합니다.")
     public ResponseEntity<List<CommentResponse>> getComments(@PathVariable String boardType, @PathVariable Long postId) {
 
         List<CommentVO> comments = commentService.findAllByPostId(postId);

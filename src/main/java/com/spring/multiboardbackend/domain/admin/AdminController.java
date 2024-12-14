@@ -1,22 +1,16 @@
 package com.spring.multiboardbackend.domain.admin;
 
-import com.spring.multiboardbackend.domain.board.dto.response.CategoryResponse;
 import com.spring.multiboardbackend.domain.board.enums.BoardType;
 import com.spring.multiboardbackend.domain.board.mapper.CategoryMapper;
 import com.spring.multiboardbackend.domain.board.service.CategoryService;
 import com.spring.multiboardbackend.domain.board.vo.CategoryVO;
-import com.spring.multiboardbackend.domain.member.dto.request.LoginRequest;
 import com.spring.multiboardbackend.domain.member.service.AuthService;
-import com.spring.multiboardbackend.domain.member.vo.MemberVO;
 import com.spring.multiboardbackend.domain.post.dto.request.CommentRequest;
 import com.spring.multiboardbackend.domain.post.dto.request.PostRequest;
 import com.spring.multiboardbackend.domain.post.dto.response.CommentResponse;
-import com.spring.multiboardbackend.domain.post.dto.response.FileResponse;
 import com.spring.multiboardbackend.domain.post.dto.response.PostResponse;
 import com.spring.multiboardbackend.domain.post.dto.response.PostsResponse;
-import com.spring.multiboardbackend.domain.post.exception.CommentErrorCode;
 import com.spring.multiboardbackend.domain.post.exception.FileErrorCode;
-import com.spring.multiboardbackend.domain.post.exception.PostErrorCode;
 import com.spring.multiboardbackend.domain.post.mapper.CommentMapper;
 import com.spring.multiboardbackend.domain.post.mapper.FileMapper;
 import com.spring.multiboardbackend.domain.post.mapper.PostMapper;
@@ -30,24 +24,21 @@ import com.spring.multiboardbackend.global.common.mapper.SearchMapper;
 import com.spring.multiboardbackend.global.common.request.SearchRequest;
 import com.spring.multiboardbackend.global.common.response.Pagination;
 import com.spring.multiboardbackend.global.common.vo.SearchVO;
-import com.spring.multiboardbackend.global.exception.CustomException;
 import com.spring.multiboardbackend.global.exception.ErrorCode;
-import com.spring.multiboardbackend.global.security.auth.AuthenticationContextHolder;
+import com.spring.multiboardbackend.global.security.util.SecurityUtil;
 import com.spring.multiboardbackend.global.util.FileUtils;
 import com.spring.multiboardbackend.global.util.UploadedFile;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.CollectionUtils;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -61,7 +52,6 @@ import java.util.Objects;
 @Slf4j
 public class AdminController {
 
-    private final AuthService authService;
     private final PostService postService;
     private final CategoryService categoryService;
     private final FileService fileService;
@@ -72,6 +62,7 @@ public class AdminController {
     private final FileMapper fileMapper;
     private final CommentMapper commentMapper;
     private final FileUtils fileUtils;
+    private final SecurityUtil securityUtil;
 
     private static final List<BoardType> FILE_SUPPORT_BOARDS = List.of(BoardType.FREE, BoardType.GALLERY);
 
@@ -81,49 +72,18 @@ public class AdminController {
         return "admin/login";
     }
 
-    @PostMapping("/logout")
-    public String logout(HttpSession session) {
-        session.invalidate();
-        return "redirect:/admin/login";
+    @GetMapping("/error")
+    public String errorPage() {
+        return "error/error";
     }
 
-    @PostMapping("/login")
-    public String login(
-            @Valid LoginRequest request,
-            BindingResult bindingResult,
-            HttpSession session,
-            RedirectAttributes ra
-    ) {
-
-        if (bindingResult.hasErrors()) {
-            ra.addFlashAttribute("errorMessage", "아이디와 비밀번호를 입력해주세요.");
-            return "redirect:/admin/login";
-        }
-
-        try{
-            MemberVO member = authService.login(request.loginId(), request.password());
-
-            if (authService.isAdmin(member.getId())) {
-                // 세션에 관리자 정보 저장
-                session.setAttribute("ADMIN_ID", member.getId());
-                session.setAttribute("ADMIN_NAME", member.getNickname());
-
-                // 리다이렉트 URL이 있으면 해당 URL로, 없으면 대시보드로
-                return "redirect:/admin/dashboard";
-            } else {
-                // 관리자가 아닌 경우
-                ra.addFlashAttribute("errorMessage", "관리자 권한이 없습니다.");
-                return "redirect:/admin/login";
-            }
-        } catch (CustomException e) {
-            ra.addFlashAttribute("errorMessage", e.getMessage());
-            return "redirect:/admin/login";
-        }
-
+    @GetMapping("")
+    public String index() {
+        return "redirect:/admin/dashboard";
     }
 
     @GetMapping("/dashboard")
-    public String dashboard(HttpSession session, Model model) {
+    public String dashboard(Authentication authentication, Model model) {
         // 대시보드에 표시할 데이터 조회
         Map<Long, List<PostVO>> dashboardPosts = postService.findDashboardPosts();
 
@@ -144,7 +104,6 @@ public class AdminController {
         BoardType type = BoardType.from(boardType);
         model.addAttribute("boardType", type);
 
-        // TODO: Redis 적용 가능
         if (type.equals(BoardType.NOTICE)) {
             List<PostResponse> fixedPosts = postMapper.toResponseList(postService.findFixed());
             model.addAttribute("fixedPosts", fixedPosts);
@@ -165,7 +124,7 @@ public class AdminController {
 
         model.addAttribute("posts", PostsResponse.of(posts, pagination));
 
-        return "board/main";
+        return "admin/posts";
     }
 
     // 게시글 등록 페이지
@@ -179,7 +138,7 @@ public class AdminController {
             model.addAttribute("categories", categoryMapper.toResponseList(categories));
         }
 
-        return "board/write";
+        return "admin/write";
     }
 
     // 게시글 수정 페이지
@@ -200,16 +159,17 @@ public class AdminController {
             model.addAttribute("categories", categoryMapper.toResponseList(categories));
         }
 
-        return "board/write";
+        return "admin/write";
     }
 
     // 게시글 저장
     @PostMapping("boards/{boardType}/posts")
     public String save(
             @PathVariable String boardType,
-            @Valid PostRequest request,
-            @SessionAttribute("ADMIN_ID") Long adminId
+            @Valid PostRequest request
     ) {
+        Long adminId = securityUtil.getCurrentMemberId();
+
         BoardType type = BoardType.from(boardType);
 
         PostVO post = postService.save(postMapper.toVO(request, adminId, type.getId()));
@@ -226,14 +186,13 @@ public class AdminController {
     public String update(
             @PathVariable String boardType,
             @PathVariable Long postId,
-            @Valid PostRequest request,
-            @SessionAttribute("ADMIN_ID") Long adminId
+            @Valid PostRequest request
     ) {
 
         BoardType type = BoardType.from(boardType);
 
         // 게시글 수정
-        PostVO updatedPost = postService.update(postMapper.toVOForUpdate(request, postId));
+        postService.update(postMapper.toVOForUpdate(request, postId));
 
 
         if (isFileSupportBoard(type)) {
@@ -254,8 +213,7 @@ public class AdminController {
     // 게시글 삭제
     @DeleteMapping("/posts/{postId}")
     public ResponseEntity<Void> deletePost(
-            @PathVariable Long postId,
-            @SessionAttribute("ADMIN_ID") Long adminId
+            @PathVariable Long postId
     ) {
 
         postService.delete(postId);
@@ -267,10 +225,11 @@ public class AdminController {
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentResponse> saveComment(
             @PathVariable Long postId,
-            @SessionAttribute("ADMIN_ID") Long adminId,
             @SessionAttribute("ADMIN_NAME") String adminName,
             @RequestBody @Valid CommentRequest request
     ) {
+
+        Long adminId = securityUtil.getCurrentMemberId();
 
         CommentVO comment = commentService.saveComment(commentMapper.toVO(request, adminId, postId));
         comment.setNickname(adminName);
@@ -283,9 +242,11 @@ public class AdminController {
     @PostMapping("/posts/{postId}/answer")
     public String saveAnswer(
             @PathVariable Long postId,
-            @SessionAttribute("ADMIN_ID") Long adminId,
             @RequestBody @Valid CommentRequest request
     ) {
+
+        Long adminId = securityUtil.getCurrentMemberId();
+
         commentService.saveComment(commentMapper.toVO(request, adminId, postId));
 
         return "redirect:/admin/boards/qna";
@@ -339,15 +300,12 @@ public class AdminController {
     // 썸네일 url s3에서 가져오는 메서드
     @GetMapping("/posts/{postId}/thumbnail")
     public ResponseEntity<String> getThumbnailUrl(@PathVariable Long postId) {
-        try {
-            FileVO file = fileService.findThumbnailByPostId(postId);
-            String objectKey = file.getSavedName();
-            String preSignedUrl = fileUtils.generatePresignedUrl(objectKey);
 
-            return ResponseEntity.ok(preSignedUrl);
-        } catch (Exception e) {
-            return ResponseEntity.ok("");
-        }
+        FileVO file = fileService.findThumbnailByPostId(postId);
+        String objectKey = file.getSavedName();
+        String preSignedUrl = fileUtils.generatePresignedUrl(objectKey);
+
+        return ResponseEntity.ok(preSignedUrl);
     }
 
     // 파일 처리 해야하는 게시판인지 확인 메서드
