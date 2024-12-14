@@ -1,9 +1,12 @@
 package com.spring.multiboardbackend.global.interceptor;
 
+import com.spring.multiboardbackend.domain.member.service.MemberService;
+import com.spring.multiboardbackend.domain.member.vo.MemberVO;
 import com.spring.multiboardbackend.global.security.auth.AuthenticationContextHolder;
 import com.spring.multiboardbackend.domain.member.annotation.LoginMember;
-import com.spring.multiboardbackend.global.security.jwt.JwtProvider;
+import com.spring.multiboardbackend.global.security.jwt.JwtUtil;
 import com.spring.multiboardbackend.global.security.jwt.exception.JwtErrorCode;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +21,8 @@ import org.springframework.web.servlet.resource.ResourceHttpRequestHandler;
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
-    private final JwtProvider jwtProvider;
+    private final JwtUtil jwtUtil;
+    private final MemberService memberService;
 
     /**
      * 컨트롤러로 들어오기전 인증 인터셉터 메서드
@@ -35,10 +39,11 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         final String token = resolveToken(request);
 
-        if(token != null && jwtProvider.validateToken(token)) {
+        if(token != null && jwtUtil.validateToken(token)) {
             // 토큰이 유효할 경우
-            final Long memberId = jwtProvider.getAuthentication(token);
-            AuthenticationContextHolder.setContext(memberId);
+            final Claims claims = jwtUtil.getClaimsFromToken(token);
+            MemberVO member = memberService.findByLoginId(claims.getSubject());
+            AuthenticationContextHolder.setContext(member.getId());
             return true;
         }
 

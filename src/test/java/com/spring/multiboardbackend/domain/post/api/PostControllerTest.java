@@ -15,7 +15,7 @@ import com.spring.multiboardbackend.domain.post.vo.PostVO;
 import com.spring.multiboardbackend.global.common.mapper.SearchMapper;
 import com.spring.multiboardbackend.global.common.request.SearchRequest;
 import com.spring.multiboardbackend.global.common.vo.SearchVO;
-import com.spring.multiboardbackend.global.security.auth.AuthenticationContextHolder;
+import com.spring.multiboardbackend.global.security.util.SecurityUtil;
 import com.spring.multiboardbackend.global.util.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -68,6 +68,9 @@ class PostControllerTest {
 
     @Mock
     private AuthService authService;
+
+    @Mock
+    private SecurityUtil securityUtil;
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
@@ -154,8 +157,7 @@ class PostControllerTest {
             PostVO post = createNoticePostVO();
             PostResponse postResponse = createPostResponse();
 
-            AuthenticationContextHolder.setContext(memberId);
-
+            given(securityUtil.getCurrentMemberId()).willReturn(memberId);
             given(postMapper.toVO(any(PostRequest.class), eq(memberId), eq(BoardType.NOTICE.getId()))).willReturn(post);
             given(postService.save(any(PostVO.class))).willReturn(post);
             given(postMapper.toResponse(any(PostVO.class))).willReturn(postResponse);
@@ -183,8 +185,7 @@ class PostControllerTest {
             PostResponse postResponse = createPostResponseWithFile();
             MockMultipartFile file = new MockMultipartFile("file", "test.txt", MediaType.TEXT_PLAIN_VALUE, "test file".getBytes());
 
-            AuthenticationContextHolder.setContext(memberId);
-
+            given(securityUtil.getCurrentMemberId()).willReturn(memberId);
             given(postMapper.toVO(any(PostRequest.class), eq(memberId), eq(BoardType.FREE.getId()))).willReturn(post);
             given(postService.save(any(PostVO.class))).willReturn(post);
             given(postMapper.toResponseWithFile(any(PostVO.class), any())).willReturn(postResponse);
@@ -223,8 +224,7 @@ class PostControllerTest {
             PostResponse postResponse = createUpdatedPostResponse();
             MockMultipartFile file = new MockMultipartFile("file", "test.txt", MediaType.TEXT_PLAIN_VALUE, "test file".getBytes());
 
-            AuthenticationContextHolder.setContext(memberId);
-
+            given(securityUtil.getCurrentMemberId()).willReturn(memberId);
             given(postService.findById(any())).willReturn(existingPost);
             given(postMapper.toVOForUpdate(any(), eq(postId))).willReturn(updatedPost);
             given(postService.update(any())).willReturn(updatedPost);
@@ -259,8 +259,7 @@ class PostControllerTest {
             Long memberId = 1L;
             PostVO post = createPostVO();
 
-            AuthenticationContextHolder.setContext(memberId);
-
+            given(securityUtil.getCurrentMemberId()).willReturn(memberId);
             given(postService.findById(postId)).willReturn(post);
             given(postService.delete(postId)).willReturn(true);
 

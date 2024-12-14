@@ -9,7 +9,7 @@ import com.spring.multiboardbackend.domain.member.exception.MemberErrorCode;
 import com.spring.multiboardbackend.domain.member.mapper.MemberMapper;
 import com.spring.multiboardbackend.domain.member.service.AuthService;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
-import com.spring.multiboardbackend.global.security.jwt.JwtProvider;
+import com.spring.multiboardbackend.global.security.jwt.JwtUtil;
 import com.spring.multiboardbackend.global.security.jwt.JwtToken;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,13 +20,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/boards/auth")
+@RequestMapping("api/auth")
 @RequiredArgsConstructor
 @Slf4j
 public class AuthController implements AuthControllerDocs {
 
     private final AuthService authService;
-    private final JwtProvider jwtProvider;
+    private final JwtUtil jwtUtil;
     private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -45,11 +45,11 @@ public class AuthController implements AuthControllerDocs {
     @PostMapping("/login")
     public ResponseEntity<JwtToken> login(@Valid @RequestBody LoginRequest request) {
 
-        MemberVO member = authService.login(request.loginId(), request.password());
+        JwtToken token = authService.login(request.loginId(), request.password());
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(jwtProvider.generateToken(member.getId()));
+                .body(token);
     }
 
     @PostMapping("/check-duplicate/login-id")

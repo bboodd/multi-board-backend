@@ -5,8 +5,8 @@ import com.spring.multiboardbackend.domain.member.exception.MemberErrorCode;
 import com.spring.multiboardbackend.domain.member.repository.MemberRepository;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
 import com.spring.multiboardbackend.global.exception.CustomException;
-import com.spring.multiboardbackend.global.security.jwt.JwtProvider;
 import com.spring.multiboardbackend.global.security.jwt.JwtToken;
+import com.spring.multiboardbackend.global.security.jwt.JwtUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 
@@ -37,7 +37,7 @@ class AuthServiceTest {
     private MemberRepository memberRepository;
 
     @Mock
-    private JwtProvider jwtProvider;
+    private JwtUtil jwtUtil;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -111,6 +111,7 @@ class AuthServiceTest {
                     .id(1L)
                     .loginId(loginId)
                     .password(encodedPassword)
+                    .roleId(1L)
                     .build();
 
             given(memberRepository.findByLoginId(loginId))
@@ -118,11 +119,16 @@ class AuthServiceTest {
 
             given(passwordEncoder.matches(password, encodedPassword)).willReturn(true);
 
+            String expectedToken = "sampleToken";
+            given(jwtUtil.generateToken(eq(loginId), eq(Role.fromId(member.getRoleId())), anyLong()))
+                    .willReturn(expectedToken);
+
             // when
-            MemberVO result = authService.login(loginId, password);
+            JwtToken result = authService.login(loginId, password);
 
             // then
-            assertThat(result.getLoginId()).isEqualTo(loginId);
+            assertThat(result.accessToken()).isEqualTo(expectedToken);
+            assertThat(result.grantType()).isEqualTo("Bearer");
 
             verify(memberRepository).findByLoginId(loginId);
             verify(memberRepository).updateLastLoginAt(member.getId());
@@ -139,7 +145,7 @@ class AuthServiceTest {
             // given
             Long memberId = 1L;
             Role role = Role.ADMIN;
-            given(memberRepository.hasRole(memberId, role.getKey())).willReturn(true);
+            given(memberRepository.hasRole(memberId, role.getRoleName())).willReturn(true);
 
             // when
             boolean result = authService.hasRole(memberId, role);
@@ -153,7 +159,7 @@ class AuthServiceTest {
         void isAdmin_Success() {
             // given
             Long memberId = 1L;
-            given(memberRepository.hasRole(memberId, Role.ADMIN.getKey())).willReturn(true);
+            given(memberRepository.hasRole(memberId, Role.ADMIN.getRoleName())).willReturn(true);
 
             // when
             boolean result = authService.isAdmin(memberId);

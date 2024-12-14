@@ -3,21 +3,25 @@ package com.spring.multiboardbackend.domain.member.enums;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Objects;
+
 @Getter
 @RequiredArgsConstructor
 public enum Role {
-    USER("ROLE_USER", "일반 사용자"),
-    ADMIN("ROLE_ADMIN", "관리자");
+    USER(1L, "ROLE_USER"),
+    ADMIN(2L, "ROLE_ADMIN");
 
-    private final String key;
-    private final String title;
+    private final Long id;
+    private final String roleName;
 
-    public static Role fromKey(String key) {
+
+    public static Role fromId(Long id) {
         for (Role role : values()) {
-            if (role.getKey().equals(key)) {
+            if (Objects.equals(role.id, id)) {
                 return role;
             }
         }
-        throw new IllegalArgumentException("Invalid role key: " + key);
+        // 매칭되지 않을 경우 기본 USER 혹은 예외 처리
+        return USER;
     }
 }

@@ -3,13 +3,14 @@ package com.spring.multiboardbackend.domain.member.vo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class MemberVO {
+public class MemberVO implements Serializable {
     private Long id;
     private Long roleId;
     private String loginId;

@@ -4,6 +4,8 @@ import com.spring.multiboardbackend.domain.member.enums.Role;
 import com.spring.multiboardbackend.domain.member.exception.MemberErrorCode;
 import com.spring.multiboardbackend.domain.member.repository.MemberRepository;
 import com.spring.multiboardbackend.domain.member.vo.MemberVO;
+import com.spring.multiboardbackend.global.security.jwt.JwtToken;
+import com.spring.multiboardbackend.global.security.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +20,9 @@ public class AuthService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
+
+    private static final long ACCESS_TOKEN_TIME = 1000L * 60 * 60 * 24 * 30; // 한달
 
     /**
      * 새로운 회원을 등록합니다.
@@ -49,16 +54,24 @@ public class AuthService {
      * @return memberVO
      */
     @Transactional
-    public MemberVO login(String loginId, String password) {
+    public JwtToken login(String loginId, String password) {
 
         MemberVO member = memberRepository.findByLoginId(loginId)
                         .orElseThrow(MemberErrorCode.MEMBER_NOT_FOUND::defaultException);
 
         validateLoginPassword(password, member.getPassword());
 
+        String accessToken = jwtUtil.generateToken(member.getLoginId(), Role.fromId(member.getRoleId()), ACCESS_TOKEN_TIME);
+
+        JwtToken jwtToken = JwtToken.builder()
+                .grantType("Bearer")
+                .accessToken(accessToken)
+                .refreshToken(null)
+                .build();
+
         memberRepository.updateLastLoginAt(member.getId());
 
-        return member;
+        return jwtToken;
     }
 
     /**
@@ -69,7 +82,7 @@ public class AuthService {
      * @return 권한 보유 여부
      */
     public boolean hasRole(Long memberId, Role role) {
-        return memberRepository.hasRole(memberId, role.getKey());
+        return memberRepository.hasRole(memberId, role.getRoleName());
     }
 
     /**
