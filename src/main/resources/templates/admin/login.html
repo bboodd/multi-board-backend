@@ -8,13 +8,16 @@
     <meta name="robots" content="noindex, nofollow">
     <title>관리자 로그인</title>
 
+    <!-- CSRF Token Meta Tags -->
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+
     <!-- Custom fonts -->
     <link href="/bootstrap/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Custom styles -->
     <link href="/bootstrap/css/sb-admin-2.min.css" rel="stylesheet">
-
     <link href="/css/login.css" rel="stylesheet">
 </head>
 
@@ -40,6 +43,10 @@
                           method="post"
                           id="loginForm"
                           novalidate>
+                        <!-- CSRF Token -->
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+                        <!-- Redirect URL -->
                         <input type="hidden"
                                name="redirectUrl"
                                th:if="${param.redirectUrl}"
@@ -54,7 +61,11 @@
                                    placeholder="아이디를 입력하세요"
                                    required
                                    autocomplete="username"
-                                   aria-required="true">
+                                   aria-required="true"
+                                   aria-describedby="loginIdHelp">
+                            <div class="invalid-feedback">
+                                아이디를 입력해주세요.
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -67,15 +78,23 @@
                                        placeholder="비밀번호를 입력하세요"
                                        required
                                        autocomplete="current-password"
-                                       aria-required="true">
-                                <i class="toggle-password far fa-eye"
-                                   onclick="togglePassword()"
-                                   aria-label="비밀번호 보기"></i>
+                                       aria-required="true"
+                                       aria-describedby="passwordHelp">
+                                <button type="button"
+                                        class="btn toggle-password"
+                                        id="togglePassword"
+                                        aria-label="비밀번호 보기/숨기기">
+                                    <i class="far fa-eye" id="togglePasswordIcon"></i>
+                                </button>
+                                <div class="invalid-feedback">
+                                    비밀번호를 입력해주세요.
+                                </div>
                             </div>
                         </div>
 
                         <button type="submit"
-                                class="btn btn-white btn-block">
+                                class="btn btn-white btn-block"
+                                id="submitButton">
                             로그인
                         </button>
                     </form>
@@ -90,32 +109,46 @@
 <script src="/bootstrap/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 <script>
-    // 폼 유효성 검사
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-        const loginId = document.getElementById('loginId').value.trim();
-        const password = document.getElementById('password').value.trim();
+    (function() {
+        'use strict';
 
-        if (!loginId || !password) {
-            e.preventDefault();
-            alert('아이디와 비밀번호를 모두 입력해주세요.');
-        }
-    });
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('loginForm');
+            const submitButton = document.getElementById('submitButton');
 
-    // 비밀번호 보기/숨기기 토글
-    function togglePassword() {
-        const passwordInput = document.getElementById('password');
-        const toggleIcon = document.querySelector('.toggle-password');
+            // 폼 유효성 검사 및 제출
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    // 제출 버튼 비활성화 및 로딩 상태 표시
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> 로그인 중...';
+                }
 
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            toggleIcon.classList.remove('fa-eye');
-            toggleIcon.classList.add('fa-eye-slash');
-        } else {
-            passwordInput.type = 'password';
-            toggleIcon.classList.remove('fa-eye-slash');
-            toggleIcon.classList.add('fa-eye');
-        }
-    }
+                form.classList.add('was-validated');
+            }, false);
+
+            // 비밀번호 보기/숨기기 토글
+            document.getElementById('togglePassword').addEventListener('click', function () {
+                const passwordInput = document.getElementById('password');
+                const toggleIcon = document.getElementById('togglePasswordIcon');
+
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleIcon.classList.remove('fa-eye');
+                    toggleIcon.classList.add('fa-eye-slash');
+                    this.setAttribute('aria-label', '비밀번호 숨기기');
+                } else {
+                    passwordInput.type = 'password';
+                    toggleIcon.classList.remove('fa-eye-slash');
+                    toggleIcon.classList.add('fa-eye');
+                    this.setAttribute('aria-label', '비밀번호 보기');
+                }
+            });
+        }, false);
+    })();
 </script>
 </body>
 </html>

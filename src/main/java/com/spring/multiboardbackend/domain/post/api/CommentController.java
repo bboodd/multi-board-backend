@@ -34,7 +34,7 @@ public class CommentController implements CommentControllerDocs {
      * 댓글 등록
      */
     @PostMapping("/{postId}/comments")
-    public ResponseEntity<CommentResponse> saveComment(@PathVariable String boardType, @PathVariable Long postId, @RequestBody @Valid CommentRequest request) {
+    public ResponseEntity<CommentResponse> saveComment(@PathVariable Long postId, @RequestBody @Valid CommentRequest request) {
 
         Long memberId = securityUtil.getCurrentMemberId();
 
@@ -49,7 +49,7 @@ public class CommentController implements CommentControllerDocs {
      * 댓글 삭제
      */
     @DeleteMapping("/{postId}/comments/{commentId}")
-    public ResponseEntity<Boolean> deleteComment(@PathVariable String boardType, @PathVariable Long postId, @PathVariable Long commentId) {
+    public ResponseEntity<Boolean> deleteComment(@PathVariable Long postId, @PathVariable Long commentId) {
 
         Long memberId = securityUtil.getCurrentMemberId();
 
@@ -69,7 +69,7 @@ public class CommentController implements CommentControllerDocs {
      */
     @GetMapping("/{postId}/comments")
     @Operation(summary = "댓글 목록 조회", description = "댓글 목록을 조회합니다.")
-    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable String boardType, @PathVariable Long postId) {
+    public ResponseEntity<List<CommentResponse>> getComments(@PathVariable Long postId) {
 
         List<CommentVO> comments = commentService.findAllByPostId(postId);
 
