@@ -225,11 +225,11 @@ public class AdminController {
     @PostMapping("/posts/{postId}/comments")
     public ResponseEntity<CommentResponse> saveComment(
             @PathVariable Long postId,
-            @SessionAttribute("ADMIN_NAME") String adminName,
             @RequestBody @Valid CommentRequest request
     ) {
 
         Long adminId = securityUtil.getCurrentMemberId();
+        String adminName = securityUtil.getCurrentMemberNickname();
 
         CommentVO comment = commentService.saveComment(commentMapper.toVO(request, adminId, postId));
         comment.setNickname(adminName);
@@ -242,7 +242,7 @@ public class AdminController {
     @PostMapping("/posts/{postId}/answer")
     public String saveAnswer(
             @PathVariable Long postId,
-            @RequestBody @Valid CommentRequest request
+            @Valid CommentRequest request
     ) {
 
         Long adminId = securityUtil.getCurrentMemberId();
@@ -273,7 +273,7 @@ public class AdminController {
             FileVO file = fileService.findById(fileId);
             String objectKey = file.getSavedName();
 
-            String encodedFileName = URLEncoder.encode(file.getOriginalName(), StandardCharsets.UTF_8.toString())
+            String encodedFileName = URLEncoder.encode(file.getOriginalName(), StandardCharsets.UTF_8)
                     .replace("\\+", "%20");
 
             return ResponseEntity.ok()

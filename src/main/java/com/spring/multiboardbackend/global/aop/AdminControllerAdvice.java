@@ -16,14 +16,14 @@ public class AdminControllerAdvice {
 
     @ModelAttribute
     public void addAttributes(Model model) {
-        try {
-            String adminName = securityUtil.getCurrentMemberNickname();
-            model.addAttribute("adminName", adminName);
-        } catch (Exception e) {
-            log.warn("Admin name could not be retrieved: {}", e.getMessage());
-            // 필요 시 기본값을 설정하거나, 특정 로직을 추가할 수 있습니다.
-            model.addAttribute("adminName", "관리자");
-        }
+//        try {
+//            String adminName = securityUtil.getCurrentMemberNickname();
+//            model.addAttribute("adminName", adminName);
+//        } catch (Exception e) {
+//            log.warn("Admin name could not be retrieved: {}", e.getMessage());
+//            // 필요 시 기본값을 설정하거나, 특정 로직을 추가할 수 있습니다.
+//            model.addAttribute("adminName", "관리자");
+//        }
     }
 }
 

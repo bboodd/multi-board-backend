@@ -41,8 +41,6 @@ public interface FileControllerDocs {
             @Parameter(description = "파일 ID", example = "1", required = true)
             Long fileId,
             @Parameter
-            String boardType,
-            @Parameter
             Long postId
     );
 }

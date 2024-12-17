@@ -181,7 +181,7 @@
             AND p.is_deleted = false
         ORDER BY
             f.file_id,
-            cm.created_at DESC
+            cm.created_at
     </select>
 
     <!-- 게시글 목록 조회 -->
@@ -285,7 +285,7 @@
             c.name as category_name,
             m.nickname,
             (SELECT COUNT(*) FROM files f WHERE f.post_id = p.post_id) as file_count,
-            (SELECT COUNT(*) FROM comments cm WHERE cm.post_id = p.post_id) as comment_count
+            (SELECT COUNT(*) FROM comments cm WHERE cm.post_id = p.post_id AND cm.is_deleted = false) as comment_count
         FROM posts p
                  LEFT JOIN categories c ON p.category_id = c.category_id
                  LEFT JOIN members m ON p.member_id = m.member_id

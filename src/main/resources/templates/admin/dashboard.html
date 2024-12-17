@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/basic}">
 
-<th:block layout:fragment="css">
+<th:block layout:fragment="head">
     <link href="/css/dashboard.css" rel="stylesheet">
 </th:block>
 
@@ -43,6 +43,7 @@
                                         <span th:if="${post.commentCount > 0}"
                                               class="text-primary ml-1"
                                               th:text="|(${post.commentCount})|"></span>
+                                        <i th:if="${post.fileCount > 0}" class="fas fa-paperclip text-muted"></i>
                                     </td>
                                     <td th:text="${post.nickname}"></td>
                                     <td th:text="${#temporals.format(post.createdAt, 'MM.dd')}"></td>
@@ -97,7 +98,7 @@
                                 <thead class="thead-light">
                                 <tr>
                                     <th style="width: 60%; border-top: none;">제목</th>
-                                    <th style="width: 20%; border-top: none;">작성자</th>
+                                    <th style="width: 20%; border-top: none;">상태</th>
                                     <th style="width: 20%; border-top: none;">등록일</th>
                                 </tr>
                                 </thead>
@@ -108,9 +109,9 @@
                                            th:text="${post.title}"></a>
                                     </td>
                                     <td>
-                                        <span th:class="${post.commentCount > 0 ? 'badge badge-soft-success' : 'badge badge-soft-warning'}"
-                                              th:text="${post.commentCount > 0 ? '답변완료' : '답변대기'}">
-                                        </span>
+                                                <span th:class="${post.commentCount > 0 ? 'badge badge-soft-success' : 'badge badge-soft-warning'}"
+                                                      th:text="${post.commentCount > 0 ? '답변완료' : '답변대기'}">
+                                                </span>
                                     </td>
                                     <td th:text="${#temporals.format(post.createdAt, 'MM.dd')}"></td>
                                 </tr>
@@ -162,20 +163,27 @@
 
     <!-- 갤러리 썸네일 로딩 스크립트 -->
     <script th:inline="javascript">
+        /*<![CDATA[*/
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('[id^="img-"]').forEach(img => {
                 const postId = img.id.split('-')[1];
                 fetch(`/admin/posts/${postId}/thumbnail`)
-                    .then(response => response.text())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.text();
+                    })
                     .then(url => {
-                        img.src = url || '/bootstrap/img/undraw_posting_photo.svg';
+                        img.src = url || '/img/default_image.png';
                     })
                     .catch(error => {
                         console.error('Error loading thumbnail:', error);
-                        img.src = '/bootstrap/img/undraw_posting_photo.svg';
+                        img.src = '/img/default_image.png';
                     });
             });
         });
+        /*]]>*/
     </script>
 </th:block>
 </html>

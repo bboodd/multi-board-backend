@@ -32,7 +32,7 @@ public class FileController implements FileControllerDocs {
      * 첨부파일 다운로드
      */
     @GetMapping("/{postId}/files/{fileId}/download")
-    public ResponseEntity<Resource> downloadFile(@PathVariable Long fileId, @PathVariable String boardType, @PathVariable Long postId) {
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long fileId, @PathVariable Long postId) {
 
         try {
             FileVO file = fileService.findById(fileId);
@@ -54,7 +54,7 @@ public class FileController implements FileControllerDocs {
 
     @GetMapping("/{postId}/files")
     @Operation(summary = "파일 목록 조회", description = "게시글의 파일 목록을 조회합니다.")
-    public ResponseEntity<List<FileResponse>> getFiles(@PathVariable String boardType, @PathVariable Long postId) {
+    public ResponseEntity<List<FileResponse>> getFiles(@PathVariable Long postId) {
         List<FileVO> files = fileService.findAllByPostId(postId);
 
         return ResponseEntity
@@ -65,7 +65,7 @@ public class FileController implements FileControllerDocs {
     // s3이미지 url 가져오는 메서드
     @GetMapping("/{postId}/files/{fileId}/image")
     @Operation(summary = "파일 이미지 url 조회", description = "이미지 파일에 대한 url을 조회합니다.")
-    public ResponseEntity<String> getImageUrl(@PathVariable Long fileId, @PathVariable String boardType, @PathVariable Long postId) {
+    public ResponseEntity<String> getImageUrl(@PathVariable Long fileId, @PathVariable Long postId) {
         FileVO file = fileService.findById(fileId);
         String objectKey = file.getSavedName();
         String preSignedUrl = fileUtils.generatePresignedUrl(objectKey);
@@ -76,7 +76,7 @@ public class FileController implements FileControllerDocs {
     // 썸네일 url 가져오는 메서드
     @GetMapping("/{postId}/thumbnail")
     @Operation(summary = "썸네일 이미지 url 조회", description = "이미지 썸네일에 대한 url을 조회합니다.")
-    public ResponseEntity<String> getThumbnailUrl(@PathVariable Long postId, @PathVariable String boardType) {
+    public ResponseEntity<String> getThumbnailUrl(@PathVariable Long postId) {
         try {
             FileVO file = fileService.findThumbnailByPostId(postId);
             String objectKey = file.getSavedName();

@@ -41,9 +41,6 @@ public interface CommentControllerDocs {
                     schema = @Schema(implementation = ErrorResponse.class))
     )
     ResponseEntity<CommentResponse> saveComment(
-            @Parameter(description = "게시판 타입", example = "free", required = true)
-            String boardType,
-
             @Parameter(description = "게시글 ID", example = "1", required = true)
             Long postId,
 
@@ -76,9 +73,6 @@ public interface CommentControllerDocs {
                     schema = @Schema(implementation = ErrorResponse.class))
     )
     ResponseEntity<Boolean> deleteComment(
-            @Parameter(description = "게시판 타입", example = "free", required = true)
-            String boardType,
-
             @Parameter(description = "게시글 ID", example = "1", required = true)
             Long postId,
 
