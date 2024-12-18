@@ -9,13 +9,13 @@
         p.board_type_id as boardTypeId,
         p.title,
         p.content,
-        p.view_count,
-        p.created_at,
-        p.updated_at,
+        p.view_count as viewCount,
+        p.created_at as createdAt,
+        p.updated_at as updatedAt,
         p.is_deleted as deleted,
         p.is_locked as locked,
         p.is_fixed as fixed,
-        p.member_id
+        p.member_id as memberId
     </sql>
 
     <!--  postDetail resultMap  -->
