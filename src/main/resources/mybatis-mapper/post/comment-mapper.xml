@@ -51,9 +51,11 @@
     <!--  댓글 목록 조회  -->
     <select id="findAllByPostId" resultType="com.spring.multiboardbackend.domain.post.vo.CommentVO">
         SELECT
-            <include refid="commentColumns"/>
+            <include refid="commentColumns"/>,
+            m.nickname
         FROM
             comments c
+            LEFT JOIN members m ON c.member_id = m.member_id
         WHERE
             c.post_id = #{postId}
             AND c.is_deleted = false
