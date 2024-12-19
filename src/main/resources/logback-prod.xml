@@ -18,6 +18,8 @@
     <!-- Thymeleaf 예외 로그 -->
     <logger name="org.thymeleaf.exceptions" level="ERROR" />
 
+<!--    <logger name="org.springframework.web.filter.CorsFilter" level="DEBUG" />-->
+
     <!-- 루트 로거: INFO 이상으로 콘솔 출력 -->
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
