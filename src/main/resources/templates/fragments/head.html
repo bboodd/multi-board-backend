@@ -1,8 +1,3 @@
-<!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-<!-- Head -->
 <th:block th:fragment="headFragment">
     <head>
         <meta charset="utf-8">
@@ -17,10 +12,9 @@
         <link th:href="@{/bootstrap/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet" type="text/css" />
         <link th:href="@{/bootstrap/css/sb-admin-2.min.css}" rel="stylesheet" />
 
-
         <!-- 페이지별 스크립트 영역 -->
         <th:block layout:fragment="script"></th:block>
-        <!--   페이지별 css     -->
-        <th:block layout:fragment="head"></th:block>    </head>
+        <!-- 페이지별 css -->
+        <th:block layout:fragment="head"></th:block>
+    </head>
 </th:block>
-</html>

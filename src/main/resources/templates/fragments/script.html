@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html lang="ko"
-      xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-
-<!-- 공통으로 쓰이는 script 파일을 넣는다.-->
 <th:block th:fragment="scriptFragment">
     <!-- Bootstrap core JavaScript-->
     <script th:src="@{/bootstrap/vendor/jquery/jquery.min.js}"></script>
@@ -18,4 +12,3 @@
     <!-- 페이지별 스크립트 영역 -->
     <th:block layout:fragment="script"></th:block>
 </th:block>
-</html>

@@ -1,389 +1,386 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/basic}">
+<th:block xmlns:th="http://www.thymeleaf.org"
+          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+          layout:decorate="~{layout/basic}">
 
-<!-- Meta Tags for CSRF Token -->
-<th:block layout:fragment="head">
-    <link href="/css/main.css" rel="stylesheet">
+    <!-- Meta Tags for CSRF Token -->
+    <th:block layout:fragment="head">
+        <link href="/css/main.css" rel="stylesheet">
 
-    <!-- CSRF Token Meta Tags (필요한 경우 유지) -->
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-</th:block>
+        <!-- CSRF Token Meta Tags (필요한 경우 유지) -->
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    </th:block>
 
-<!-- Content Fragment -->
-<th:block layout:fragment="content" th:with="boardName=${boardType.getName()}">
-    <div class="container-fluid">
-        <!-- Page Heading -->
-        <h1 class="h3 mb-2 text-gray-800" th:text="${boardName}">게시판</h1>
+    <!-- Content Fragment -->
+    <th:block layout:fragment="content" th:with="boardName=${boardType.getName()}">
+        <div class="container-fluid">
+            <!-- Page Heading -->
+            <h1 class="h3 mb-2 text-gray-800" th:text="${boardName}">게시판</h1>
 
-        <!-- 검색 영역 -->
-        <!-- 첫번째 줄 -->
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <form id="searchForm" th:action="@{/admin/boards/{type}(type=${boardName})}" method="get">
-                    <!-- CSRF Token 제거 (GET 요청) -->
+            <!-- 검색 영역 -->
+            <!-- 첫번째 줄 -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <form id="searchForm" th:action="@{/admin/boards/{type}(type=${boardName})}" method="get">
+                        <!-- CSRF Token 제거 (GET 요청) -->
 
-                    <div class="row align-items-center">
-                        <div class="col-md-4">
-                            <div class="d-flex align-items-center">
-                                <label for="startDate" class="mb-0 mr-2 sr-only">등록일시</label>
-                                <div class="input-group input-group-auto" aria-describedby="startDateHelp">
-                                    <input type="date" class="form-control" name="startDate"
-                                           id="startDate" th:value="${#temporals.format(search.startDate, 'yyyy-MM-dd')}"
-                                           aria-describedby="startDateHelp">
-                                    <div class="input-group-prepend input-group-append">
-                                        <span class="input-group-text">~</span>
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="d-flex align-items-center">
+                                    <label for="startDate" class="mb-0 mr-2 sr-only">등록일시</label>
+                                    <div class="input-group input-group-auto" aria-describedby="startDateHelp">
+                                        <input type="date" class="form-control" name="startDate"
+                                               id="startDate" th:value="${#temporals.format(search.startDate, 'yyyy-MM-dd')}"
+                                               aria-describedby="startDateHelp">
+                                        <div class="input-group-prepend input-group-append">
+                                            <span class="input-group-text">~</span>
+                                        </div>
+                                        <input type="date" class="form-control" name="endDate"
+                                               id="endDate" th:value="${#temporals.format(search.endDate, 'yyyy-MM-dd')}"
+                                               aria-describedby="endDateHelp">
                                     </div>
-                                    <input type="date" class="form-control" name="endDate"
-                                           id="endDate" th:value="${#temporals.format(search.endDate, 'yyyy-MM-dd')}"
-                                           aria-describedby="endDateHelp">
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-3" th:if="${boardName != '문의게시판'}">
-                            <select class="form-control" name="categoryId" aria-label="카테고리 선택">
-                                <option value="">전체 카테고리</option>
-                                <option th:each="category : ${categories}"
-                                        th:value="${category.id}"
-                                        th:text="${category.name}"
-                                        th:selected="${category.id == search.categoryId}">
-                                </option>
-                            </select>
-                        </div>
-                        <div th:classappend="${boardName == '문의게시판'} ? 'col-md-6' : 'col-md-3'">
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="keyword" th:value="${search.keyword}" placeholder="검색어를 입력하세요" aria-label="검색어 입력">
+                            <div class="col-md-3" th:if="${boardName != '문의게시판'}">
+                                <select class="form-control" name="categoryId" aria-label="카테고리 선택">
+                                    <option value="">전체 카테고리</option>
+                                    <option th:each="category : ${categories}"
+                                            th:value="${category.id}"
+                                            th:text="${category.name}"
+                                            th:selected="${category.id == search.categoryId}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div th:classappend="${boardName == '문의게시판'} ? 'col-md-6' : 'col-md-3'">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="keyword" th:value="${search.keyword}" placeholder="검색어를 입력하세요" aria-label="검색어 입력">
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit"
+                                        class="btn btn-primary w-100"
+                                        id="searchButton"
+                                        aria-label="검색">
+                                    <i class="fas fa-search"></i>
+                                </button>
                             </div>
                         </div>
-                        <div class="col-md-2">
-                            <button type="submit"
-                                    class="btn btn-primary w-100"
-                                    id="searchButton"
-                                    aria-label="검색">
-                                <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
 
-        <!-- 검색 영역 -->
-        <!-- 두번째 줄 -->
-        <div class="row mb-4 align-items-center bg-light py-3 rounded">
-            <div class="col-auto">
-                <select class="form-control" name="size" id="sizeSelect" onchange="changeSize(this.value)" aria-label="페이지 당 글 수 선택">
-                    <option value="10" th:selected="${search.size == 10}">10개씩 보기</option>
-                    <option value="20" th:selected="${search.size == 20}">20개씩 보기</option>
-                    <option value="30" th:selected="${search.size == 30}">30개씩 보기</option>
-                </select>
+            <!-- 검색 영역 -->
+            <!-- 두번째 줄 -->
+            <div class="row mb-4 align-items-center bg-light py-3 rounded">
+                <div class="col-auto">
+                    <select class="form-control" name="size" id="sizeSelect" onchange="changeSize(this.value)" aria-label="페이지 당 글 수 선택">
+                        <option value="10" th:selected="${search.size == 10}">10개씩 보기</option>
+                        <option value="20" th:selected="${search.size == 20}">20개씩 보기</option>
+                        <option value="30" th:selected="${search.size == 30}">30개씩 보기</option>
+                    </select>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <select class="form-control mx-2" style="width: 150px;" name="orderBy" id="orderBySelect" onchange="changeOrder()" aria-label="정렬 기준 선택">
+                        <option value="createdAt" th:selected="${search.orderBy == 'createdAt'}">등록일시</option>
+                        <option value="category" th:selected="${search.orderBy == 'category'}">분류</option>
+                        <option value="title" th:selected="${search.orderBy == 'title'}">제목</option>
+                        <option value="viewCount" th:selected="${search.orderBy == 'viewCount'}">조회수</option>
+                    </select>
+                    <select class="form-control" style="width: 120px;" name="sortBy" id="sortBySelect" onchange="changeOrder()" aria-label="정렬 순서 선택">
+                        <option value="desc" th:selected="${search.sortBy == 'desc'}">내림차순</option>
+                        <option value="asc" th:selected="${search.sortBy == 'asc'}">오름차순</option>
+                    </select>
+                </div>
             </div>
-            <div class="col d-flex justify-content-end">
-                <select class="form-control mx-2" style="width: 150px;" name="orderBy" id="orderBySelect" onchange="changeOrder()" aria-label="정렬 기준 선택">
-                    <option value="createdAt" th:selected="${search.orderBy == 'createdAt'}">등록일시</option>
-                    <option value="category" th:selected="${search.orderBy == 'category'}">분류</option>
-                    <option value="title" th:selected="${search.orderBy == 'title'}">제목</option>
-                    <option value="viewCount" th:selected="${search.orderBy == 'viewCount'}">조회수</option>
-                </select>
-                <select class="form-control" style="width: 120px;" name="sortBy" id="sortBySelect" onchange="changeOrder()" aria-label="정렬 순서 선택">
-                    <option value="desc" th:selected="${search.sortBy == 'desc'}">내림차순</option>
-                    <option value="asc" th:selected="${search.sortBy == 'asc'}">오름차순</option>
-                </select>
+
+            <!-- 글 등록 버튼 -->
+            <div class="d-flex justify-content-end mb-4" th:if="${boardName != '문의게시판'}">
+                <button type="button" class="btn btn-primary" id="writeButton" aria-label="글 등록">
+                    <i class="fas fa-plus"></i> 글 등록
+                </button>
             </div>
-        </div>
 
-        <!-- 글 등록 버튼 -->
-        <div class="d-flex justify-content-end mb-4" th:if="${boardName != '문의게시판'}">
-            <button type="button" class="btn btn-primary" id="writeButton" aria-label="글 등록">
-                <i class="fas fa-plus"></i> 글 등록
-            </button>
-        </div>
-
-        <!-- 게시글 목록 -->
-        <div class="card shadow mb-4">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered" width="100%" cellspacing="0">
-                        <colgroup>
-                            <col style="width: 8%">
-                            <col th:if="${boardName != '문의게시판'}" style="width: 10%">
-                            <col>
-                            <col style="width: 8%">
-                            <col style="width: 15%">
-                            <col style="width: 10%">
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <th>번호</th>
-                            <th th:if="${boardName != '문의게시판'}">분류</th>
-                            <th>제목</th>
-                            <th>조회</th>
-                            <th>등록일시</th>
-                            <th>등록자</th>
-                        </tr>
-                        </thead>
-                        <tbody th:if="${!#lists.isEmpty(posts.data)}">
-                        <!-- 공지사항 게시판일 때만 고정글 표시 -->
-                        <th:block th:if="${boardName == '공지게시판'}">
-                            <tr th:if="${!#lists.isEmpty(fixedPosts)}"
-                                th:each="post : ${fixedPosts}"
-                                class="table-active">
-                                <td>
-                                    <span class="badge badge-primary">공지</span>
-                                </td>
-                                <td th:if="${boardName != '문의게시판'}" th:text="${post.categoryName}"></td>
-                                <td>
-                                    <a href="javascript:void(0);" th:data-id="${post.id}" class="text-primary font-weight-bold post-title" th:text="${post.title}"></a>
-                                    <span class="ml-2">
-                                                <span th:if="${post.commentCount > 0}" class="text-primary"
-                                                      th:text="|[${post.commentCount}]|"></span>
-                                                <i th:if="${post.fileCount > 0}" class="fas fa-paperclip text-muted"></i>
-                                            </span>
-                                </td>
-                                <td th:text="${post.viewCount}"></td>
-                                <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
-                                <td th:text="${post.nickname}"></td>
+            <!-- 게시글 목록 -->
+            <div class="card shadow mb-4">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" width="100%" cellspacing="0">
+                            <colgroup>
+                                <col style="width: 8%">
+                                <col th:if="${boardName != '문의게시판'}" style="width: 10%">
+                                <col>
+                                <col style="width: 8%">
+                                <col style="width: 15%">
+                                <col style="width: 10%">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th>번호</th>
+                                <th th:if="${boardName != '문의게시판'}">분류</th>
+                                <th>제목</th>
+                                <th>조회</th>
+                                <th>등록일시</th>
+                                <th>등록자</th>
                             </tr>
-                        </th:block>
-
-                        <!-- 일반 게시글 -->
-                        <tr th:each="post, postStat : ${posts.data}">
-                            <td th:text="${posts.pagination.totalCount - ((search.page - 1) * search.size) - postStat.index}"></td>
-                            <td th:if="${boardName != '문의게시판'}" th:text="${post.categoryName}"></td>
-                            <td>
-                                <!-- 갤러리 게시판일 때 -->
-                                <div th:if="${boardName == '갤러리게시판'}" class="d-flex align-items-center">
-                                    <!-- 썸네일 이미지 컨테이너 -->
-                                    <div class="mr-3 position-relative" style="width: 60px; height: 60px;">
-                                        <img th:id="'thumbnail-' + ${post.id}"
-                                             class="img-thumbnail"
-                                             style="width: 100%; height: 100%; object-fit: cover;"
-                                             alt="썸네일 이미지">
-                                        <!-- 파일 개수 뱃지 -->
-                                        <span th:if="${post.fileCount > 0}"
-                                              class="badge badge-primary position-absolute"
-                                              style="top: -10px; right: -10px;"
-                                              th:text="${post.fileCount}">
-                                            </span>
-                                    </div>
-                                    <!-- 제목 -->
-                                    <div>
-                                        <a href="javascript:void(0);"
-                                           th:data-id="${post.id}"
-                                           class="text-primary post-title"
-                                           th:text="${post.title}">
-                                        </a>
+                            </thead>
+                            <tbody th:if="${!#lists.isEmpty(posts.data)}">
+                            <!-- 공지사항 게시판일 때만 고정글 표시 -->
+                            <th:block th:if="${boardName == '공지게시판'}">
+                                <tr th:if="${!#lists.isEmpty(fixedPosts)}"
+                                    th:each="post : ${fixedPosts}"
+                                    class="table-active">
+                                    <td>
+                                        <span class="badge badge-primary">공지</span>
+                                    </td>
+                                    <td th:if="${boardName != '문의게시판'}" th:text="${post.categoryName}"></td>
+                                    <td>
+                                        <a href="javascript:void(0);" th:data-id="${post.id}" class="text-primary font-weight-bold post-title" th:text="${post.title}"></a>
                                         <span class="ml-2">
                                                     <span th:if="${post.commentCount > 0}" class="text-primary"
                                                           th:text="|[${post.commentCount}]|"></span>
-                                                    <i th:if="${post.fileCount > 0 && boardName != '갤러리게시판'}" class="fas fa-paperclip text-muted"></i>
+                                                    <i th:if="${post.fileCount > 0}" class="fas fa-paperclip text-muted"></i>
+                                                </span>
+                                    </td>
+                                    <td th:text="${post.viewCount}"></td>
+                                    <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
+                                    <td th:text="${post.nickname}"></td>
+                                </tr>
+                            </th:block>
+
+                            <!-- 일반 게시글 -->
+                            <tr th:each="post, postStat : ${posts.data}">
+                                <td th:text="${posts.pagination.totalCount - ((search.page - 1) * search.size) - postStat.index}"></td>
+                                <td th:if="${boardName != '문의게시판'}" th:text="${post.categoryName}"></td>
+                                <td>
+                                    <!-- 갤러리 게시판일 때 -->
+                                    <div th:if="${boardName == '갤러리게시판'}" class="d-flex align-items-center">
+                                        <!-- 썸네일 이미지 컨테이너 -->
+                                        <div class="mr-3 position-relative" style="width: 60px; height: 60px;">
+                                            <img th:id="'thumbnail-' + ${post.id}"
+                                                 class="img-thumbnail"
+                                                 style="width: 100%; height: 100%; object-fit: cover;"
+                                                 alt="썸네일 이미지">
+                                            <!-- 파일 개수 뱃지 -->
+                                            <span th:if="${post.fileCount > 0}"
+                                                  class="badge badge-primary position-absolute"
+                                                  style="top: -10px; right: -10px;"
+                                                  th:text="${post.fileCount}">
+                                                </span>
+                                        </div>
+                                        <!-- 제목 -->
+                                        <div>
+                                            <a href="javascript:void(0);"
+                                               th:data-id="${post.id}"
+                                               class="text-primary post-title"
+                                               th:text="${post.title}">
+                                            </a>
+                                            <span class="ml-2">
+                                                        <span th:if="${post.commentCount > 0}" class="text-primary"
+                                                              th:text="|[${post.commentCount}]|"></span>
+                                                        <i th:if="${post.fileCount > 0 && boardName != '갤러리게시판'}" class="fas fa-paperclip text-muted"></i>
+                                                    </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- 일반 게시판일 때 -->
+                                    <div th:unless="${boardName == '갤러리게시판'}">
+                                        <a href="javascript:void(0);" th:data-id="${post.id}" class="text-primary post-title" th:text="${post.title}"></a>
+                                        <span class="ml-2">
+                                                    <span th:if="${post.commentCount > 0}" class="text-primary"
+                                                          th:text="|[${post.commentCount}]|"></span>
+                                                    <i th:if="${post.fileCount > 0}" class="fas fa-paperclip text-muted"></i>
                                                 </span>
                                     </div>
-                                </div>
-
-                                <!-- 일반 게시판일 때 -->
-                                <div th:unless="${boardName == '갤러리게시판'}">
-                                    <a href="javascript:void(0);" th:data-id="${post.id}" class="text-primary post-title" th:text="${post.title}"></a>
-                                    <span class="ml-2">
-                                                <span th:if="${post.commentCount > 0}" class="text-primary"
-                                                      th:text="|[${post.commentCount}]|"></span>
-                                                <i th:if="${post.fileCount > 0}" class="fas fa-paperclip text-muted"></i>
-                                            </span>
-                                </div>
-                            </td>
-                            <td th:text="${#numbers.formatInteger(post.viewCount, 0, 'COMMA')}"></td>
-                            <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
-                            <td th:text="${post.nickname}"></td>
-                        </tr>
-                        </tbody>
-                        <tbody th:unless="${!#lists.isEmpty(posts.data)}">
-                        <tr>
-                            <td colspan="6" class="text-center py-5">
-                                <i class="fas fa-search fa-3x text-gray-300 mb-3"></i>
-                                <p class="text-gray-500 mb-0">검색된 결과가 없습니다.</p>
-                                <small class="text-muted">검색 조건을 변경하여 다시 시도해보세요.</small>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                                </td>
+                                <td th:text="${#numbers.formatInteger(post.viewCount, 0, 'COMMA')}"></td>
+                                <td th:text="${#temporals.format(post.createdAt, 'yyyy.MM.dd HH:mm')}"></td>
+                                <td th:text="${post.nickname}"></td>
+                            </tr>
+                            </tbody>
+                            <tbody th:unless="${!#lists.isEmpty(posts.data)}">
+                            <tr>
+                                <td colspan="6" class="text-center py-5">
+                                    <i class="fas fa-search fa-3x text-gray-300 mb-3"></i>
+                                    <p class="text-gray-500 mb-0">검색된 결과가 없습니다.</p>
+                                    <small class="text-muted">검색 조건을 변경하여 다시 시도해보세요.</small>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+            </div>
+
+            <!-- 페이지네이션 -->
+            <div class="d-flex justify-content-center">
+                <nav th:if="${!#lists.isEmpty(posts.data)}" aria-label="페이지네이션">
+                    <ul class="pagination">
+                        <!-- 이전 버튼 -->
+                        <li class="page-item" th:classappend="${posts.pagination.currentPage <= 1} ? 'disabled'">
+                            <a class="page-link" href="javascript:void(0);"
+                               th:if="${posts.pagination.currentPage > 1}"
+                               th:onclick="'goToPage(' + (${posts.pagination.currentPage - 1}) + ');'"
+                               aria-label="이전">
+                                이전
+                            </a>
+                            <span class="page-link" th:if="${posts.pagination.currentPage <= 1}">
+                                    이전
+                                </span>
+                        </li>
+
+                        <!-- 현재 페이지 표시 -->
+                        <li class="page-item disabled">
+                                <span class="page-link" aria-current="page">
+                                    페이지 [[${posts.pagination.currentPage}]]
+                                </span>
+                        </li>
+
+                        <!-- 다음 버튼 -->
+                        <li class="page-item" th:classappend="${!posts.pagination.hasMore} ? 'disabled'">
+                            <a class="page-link" href="javascript:void(0);"
+                               th:if="${posts.pagination.hasMore}"
+                               th:onclick="'goToPage(' + (${posts.pagination.currentPage + 1}) + ');'"
+                               aria-label="다음">
+                                다음
+                            </a>
+                            <span class="page-link" th:if="${!posts.pagination.hasMore}">
+                                    다음
+                                </span>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
 
-        <!-- 페이지네이션 -->
-        <div class="d-flex justify-content-center">
-            <nav th:if="${!#lists.isEmpty(posts.data)}" aria-label="페이지네이션">
-                <ul class="pagination">
-                    <!-- 이전 버튼 -->
-                    <li class="page-item" th:classappend="${posts.pagination.currentPage <= 1} ? 'disabled'">
-                        <a class="page-link" href="javascript:void(0);"
-                           th:if="${posts.pagination.currentPage > 1}"
-                           th:onclick="'goToPage(' + (${posts.pagination.currentPage - 1}) + ');'"
-                           aria-label="이전">
-                            이전
-                        </a>
-                        <span class="page-link" th:if="${posts.pagination.currentPage <= 1}">
-                                이전
-                            </span>
-                    </li>
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            (function() {
+                'use strict';
 
-                    <!-- 현재 페이지 표시 -->
-                    <li class="page-item disabled">
-                            <span class="page-link" aria-current="page">
-                                페이지 [[${posts.pagination.currentPage}]]
-                            </span>
-                    </li>
+                document.addEventListener('DOMContentLoaded', () => {
+                    // CSRF 토큰과 헤더 이름을 메타 태그에서 가져옵니다.
+                    const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+                    const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
 
-                    <!-- 다음 버튼 -->
-                    <li class="page-item" th:classappend="${!posts.pagination.hasMore} ? 'disabled'">
-                        <a class="page-link" href="javascript:void(0);"
-                           th:if="${posts.pagination.hasMore}"
-                           th:onclick="'goToPage(' + (${posts.pagination.currentPage + 1}) + ');'"
-                           aria-label="다음">
-                            다음
-                        </a>
-                        <span class="page-link" th:if="${!posts.pagination.hasMore}">
-                                다음
-                            </span>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-    </div>
+                    const boardName = [[${boardType.getName()}]];
+                    const boardTypeName = [[${boardType.getTypeName()}]];
 
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        (function() {
-            'use strict';
+                    // 썸네일 로딩 함수 (갤러리 게시판일 때만 실행)
+                    const loadThumbnails = async () => {
+                        const thumbnails = document.querySelectorAll('[id^="thumbnail-"]');
+                        try {
+                            await Promise.all(Array.from(thumbnails).map(async img => {
+                                const postId = img.id.split('-')[1];
+                                try {
+                                    const response = await fetch(`/admin/posts/${postId}/thumbnail`);
+                                    const url = await response.text();
+                                    img.src = url || '/img/no_image.png';
+                                } catch (error) {
+                                    console.error(`썸네일 로딩 실패 (게시글 ${postId}):`, error);
+                                    img.src = '/img/no_image.png';
+                                }
+                            }));
+                        } catch (error) {
+                            console.error('썸네일 로딩 중 오류 발생:', error);
+                        }
+                    };
 
-            document.addEventListener('DOMContentLoaded', () => {
-                // CSRF 토큰과 헤더 이름을 메타 태그에서 가져옵니다.
-                const csrfToken = document.querySelector('meta[name="_csrf"]').getAttribute('content');
-                const csrfHeader = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+                    // 검색 파라미터 생성 함수
+                    const createSearchParams = (page = 1) => {
+                        const form = document.getElementById('searchForm');
+                        const formData = new FormData(form);
+                        const params = new URLSearchParams();
 
-                const boardName = [[${boardType.getName()}]];
-                const boardTypeName = [[${boardType.getTypeName()}]];
+                        // 날짜 처리
+                        const startDate = formData.get('startDate');
+                        const endDate = formData.get('endDate');
 
-                // 썸네일 로딩 함수 (갤러리 게시판일 때만 실행)
-                const loadThumbnails = async () => {
-                    const thumbnails = document.querySelectorAll('[id^="thumbnail-"]');
-                    try {
-                        await Promise.all(Array.from(thumbnails).map(async img => {
-                            const postId = img.id.split('-')[1];
-                            try {
-                                const response = await fetch(`/admin/posts/${postId}/thumbnail`);
-                                const url = await response.text();
-                                img.src = url || '/img/no_image.png';
-                            } catch (error) {
-                                console.error(`썸네일 로딩 실패 (게시글 ${postId}):`, error);
-                                img.src = '/img/no_image.png';
-                            }
-                        }));
-                    } catch (error) {
-                        console.error('썸네일 로딩 중 오류 발생:', error);
-                    }
-                };
+                        if (startDate) formData.set('startDate', startDate + 'T00:00:00');
+                        if (endDate) formData.set('endDate', endDate + 'T23:59:59');
 
-                // 검색 파라미터 생성 함수
-                const createSearchParams = (page = 1) => {
-                    const form = document.getElementById('searchForm');
-                    const formData = new FormData(form);
-                    const params = new URLSearchParams();
+                        // 폼 데이터 처리
+                        formData.forEach((value, key) => {
+                            if (value) params.append(key, value);
+                        });
 
-                    // 날짜 처리
-                    const startDate = formData.get('startDate');
-                    const endDate = formData.get('endDate');
+                        // 페이징/정렬 파라미터
+                        params.set('size', document.getElementById('sizeSelect').value);
+                        params.set('orderBy', document.getElementById('orderBySelect').value);
+                        params.set('sortBy', document.getElementById('sortBySelect').value);
+                        params.set('page', page);
 
-                    if (startDate) formData.set('startDate', startDate + 'T00:00:00');
-                    if (endDate) formData.set('endDate', endDate + 'T23:59:59');
+                        return params;
+                    };
 
-                    // 폼 데이터 처리
-                    formData.forEach((value, key) => {
-                        if (value) params.append(key, value);
+                    // 리스트 업데이트 함수 (검색, 사이즈 변경, 정렬 변경 통합)
+                    const updateList = (page = 1) => {
+                        const params = createSearchParams(page);
+                        window.location.href = `/admin/boards/${boardTypeName}?${params.toString()}`;
+                    };
+
+                    // 페이지 이동 함수
+                    const goToPage = (page) => {
+                        updateList(page);
+                    };
+
+                    // 페이지 이동 관련 함수
+                    const navigation = {
+                        goToEdit(postId) {
+                            this.navigateWithParams(`${window.location.pathname}/posts/${postId}`);
+                        },
+
+                        goToWrite() {
+                            this.navigateWithParams(`${window.location.pathname}/posts`);
+                        },
+
+                        navigateWithParams(basePath) {
+                            const searchParams = new URLSearchParams(window.location.search);
+                            window.location.href = searchParams.toString() ?
+                                `${basePath}?${searchParams.toString()}` : basePath;
+                        }
+                    };
+
+                    // 검색 함수
+                    const search = () => updateList(1);
+
+                    // 사이즈 변경 함수
+                    const changeSize = (size) => updateList(1);
+
+                    // 정렬 변경 함수
+                    const changeOrder = () => updateList(1);
+
+                    // 글 등록 함수
+                    const goToWriteFunc = () => navigation.goToWrite();
+
+                    // 글 수정 함수
+                    const goToEditFunc = (postId) => navigation.goToEdit(postId);
+
+                    // 초기화
+                    loadThumbnails();
+
+                    // 이벤트 리스너 바인딩
+                    document.getElementById('searchForm').addEventListener('submit', function(event) {
+                        event.preventDefault();
+                        search();
+                    });
+                    document.getElementById('writeButton')?.addEventListener('click', goToWriteFunc);
+                    document.querySelectorAll('.post-title').forEach(element => {
+                        element.addEventListener('click', (event) => {
+                            const id = event.target.dataset.id;
+                            goToEditFunc(id);
+                        });
                     });
 
-                    // 페이징/정렬 파라미터
-                    params.set('size', document.getElementById('sizeSelect').value);
-                    params.set('orderBy', document.getElementById('orderBySelect').value);
-                    params.set('sortBy', document.getElementById('sortBySelect').value);
-                    params.set('page', page);
-
-                    return params;
-                };
-
-                // 리스트 업데이트 함수 (검색, 사이즈 변경, 정렬 변경 통합)
-                const updateList = (page = 1) => {
-                    const params = createSearchParams(page);
-                    window.location.href = `/admin/boards/${boardTypeName}?${params.toString()}`;
-                };
-
-                // 페이지 이동 함수
-                const goToPage = (page) => {
-                    updateList(page);
-                };
-
-                // 페이지 이동 관련 함수
-                const navigation = {
-                    goToEdit(postId) {
-                        this.navigateWithParams(`${window.location.pathname}/posts/${postId}`);
-                    },
-
-                    goToWrite() {
-                        this.navigateWithParams(`${window.location.pathname}/posts`);
-                    },
-
-                    navigateWithParams(basePath) {
-                        const searchParams = new URLSearchParams(window.location.search);
-                        window.location.href = searchParams.toString() ?
-                            `${basePath}?${searchParams.toString()}` : basePath;
-                    }
-                };
-
-                // 검색 함수
-                const search = () => updateList(1);
-
-                // 사이즈 변경 함수
-                const changeSize = (size) => updateList(1);
-
-                // 정렬 변경 함수
-                const changeOrder = () => updateList(1);
-
-                // 글 등록 함수
-                const goToWriteFunc = () => navigation.goToWrite();
-
-                // 글 수정 함수
-                const goToEditFunc = (postId) => navigation.goToEdit(postId);
-
-                // 초기화
-                loadThumbnails();
-
-                // 이벤트 리스너 바인딩
-                document.getElementById('searchForm').addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    search();
+                    // 전역 함수 바인딩
+                    window.search = search;
+                    window.changeSize = changeSize;
+                    window.changeOrder = changeOrder;
+                    window.goToEdit = goToEditFunc;
+                    window.goToWrite = goToWriteFunc;
+                    window.goToPage = goToPage; // 추가된 부분
                 });
-                document.getElementById('writeButton')?.addEventListener('click', goToWriteFunc);
-                document.querySelectorAll('.post-title').forEach(element => {
-                    element.addEventListener('click', (event) => {
-                        const id = event.target.dataset.id;
-                        goToEditFunc(id);
-                    });
-                });
-
-                // 전역 함수 바인딩
-                window.search = search;
-                window.changeSize = changeSize;
-                window.changeOrder = changeOrder;
-                window.goToEdit = goToEditFunc;
-                window.goToWrite = goToWriteFunc;
-                window.goToPage = goToPage; // 추가된 부분
-            });
-        })();
-        /*]]>*/
-    </script>
+            })();
+            /*]]>*/
+        </script>
+    </th:block>
 </th:block>
-
-
-</html>
