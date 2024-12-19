@@ -1,189 +1,188 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/basic}">
+<th:block xmlns:th="http://www.thymeleaf.org"
+          xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+          layout:decorate="~{layout/basic}">
 
-<th:block layout:fragment="head">
-    <link href="/css/dashboard.css" rel="stylesheet">
-</th:block>
+    <th:block layout:fragment="head">
+        <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    </th:block>
 
-<th:block layout:fragment="content">
-    <div class="container-fluid">
-        <!-- 페이지 헤더 -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-gray-800">대시보드</h1>
-        </div>
+    <th:block layout:fragment="content">
+        <div class="container-fluid">
+            <!-- 페이지 헤더 -->
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800">대시보드</h1>
+            </div>
 
-        <!-- 게시판 미리보기 카드들 -->
-        <div class="row">
-            <!-- 자유게시판 -->
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow">
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
-                        <h6 class="m-0 font-weight-bold text-white">자유게시판</h6>
-                        <a href="/admin/boards/free" class="btn btn-light btn-sm">
-                            <i class="fas fa-plus fa-sm"></i> 더보기
-                        </a>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="thead-light">
-                                <tr>
-                                    <th style="width: 60%; border-top: none;">제목</th>
-                                    <th style="width: 20%; border-top: none;">작성자</th>
-                                    <th style="width: 20%; border-top: none;">등록일</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="post : ${freePosts}">
-                                    <td>
-                                        <a th:href="@{/admin/boards/free/posts/{id}(id=${post.id})}"
-                                           th:text="${post.title}" class="text-gray-800"></a>
-                                        <span th:if="${post.commentCount > 0}"
-                                              class="text-primary ml-1"
-                                              th:text="|(${post.commentCount})|"></span>
-                                        <i th:if="${post.fileCount > 0}" class="fas fa-paperclip text-muted"></i>
-                                    </td>
-                                    <td th:text="${post.nickname}"></td>
-                                    <td th:text="${#temporals.format(post.createdAt, 'MM.dd')}"></td>
-                                </tr>
-                                </tbody>
-                            </table>
+            <!-- 게시판 미리보기 카드들 -->
+            <div class="row">
+                <!-- 자유게시판 -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
+                            <h6 class="m-0 font-weight-bold text-white">자유게시판</h6>
+                            <a href="/admin/boards/free" class="btn btn-light btn-sm">
+                                <i class="fas fa-plus fa-sm"></i> 더보기
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th style="width: 60%; border-top: none;">제목</th>
+                                        <th style="width: 20%; border-top: none;">작성자</th>
+                                        <th style="width: 20%; border-top: none;">등록일</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="post : ${freePosts}">
+                                        <td>
+                                            <a th:href="@{/admin/boards/free/posts/{id}(id=${post.id})}"
+                                               th:text="${post.title}" class="text-gray-800"></a>
+                                            <span th:if="${post.commentCount > 0}"
+                                                  class="text-primary ml-1"
+                                                  th:text="|(${post.commentCount})|"></span>
+                                            <i th:if="${post.fileCount > 0}" class="fas fa-paperclip text-muted"></i>
+                                        </td>
+                                        <td th:text="${post.nickname}"></td>
+                                        <td th:text="${#temporals.format(post.createdAt, 'MM.dd')}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- 갤러리 -->
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow">
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
-                        <h6 class="m-0 font-weight-bold text-white">갤러리</h6>
-                        <a href="/admin/boards/gallery" class="btn btn-light btn-sm">
-                            <i class="fas fa-plus fa-sm"></i> 더보기
-                        </a>
+                <!-- 갤러리 -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
+                            <h6 class="m-0 font-weight-bold text-white">갤러리</h6>
+                            <a href="/admin/boards/gallery" class="btn btn-light btn-sm">
+                                <i class="fas fa-plus fa-sm"></i> 더보기
+                            </a>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mb-3" th:each="post : ${galleryPosts}">
+                                <div class="position-relative gallery-item-wrapper">
+                                    <a th:href="@{/admin/boards/gallery/posts/{id}(id=${post.id})}"
+                                       class="gallery-item">
+                                        <img th:id="'img-' + ${post.id}"
+                                             class="img-thumbnail w-100 transition-transform"
+                                             style="height: 100px; object-fit: cover;"
+                                             alt="gallery thumbnail">
+                                        <div class="gallery-item-overlay">
+                                            <span class="text-white small" th:text="${post.title}"></span>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-3 mb-3" th:each="post : ${galleryPosts}">
-                            <div class="position-relative gallery-item-wrapper">
-                                <a th:href="@{/admin/boards/gallery/posts/{id}(id=${post.id})}"
-                                   class="gallery-item">
-                                    <img th:id="'img-' + ${post.id}"
-                                         class="img-thumbnail w-100 transition-transform"
-                                         style="height: 100px; object-fit: cover;"
-                                         alt="gallery thumbnail">
-                                    <div class="gallery-item-overlay">
-                                        <span class="text-white small" th:text="${post.title}"></span>
-                                    </div>
-                                </a>
+                </div>
+
+                <!-- 문의게시판 -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
+                            <h6 class="m-0 font-weight-bold text-white">문의게시판</h6>
+                            <a href="/admin/boards/qna" class="btn btn-light btn-sm">
+                                <i class="fas fa-plus fa-sm"></i> 더보기
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th style="width: 60%; border-top: none;">제목</th>
+                                        <th style="width: 20%; border-top: none;">상태</th>
+                                        <th style="width: 20%; border-top: none;">등록일</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="post : ${qnaPosts}">
+                                        <td>
+                                            <a th:href="@{/admin/boards/qna/posts/{id}(id=${post.id})}"
+                                               th:text="${post.title}"></a>
+                                        </td>
+                                        <td>
+                                                    <span th:class="${post.commentCount > 0 ? 'badge badge-soft-success' : 'badge badge-soft-warning'}"
+                                                          th:text="${post.commentCount > 0 ? '답변완료' : '답변대기'}">
+                                                    </span>
+                                        </td>
+                                        <td th:text="${#temporals.format(post.createdAt, 'MM.dd')}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 공지사항 -->
+                <div class="col-lg-6 mb-4">
+                    <div class="card shadow">
+                        <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
+                            <h6 class="m-0 font-weight-bold text-white">공지사항</h6>
+                            <a href="/admin/boards/notice" class="btn btn-light btn-sm">
+                                <i class="fas fa-plus fa-sm"></i> 더보기
+                            </a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="thead-light">
+                                    <tr>
+                                        <th style="width: 60%; border-top: none;">제목</th>
+                                        <th style="width: 20%; border-top: none;">작성자</th>
+                                        <th style="width: 20%; border-top: none;">등록일</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="post : ${noticePosts}">
+                                        <td>
+                                            <a th:href="@{/admin/boards/notice/posts/{id}(id=${post.id})}"
+                                               th:text="${post.title}"></a>
+                                            <span th:if="${post.fixed}"
+                                                  class="badge badge-primary ml-1">고정</span>
+                                        </td>
+                                        <td th:text="${post.nickname}"></td>
+                                        <td th:text="${#temporals.format(post.createdAt, 'MM.dd')}"></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- 문의게시판 -->
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow">
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
-                        <h6 class="m-0 font-weight-bold text-white">문의게시판</h6>
-                        <a href="/admin/boards/qna" class="btn btn-light btn-sm">
-                            <i class="fas fa-plus fa-sm"></i> 더보기
-                        </a>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="thead-light">
-                                <tr>
-                                    <th style="width: 60%; border-top: none;">제목</th>
-                                    <th style="width: 20%; border-top: none;">상태</th>
-                                    <th style="width: 20%; border-top: none;">등록일</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="post : ${qnaPosts}">
-                                    <td>
-                                        <a th:href="@{/admin/boards/qna/posts/{id}(id=${post.id})}"
-                                           th:text="${post.title}"></a>
-                                    </td>
-                                    <td>
-                                                <span th:class="${post.commentCount > 0 ? 'badge badge-soft-success' : 'badge badge-soft-warning'}"
-                                                      th:text="${post.commentCount > 0 ? '답변완료' : '답변대기'}">
-                                                </span>
-                                    </td>
-                                    <td th:text="${#temporals.format(post.createdAt, 'MM.dd')}"></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 공지사항 -->
-            <div class="col-lg-6 mb-4">
-                <div class="card shadow">
-                    <div class="card-header py-3 d-flex justify-content-between align-items-center bg-primary">
-                        <h6 class="m-0 font-weight-bold text-white">공지사항</h6>
-                        <a href="/admin/boards/notice" class="btn btn-light btn-sm">
-                            <i class="fas fa-plus fa-sm"></i> 더보기
-                        </a>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="thead-light">
-                                <tr>
-                                    <th style="width: 60%; border-top: none;">제목</th>
-                                    <th style="width: 20%; border-top: none;">작성자</th>
-                                    <th style="width: 20%; border-top: none;">등록일</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="post : ${noticePosts}">
-                                    <td>
-                                        <a th:href="@{/admin/boards/notice/posts/{id}(id=${post.id})}"
-                                           th:text="${post.title}"></a>
-                                        <span th:if="${post.fixed}"
-                                              class="badge badge-primary ml-1">고정</span>
-                                    </td>
-                                    <td th:text="${post.nickname}"></td>
-                                    <td th:text="${#temporals.format(post.createdAt, 'MM.dd')}"></td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
-    </div>
 
-    <!-- 갤러리 썸네일 로딩 스크립트 -->
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('[id^="img-"]').forEach(img => {
-                const postId = img.id.split('-')[1];
-                fetch(`/admin/posts/${postId}/thumbnail`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.text();
-                    })
-                    .then(url => {
-                        img.src = url || '/img/default_image.png';
-                    })
-                    .catch(error => {
-                        console.error('Error loading thumbnail:', error);
-                        img.src = '/img/default_image.png';
-                    });
+        <!-- 갤러리 썸네일 로딩 스크립트 -->
+        <script th:inline="javascript">
+            /*<![CDATA[*/
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('[id^="img-"]').forEach(img => {
+                    const postId = img.id.split('-')[1];
+                    fetch(`/admin/posts/${postId}/thumbnail`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.text();
+                        })
+                        .then(url => {
+                            img.src = url || '/img/default_image.png';
+                        })
+                        .catch(error => {
+                            console.error('Error loading thumbnail:', error);
+                            img.src = '/img/default_image.png';
+                        });
+                });
             });
-        });
-        /*]]>*/
-    </script>
+            /*]]>*/
+        </script>
+    </th:block>
 </th:block>
-</html>
