@@ -33,6 +33,10 @@ public class MemberUserDetails implements UserDetails {
         return member.getLoginId();
     }
 
+    public String getNickname() {
+        return member.getNickname();
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;

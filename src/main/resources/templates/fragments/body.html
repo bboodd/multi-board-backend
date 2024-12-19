@@ -1,24 +1,7 @@
-<!DOCTYPE html>
-<html lang="ko"
-        xmlns:th="http://www.thymeleaf.org"
-        xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-
-<body>
-
-<div th:fragment="bodyFragment">
+<th:block th:fragment="bodyFragment">
     <div class="container-fluid">
-
         <th:block layout:fragment="content"></th:block>
-
         <br>
-
-<!--        <div class="bg-dark text-white border-bottom" align="center">-->
-<!--            바디 레이아웃 ...-->
-<!--        </div>-->
-
+        <!-- 바디 레이아웃 -->
     </div>
-
-</div>
-
-</body>
-</html>
+</th:block>
