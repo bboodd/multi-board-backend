@@ -280,20 +280,30 @@
     </select>
 
     <select id="findDashboardPosts" resultType="com.spring.multiboardbackend.domain.post.vo.PostVO">
-        SELECT
-            <include refid="postsColumns"/>,
-            c.name as category_name,
-            m.nickname,
-            (SELECT COUNT(*) FROM files f WHERE f.post_id = p.post_id) as file_count,
-            (SELECT COUNT(*) FROM comments cm WHERE cm.post_id = p.post_id AND cm.is_deleted = false) as comment_count
-        FROM posts p
-                 LEFT JOIN categories c ON p.category_id = c.category_id
-                 LEFT JOIN members m ON p.member_id = m.member_id
-        WHERE p.is_deleted = false
+        SELECT *
+        FROM (
+            SELECT
+                <include refid="postsColumns"/>,
+                c.name AS category_name,
+                m.nickname,
+                (SELECT COUNT(*) FROM files f WHERE f.post_id = p.post_id) AS file_count,
+                (SELECT COUNT(*) FROM comments cm WHERE cm.post_id = p.post_id AND cm.is_deleted = false) AS comment_count,
+                ROW_NUMBER() OVER (
+                    PARTITION BY p.board_type_id
+                    ORDER BY
+                        p.board_type_id,
+                        CASE WHEN p.is_fixed = true THEN 0 ELSE 1 END,
+                        p.created_at DESC
+                ) AS rn
+            FROM posts p
+            LEFT JOIN categories c ON p.category_id = c.category_id
+            LEFT JOIN members m ON p.member_id = m.member_id
+            WHERE p.is_deleted = false
+        ) sub
+        WHERE sub.rn &lt;= 5
         ORDER BY
-            p.board_type_id,
-            CASE WHEN p.is_fixed = true THEN 0 ELSE 1 END,
-            p.created_at DESC
-        LIMIT 20
+            sub.boardTypeId,
+            sub.fixed DESC,
+            sub.createdAt DESC
     </select>
 </mapper>

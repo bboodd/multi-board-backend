@@ -9,6 +9,7 @@
         <!-- CSRF Token Meta Tags (필요한 경우 유지) -->
         <meta name="_csrf" th:content="${_csrf.token}"/>
         <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     </th:block>
 
     <!-- Content Fragment -->
