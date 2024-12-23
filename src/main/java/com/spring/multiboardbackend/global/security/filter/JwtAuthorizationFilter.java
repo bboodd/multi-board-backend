@@ -35,7 +35,8 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if (StringUtils.hasText(token)) {
                 if (!jwtUtil.validateToken(token)) {
                     log.error("Invalid JWT Token");
-                    throw new RuntimeException("Invalid JWT Token");  // 예외 던지기
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
+                    return;
                 }
 
                 Claims claims = jwtUtil.getClaimsFromToken(token);
@@ -48,22 +49,25 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         } catch (Exception e) {
             log.error("JWT 인증 과정에서 오류 발생: {}", e.getMessage());
             SecurityContextHolder.clearContext();
-            throw e;  // 예외 재던지기
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
+            return;
         }
 
         chain.doFilter(request, response);
     }
 
     // 인증 처리
-    private void setAuthentication(HttpServletRequest request, String loginId) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginId);
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+    private void setAuthentication(HttpServletRequest request, String loginId) {// 이미 인증된 경우, 중복 설정 방지
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userDetailsService.loadUserByUsername(loginId);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-        // 추가적인 세부 정보 설정
-        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            // 추가적인 세부 정보 설정
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-        // 기존 SecurityContext에 인증 설정
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            // SecurityContext에 인증 설정
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        }
     }
 }
