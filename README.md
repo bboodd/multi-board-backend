@@ -30,6 +30,21 @@
 ---
 ## 📌 2. 기능
 
+### 2-1. 구현
+- 게시글, 카테고리, 댓글 CRUD API 구현
+  - JWT 인증 적용
+  - 게시글 첨부파일, 썸네일 저장 s3 적용
+  - 파일 다운로드 구현
+  - 게시글 목록 조회 페이징 적용
+  - 테스트 코드 작성
+- 로그인/회원가입 API 구현
+  - 테스트 코드 작성
+- 공통 에러 핸들링, 커스텀 예외 구현
+- admin 페이지 구현
+  - session 인증 적용
+  - bootstrap 적용
+  - thymeleaf layout 적용
+
 ### 2-1. API
 - API 문서 : https://api.bboodd-board.site/swagger-ui/index.html#/
   <br>
