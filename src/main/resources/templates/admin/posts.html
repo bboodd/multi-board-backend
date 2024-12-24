@@ -26,7 +26,7 @@
                         <!-- CSRF Token 제거 (GET 요청) -->
 
                         <div class="row align-items-center">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <div class="d-flex align-items-center">
                                     <label for="startDate" class="mb-0 mr-2 sr-only">등록일시</label>
                                     <div class="input-group input-group-auto" aria-describedby="startDateHelp">
@@ -52,7 +52,7 @@
                                     </option>
                                 </select>
                             </div>
-                            <div th:classappend="${boardName == '문의게시판'} ? 'col-md-6' : 'col-md-3'">
+                            <div th:classappend="${boardName == '문의게시판'} ? 'col-md-7' : 'col-md-4'">
                                 <div class="input-group">
                                     <input type="text" class="form-control" name="keyword" th:value="${search.keyword}" placeholder="검색어를 입력하세요" aria-label="검색어 입력">
                                 </div>

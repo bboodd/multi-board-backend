@@ -164,6 +164,8 @@
         <!-- 갤러리 썸네일 로딩 스크립트 -->
         <script th:inline="javascript">
             /*<![CDATA[*/
+            const defaultImage = /*[[@{/img/no_image.png}]]*/ '/img/no_image.png';
+
             document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('[id^="img-"]').forEach(img => {
                     const postId = img.id.split('-')[1];
@@ -175,11 +177,11 @@
                             return response.text();
                         })
                         .then(url => {
-                            img.src = url || '/img/default_image.png';
+                            img.src = url || defaultImage;
                         })
                         .catch(error => {
                             console.error('Error loading thumbnail:', error);
-                            img.src = '/img/default_image.png';
+                            img.src = defaultImage;
                         });
                 });
             });

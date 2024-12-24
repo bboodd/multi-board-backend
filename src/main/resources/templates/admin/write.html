@@ -171,10 +171,13 @@
                         <!-- 댓글 섹션 (수정 시) -->
                         <div th:if="${(boardName == '자유게시판' or boardName == '문의게시판') and post != null}" class="comments-section mt-5">
                             <!-- 댓글 목록 -->
-                            <div id="commentList" class="mt-4" th:if="${post.comments != null and !#lists.isEmpty(post.comments)}">
-                                <h5 class="text-gray-800" th:text="${boardName == '자유게시판' ? '댓글 목록' : '답변 목록'}">(<span th:text="${#lists.isEmpty(post.comments) ? 0 : #lists.size(post.comments)}">0</span>)</h5>
+                            <div id="commentList" class="mt-4">
+                                <h5 class="text-gray-800" th:text="${boardName == '자유게시판' ? '댓글 목록' : '답변 목록'}"></h5>
                                 <div class="list-group">
-                                    <div th:each="comment : ${post.comments}" class="list-group-item">
+                                    <div th:if="${post.comments == null or #lists.isEmpty(post.comments)}">
+                                        <p class="mb-1 text-gray-500">등록된 댓글이 없습니다.</p>
+                                    </div>
+                                    <div th:unless="${post.comments == null or #lists.isEmpty(post.comments)}" th:each="comment : ${post.comments}" class="list-group-item">
                                         <div class="d-flex w-100 justify-content-between">
                                             <small th:text="${comment.nickname}">Nickname</small>
                                             <small th:text="${#temporals.format(comment.createdAt, 'yyyy.MM.dd HH:mm')}">Date</small>
@@ -484,7 +487,6 @@
                                                 `;
                                     document.querySelector('.list-group').insertAdjacentHTML('beforeend', commentHtml);
                                     document.getElementById('commentContent').value = '';
-                                    updateCommentCount(1);
                                 } else {
                                     const error = await response.text();
                                     alert('댓글 등록 실패: ' + error);
@@ -507,7 +509,6 @@
                                 });
                                 if (response.ok) {
                                     button.closest('.list-group-item').remove();
-                                    updateCommentCount(-1);
                                 } else {
                                     const error = await response.text();
                                     alert('댓글 삭제 실패: ' + error);
@@ -517,13 +518,6 @@
                                 alert('댓글 삭제에 실패했습니다.');
                             }
                         }
-                    };
-
-                    // 댓글 수 업데이트 함수
-                    const updateCommentCount = (change) => {
-                        const countSpan = document.querySelector('.comments-section h5 span');
-                        const currentCount = parseInt(countSpan.textContent);
-                        countSpan.textContent = currentCount + change;
                     };
 
                     // 날짜 포맷 함수
