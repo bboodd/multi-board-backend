@@ -301,11 +301,15 @@ public class AdminController {
     @GetMapping("/posts/{postId}/thumbnail")
     public ResponseEntity<String> getThumbnailUrl(@PathVariable Long postId) {
 
-        FileVO file = fileService.findThumbnailByPostId(postId);
-        String objectKey = file.getSavedName();
-        String preSignedUrl = fileUtils.generatePresignedUrl(objectKey);
+        try {
+            FileVO file = fileService.findThumbnailByPostId(postId);
+            String objectKey = file.getSavedName();
+            String preSignedUrl = fileUtils.generatePresignedUrl(objectKey);
 
-        return ResponseEntity.ok(preSignedUrl);
+            return ResponseEntity.ok(preSignedUrl);
+        } catch (Exception e) {
+            return ResponseEntity.ok("");
+        }
     }
 
     // 파일 처리 해야하는 게시판인지 확인 메서드
