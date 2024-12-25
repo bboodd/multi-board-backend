@@ -21,7 +21,6 @@
 
 ### Frontend
 - Thymeleaf
-- jQuery
 - JavaScript
 - HTML
 - CSS
@@ -81,6 +80,23 @@
 
 ---
 ## 📌 5. 관리자 페이지 화면
-- 로그인
+링크: https://api.bboodd-board.site/admin/login
+
+테스트 ID: admin
+
+테스트 PW: admin
+
+✔ 로그인/로그아웃
+- 세션 로그인 (권한이 ROLE_ADMIN인 유저만 로그인 가능)
+
+✔ 대시보드
+- 각 게시판의 글을 5개씩 보여줌
+- 더보기를 누를 시 각 게시판으로 이동
+
+✔ 게시판 메인
+- 검색 조건 별 페이징
+
+✔ 게시글 등록/수정
+- 등록시 파일첨부, 수정시 댓글 등록/수정 가능
   
 

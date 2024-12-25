@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(CustomException.class)
     public Object handleCustomException(HttpServletRequest request, Model model, CustomException e) {
-        log.error("CustomException: {}", e.getMessage(), e);
+        log.error("CustomException: {}", e.getMessage());
 
         if (isApiRequest(request)) {
             return ResponseEntity
