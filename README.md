@@ -89,14 +89,37 @@
 ✔ 로그인/로그아웃
 - 세션 로그인 (권한이 ROLE_ADMIN인 유저만 로그인 가능)
 
+![admin 로그인](https://github.com/user-attachments/assets/83d493c8-3f15-4d80-afff-de49eac16d18)
+
 ✔ 대시보드
 - 각 게시판의 글을 5개씩 보여줌
 - 더보기를 누를 시 각 게시판으로 이동
 
+![admin 대시보드](https://github.com/user-attachments/assets/b3ddc0a5-c1f3-49a7-9d98-bed7c9c889f1)
+
+
 ✔ 게시판 메인
 - 검색 조건 별 페이징
 
+![admin 메인](https://github.com/user-attachments/assets/6af969b6-618d-469e-92de-6332536007e0)
+
+
 ✔ 게시글 등록/수정
 - 등록시 파일첨부, 수정시 댓글 등록/수정 가능
+
+![admin 글등록:수정](https://github.com/user-attachments/assets/48289488-095e-4b99-b253-0fd8a01d2a7b)
+
+
+---
+## 돌아보며
+
+- 개발환경 설정부터 배포까지 나만의 레퍼런스를 만들기 위해 프로젝트를 진행했다.
+- 혼자 FrontEnd와 BackEnd 개발을 진행하고 배포까지 해서 매우 뿌듯하다.
+- 이미 구현할 수 있는 기능들만 사용해서 큰 trouble shooting이 있지는 않았지만 directory structure나 많은 개발자들이 사용하는 code convention을 고려하면서 개발하는 것이 조금 신경쓰였다.
+- 다음에는 JPA를 사용해보고 더욱 다양한 기술을 이용해서 많은 기능이 추가된 프로젝트를 진행해보고 싶다
+
+---
+## FE 프로젝트
+링크: https://github.com/bboodd/multi-board-user-frontend
   
 
