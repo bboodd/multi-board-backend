@@ -101,13 +101,13 @@
 ✔ 게시판 메인
 - 검색 조건 별 페이징
 
-![admin 메인](https://github.com/user-attachments/assets/6af969b6-618d-469e-92de-6332536007e0)
+![admin 메인(수정)](https://github.com/user-attachments/assets/5ce85278-5ae9-4d4f-ad9c-1468f4fd010e)
 
 
 ✔ 게시글 등록/수정
 - 등록시 파일첨부, 수정시 댓글 등록/수정 가능
 
-![admin 글등록:수정](https://github.com/user-attachments/assets/48289488-095e-4b99-b253-0fd8a01d2a7b)
+![admin 글등록:수정(수정)](https://github.com/user-attachments/assets/972a8951-5492-4061-94b2-7a696e1604b5)
 
 
 ---
